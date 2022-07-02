@@ -1,4 +1,4 @@
-package dev.checku.checkuserver;
+package dev.checku.checkuserver.api;
 
 import dev.checku.checkuserver.application.CheckuService;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ public class CheckuApi {
     @GetMapping
     public void check()
     {
-        checkuService.getCookie();
+        checkuService.login();
     }
 
     @GetMapping("/{subjectId}")

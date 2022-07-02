@@ -1,0 +1,9 @@
+
+jasypt:
+  encryptor:
+    bean: jasyptStringEncryptor
+    password: ${JASYPT_PASSWORD}
+
+portal:
+  id: ${PORTAL_ID}
+  pwd: ${PORTAL_PWD}

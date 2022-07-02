@@ -2,12 +2,22 @@ package dev.checku.checkuserver.application;
 
 import feign.Response;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.MultiValueMap;
+
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 public class CheckuService {
+
+    @Value("${portal.id}")
+    private String id;
+
+    @Value("${portal.pwd}")
+    private String pwd;
 
     private final PortalFeignClient portalFeignClient;
 
@@ -15,11 +25,10 @@ public class CheckuService {
         Response response = portalFeignClient.getSession();
         String cookie = response.headers().get("set-cookie").toString();
         String jSessionId = cookie.substring(cookie.indexOf('=') + 1, cookie.indexOf(';'));
-        System.out.println(jSessionId);
         return jSessionId;
     }
 
-    public String getCookie() {
+    public String login() {
 
         String session = "JSESSIONID=" + getSession();
 
@@ -37,24 +46,24 @@ public class CheckuService {
                 "NuMoe6",
                 "ne+3|q",
                 "Qnd@%1",
-                "dudwls143",
-                "@dudwlsdl12",
+                id,
+                pwd,
                 "ko",
                 "@d1#",
                 "dsParam",
                 "dm"
         );
 
+
         System.out.println(response.getBody());
 
         return session;
-//        System.out.println(cookie.headers().get("co"));
     }
 
     public void getSubjects(
             Long subjectId
     ) {
-        String session = getCookie();
+        String session = login();
 
     }
 
