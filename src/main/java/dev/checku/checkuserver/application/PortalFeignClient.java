@@ -1,18 +1,10 @@
 package dev.checku.checkuserver.application;
 
 import feign.Response;
-import feign.form.spring.SpringFormEncoder;
-import org.springframework.beans.factory.ObjectFactory;
-import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.cloud.openfeign.SpringQueryMap;
-import org.springframework.cloud.openfeign.support.SpringEncoder;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.beans.Encoder;
-import java.util.Map;
 
 @FeignClient(url = "https://kuis.konkuk.ac.kr", name = "kuis.konkuk.ac.kr")
 public interface PortalFeignClient {
@@ -50,10 +42,8 @@ public interface PortalFeignClient {
 //            @RequestHeader("User-Agent") String userAgent,
 //            @RequestBody LoginRequest loginRequest);
 
-
-
     @PostMapping(value = "/CourTotalTimetableInq/find.do", consumes = "application/x-www-form-urlencoded")
-    ResponseEntity<String> getSubject(
+    SubjectListDto getSubject(
             @RequestHeader("Cookie") String cookie,
             @RequestHeader("Referer") String referer,
             @RequestHeader("User-Agent") String userAgent,
@@ -67,9 +57,14 @@ public interface PortalFeignClient {
             @RequestPart("JKGhe8") String JK,
             @RequestPart("_)e7me") String e7,
             @RequestPart("3kd3Nj") String k3,
-            @RequestPart("@d1#SINGLE_ID") String id,
-            @RequestPart("@d1#PWD") String pwd,
-            @RequestPart("@d1#default.locale") String locale,
+            @RequestPart("_AUTH_MENU_KEY") String key,
+            @RequestPart("@d1#ltYy") String year,
+            @RequestPart("@d1#ltShtm") String shtm,
+            @RequestPart("@d1#openSust") String sust, // 학과 번호
+            @RequestPart("@d1#pobtDiv") String div,
+            @RequestPart("@d1#sbjtId") String sbjNum,
+            @RequestPart("@d1#argDeptFg") String dept, // 수강, 제청, 개설
+
             @RequestPart("@d#") String d,
             @RequestPart("@d1#") String d1,
             @RequestPart("@d1#tp") String d2);
