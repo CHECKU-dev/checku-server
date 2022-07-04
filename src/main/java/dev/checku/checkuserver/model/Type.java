@@ -1,8 +1,11 @@
 package dev.checku.checkuserver.model;
 
+import lombok.Getter;
+
+@Getter
 public enum Type {
 
-    ESSENTIAL("B04044"), OPTIONAL("B04045");
+    ALL(""), ESSENTIAL("B04044"), OPTIONAL("B04045");
 
     private String value;
 

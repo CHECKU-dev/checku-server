@@ -1,4 +1,4 @@
-package dev.checku.checkuserver.application;
+package dev.checku.checkuserver.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
