@@ -1,5 +1,6 @@
 package dev.checku.checkuserver.application;
 
+import dev.checku.checkuserver.dto.PortalRes;
 import feign.Response;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +44,7 @@ public interface PortalFeignClient {
 //            @RequestBody LoginRequest loginRequest);
 
     @PostMapping(value = "/CourTotalTimetableInq/find.do", consumes = "application/x-www-form-urlencoded")
-    SubjectListDto getSubject(
+    PortalRes getSubject(
             @RequestHeader("Cookie") String cookie,
             @RequestHeader("Referer") String referer,
             @RequestHeader("User-Agent") String userAgent,
@@ -64,7 +65,6 @@ public interface PortalFeignClient {
             @RequestPart("@d1#pobtDiv") String div,
             @RequestPart("@d1#sbjtId") String sbjNum,
             @RequestPart("@d1#argDeptFg") String dept, // 수강, 제청, 개설
-
             @RequestPart("@d#") String d,
             @RequestPart("@d1#") String d1,
             @RequestPart("@d1#tp") String d2);

@@ -1,16 +1,17 @@
 package dev.checku.checkuserver.application;
 
 import dev.checku.checkuserver.dto.SubjectDto;
+import dev.checku.checkuserver.dto.PortalRes;
+import dev.checku.checkuserver.model.Department;
+import dev.checku.checkuserver.model.Grade;
+import dev.checku.checkuserver.model.Type;
 import feign.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.MultiValueMap;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -60,18 +61,16 @@ public class CheckuService {
         );
 
 
-        System.out.println(response.getBody());
-
         return session;
     }
 
-    public List<SubjectListDto.SubjectDto> getSubjects(
+    public List<SubjectDto.Response> getSubjects(
             List<String> subjectIds
     ) {
         String session = login();
 
         return subjectIds.parallelStream().map(id -> {
-            SubjectListDto subject = portalFeignClient.getSubject(session,
+            PortalRes subject = portalFeignClient.getSubject(session,
                     "https://kuis.konkuk.ac.kr/index.do",
                     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36",
                     "#9e4ki",
@@ -94,15 +93,26 @@ public class CheckuService {
                     "@d1#",
                     "dsParam",
                     "dm");
-            return subject.getSubjects().get(0);
+            return SubjectDto.Response.of(subject.getSubjects().get(0));
         }).collect(Collectors.toList());
     }
 
 
-    public List<SubjectListDto.SubjectDto> getAllSubject(SubjectDto.Request request) {
+    public List<SubjectDto.Response> getSubjectsByDepartment(SubjectDto.Request request) {
         String session = login();
 
-        SubjectListDto subject = portalFeignClient.getSubject(session,
+        Department department = Department.valueOf(request.getDepartment());
+        Grade grade = Grade.ALL;
+        Type type = Type.ALL;
+
+        if (request.getGrade() != null) {
+            grade = Grade.valueOf(request.getGrade());
+        }
+        if (request.getType() != null) {
+            type = Type.valueOf(request.getType());
+        }
+
+        PortalRes subject = portalFeignClient.getSubject(session,
                 "https://kuis.konkuk.ac.kr/index.do",
                 "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36",
                 "#9e4ki",
@@ -118,22 +128,25 @@ public class CheckuService {
                 "1130420",
                 "2022",
                 "B01012",
-                request.getDepartment(),
-                request.getType(),
+                department.getValue(),
+                type.getValue(),
                 "",
                 "1",
                 "@d1#",
                 "dsParam",
                 "dm");
 
-        List<SubjectListDto.SubjectDto> collect = subject.getSubjects().parallelStream().filter(new Predicate<SubjectListDto.SubjectDto>() {
-            @Override
-            public boolean test(SubjectListDto.SubjectDto subjectDto) {
-                return subjectDto.getGrade() == Integer.parseInt(request.getGrade());
-            }
-        }).collect(Collectors.toList());
+        if (grade == Grade.ALL) {
+            return subject.getSubjects()
+                    .parallelStream()
+                    .map(subjectDto -> SubjectDto.Response.of(subjectDto)).collect(Collectors.toList());
+        }
 
-        return collect;
+        Grade finalGrade = grade;
+        return subject.getSubjects()
+                .parallelStream()
+                .filter(subjectDto -> subjectDto.getGrade() == Integer.parseInt(finalGrade.getValue()))
+                .map(subjectDto -> SubjectDto.Response.of(subjectDto)).collect(Collectors.toList());
 
     }
 }

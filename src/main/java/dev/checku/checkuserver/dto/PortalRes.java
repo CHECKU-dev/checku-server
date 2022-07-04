@@ -1,4 +1,4 @@
-package dev.checku.checkuserver.application;
+package dev.checku.checkuserver.dto;
 
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -10,7 +10,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
-public class SubjectListDto {
+public class PortalRes {
 
     @JsonProperty(value = "DS_SUSTTIMETABLE")
     private List<SubjectDto> subjects;
