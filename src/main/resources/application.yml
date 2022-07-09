@@ -1,4 +1,3 @@
-
 jasypt:
   encryptor:
     bean: jasyptStringEncryptor
@@ -7,3 +6,17 @@ jasypt:
 portal:
   id: ${PORTAL_ID}
   pwd: ${PORTAL_PWD}
+
+spring:
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 1000
+
+    show-sql: true
+    open-in-view: false
+
+logging:
+  level:
+    org.hibernate.type: trace
