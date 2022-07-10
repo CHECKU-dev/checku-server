@@ -1,15 +1,25 @@
 spring:
-
   datasource:
-    url: ENC(n6DkoCw4RRCpE/v+uLEjNgw8Whe704Nf4MkSjpzyFzU=)
-    username: ENC(it8IrZhqMGaZhKmFT+6YDw==)
+    url: jdbc:h2:tcp://localhost/~/jpashop
+    username: sa
     password:
     driver-class-name: org.h2.Driver
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true # sql 예쁘게 출력
+        default_batch_fetch_size: 1000
+    show-sql: true  # sql 출력
+    generate-ddl: true
 
   h2:
     console:
       enabled: true
-
-  jpa:
-    hibernate:
-      ddl-auto: create
+#
+#  jpa:
+#    hibernate:
+#      ddl-auto: create

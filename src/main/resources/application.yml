@@ -8,15 +8,20 @@ portal:
   pwd: ${PORTAL_PWD}
 
 spring:
+  datasource:
+    url: jdbc:h2:tcp://localhost/~/jpashop
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
   jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
     properties:
       hibernate:
-        format_sql: true
+        format_sql: true # sql 예쁘게 출력
         default_batch_fetch_size: 1000
+    show-sql: true  # sql 출력
+    generate-ddl: true
 
-    show-sql: true
-    open-in-view: false
-
-logging:
-  level:
-    org.hibernate.type: trace
