@@ -1,14 +1,11 @@
-package dev.checku.checkuserver.domain.checku.application;
+package dev.checku.checkuserver.domain.checku.application.service;
 
 import dev.checku.checkuserver.domain.model.Department;
 import dev.checku.checkuserver.domain.model.Grade;
 import dev.checku.checkuserver.domain.model.Type;
 import dev.checku.checkuserver.domain.checku.dto.SubjectDto;
 import dev.checku.checkuserver.domain.checku.dto.PortalRes;
-import feign.Response;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,56 +15,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CheckuService {
 
-    @Value("${portal.id}")
-    private String id;
-
-    @Value("${portal.pwd}")
-    private String pwd;
 
     private final PortalFeignClient portalFeignClient;
 
-    public String getSession() {
-        Response response = portalFeignClient.getSession();
-        String cookie = response.headers().get("set-cookie").toString();
-        String jSessionId = cookie.substring(cookie.indexOf('=') + 1, cookie.indexOf(';'));
-        return jSessionId;
-    }
-
-    public String login() {
-
-        String session = "JSESSIONID=" + getSession();
-
-        ResponseEntity<String> response = portalFeignClient.login(
-                session,
-                "https://kuis.konkuk.ac.kr/index.do",
-                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36",
-                "#9e4ki",
-                "e&*\biu",
-                "W^_zie",
-                "_qw3e4",
-                "Ajd%md",
-                "ekmf3",
-                "JDow871",
-                "NuMoe6",
-                "ne+3|q",
-                "Qnd@%1",
-                id,
-                pwd,
-                "ko",
-                "@d1#",
-                "dsParam",
-                "dm"
-        );
-
-
-        return session;
-    }
-
     public List<SubjectDto.Response> getSubjects(
-            List<String> subjectIds
+            List<String> subjectIds,
+            String session
     ) {
-        String session = login();
-
         return subjectIds.parallelStream().map(id -> {
             PortalRes subject = portalFeignClient.getSubject(session,
                     "https://kuis.konkuk.ac.kr/index.do",
@@ -97,18 +51,16 @@ public class CheckuService {
     }
 
 
-    public List<SubjectDto.Response> getSubjectsByDepartment(SubjectDto.Request request) {
-        String session = login();
-
-        Department department = Department.valueOf(request.getDepartment());
+    public List<SubjectDto.Response> getSubjectsByDepartment(SubjectDto.Request dto, String session) {
+        Department department = Department.valueOf(dto.getDepartment());
         Grade grade = Grade.ALL;
         Type type = Type.ALL;
 
-        if (request.getGrade() != null) {
-            grade = Grade.valueOf(request.getGrade());
+        if (dto.getGrade() != null) {
+            grade = Grade.valueOf(dto.getGrade());
         }
-        if (request.getType() != null) {
-            type = Type.valueOf(request.getType());
+        if (dto.getType() != null) {
+            type = Type.valueOf(dto.getType());
         }
 
         PortalRes subject = portalFeignClient.getSubject(session,

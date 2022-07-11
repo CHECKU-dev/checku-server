@@ -1,4 +1,4 @@
-package dev.checku.checkuserver.domain.checku.application;
+package dev.checku.checkuserver.domain.checku.application.service;
 
 import dev.checku.checkuserver.domain.checku.dto.PortalRes;
 import feign.Response;
