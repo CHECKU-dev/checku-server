@@ -36,7 +36,6 @@ public class CheckuApi {
     public ResponseEntity<List<SubjectDto.Response>> getSubjects(
             @Valid SubjectDto.Request dto,
             HttpServletRequest request
-
     ) {
 
         String session = request.getAttribute("session").toString();

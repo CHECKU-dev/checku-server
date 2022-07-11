@@ -3,10 +3,14 @@ package dev.checku.checkuserver.domain.notification.application;
 import dev.checku.checkuserver.domain.notification.dao.NotificationRepository;
 import dev.checku.checkuserver.domain.notification.dto.GetNotificationDto;
 import dev.checku.checkuserver.domain.notification.dto.NotificationApplyDto;
+import dev.checku.checkuserver.domain.notification.dto.NotificationCancelDto;
 import dev.checku.checkuserver.domain.notification.dto.SendMessageDto;
 import dev.checku.checkuserver.domain.notification.entity.Notification;
+import dev.checku.checkuserver.domain.notification.exception.AlreadyAppliedNotificationException;
 import dev.checku.checkuserver.domain.user.application.UserService;
 import dev.checku.checkuserver.domain.user.entity.User;
+import dev.checku.checkuserver.global.exception.EntityNotFoundException;
+import dev.checku.checkuserver.global.exception.ErrorCode;
 import dev.checku.checkuserver.infra.notification.FcmService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,17 +30,36 @@ public class NotificationService {
     private final FcmService fcmService;
 
     @Transactional
-    public NotificationApplyDto.Response createNotification(NotificationApplyDto.Request request) {
+    public NotificationApplyDto.Response applyNotification(NotificationApplyDto.Request request) {
 
         User user = userService.getUser(request.getUserId());
-
         Notification notification = request.toEntity();
+
+        if (notificationRepository.existsBySubjectNumberAndUser(notification.getSubjectNumber(), user)) {
+                throw new AlreadyAppliedNotificationException(ErrorCode.ALREADY_APPLIED_NOTIFICATION);
+        }
+
         Notification saveNotification = Notification.createNotification(notification, user);
 
         saveNotification = notificationRepository.save(saveNotification);
         fcmService.subscribeToTopic(user.getFcmToken(), saveNotification.getSubjectNumber());
 
         return NotificationApplyDto.Response.of(saveNotification);
+    }
+
+    @Transactional
+    public NotificationCancelDto.Response cancelNotification(NotificationCancelDto.Request request) {
+        String subjectNumber = request.getSubjectNumber();
+        User user = userService.getUser(request.getUserId());
+
+        Notification notification = notificationRepository.findBySubjectNumberAndUser(subjectNumber, user)
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOTIFICATION_NOT_FOUND));
+
+        notificationRepository.delete(notification);
+        fcmService.unsubscribeToTopic(user.getFcmToken(), subjectNumber);
+
+        return NotificationCancelDto.Response.of(subjectNumber);
+
     }
 
     public List<GetNotificationDto.Response> getNotification(GetNotificationDto.Request request) {
@@ -62,7 +85,7 @@ public class NotificationService {
         //TODO 변경
         fcmService.sendTopicMessage(request.getTopic(), "TEST", "TEST", tokens);
 
-        // notificiation 삭제
+        // notification 삭제
         notificationRepository.deleteAllInBatch(notificationList);
 
     }
