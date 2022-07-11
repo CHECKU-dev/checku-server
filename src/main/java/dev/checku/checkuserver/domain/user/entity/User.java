@@ -22,12 +22,6 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     private String fcmToken;
 
-//    @OneToMany(
-//            mappedBy = "notification",
-//            cascade = CascadeType.ALL
-//    )
-//    private List<Notification> notifications = new ArrayList<>();
-
 
     @Builder
     public User(String fcmToken) {

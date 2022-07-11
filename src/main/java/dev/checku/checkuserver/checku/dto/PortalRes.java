@@ -1,4 +1,4 @@
-package dev.checku.checkuserver.domain.checku.dto;
+package dev.checku.checkuserver.checku.dto;
 
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

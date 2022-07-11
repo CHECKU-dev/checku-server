@@ -1,20 +1,24 @@
 package dev.checku.checkuserver.domain.notification.dto;
 
-import dev.checku.checkuserver.domain.notification.entity.Notification;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
 
-public class SendMessageDto {
+public class NotificationCancelDto {
 
     @Getter
     @Setter
+    @ToString
     public static class Request {
 
         @NotBlank
-        private String topic;
+        private Long userId;
+
+        @NotBlank
+        private String subjectNumber;
 
     }
 
@@ -25,13 +29,14 @@ public class SendMessageDto {
 
         private String message;
 
-        public static Response of() {
+        public static Response of(String subjectNumber) {
             return Response.builder()
-                    .message("메세지 전송에 성공하였습니다.")
+                    .message(subjectNumber + " 알림 취소되었습니다.")
                     .build();
 
         }
 
     }
+
 
 }

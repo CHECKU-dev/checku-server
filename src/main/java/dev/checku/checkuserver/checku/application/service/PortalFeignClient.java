@@ -1,6 +1,6 @@
-package dev.checku.checkuserver.domain.checku.application;
+package dev.checku.checkuserver.checku.application.service;
 
-import dev.checku.checkuserver.domain.checku.dto.PortalRes;
+import dev.checku.checkuserver.checku.dto.PortalRes;
 import feign.Response;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
@@ -60,7 +60,7 @@ public interface PortalFeignClient {
             @RequestPart("3kd3Nj") String k3,
             @RequestPart("_AUTH_MENU_KEY") String key,
             @RequestPart("@d1#ltYy") String year,
-            @RequestPart("@d1#ltShtm") String shtm,
+            @RequestPart("@d1#ltShtm") String shtm, // 학기 구분
             @RequestPart("@d1#openSust") String sust, // 학과 번호
             @RequestPart("@d1#pobtDiv") String div,
             @RequestPart("@d1#sbjtId") String sbjNum,

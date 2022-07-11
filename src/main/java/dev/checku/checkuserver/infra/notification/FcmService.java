@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -31,11 +30,17 @@ public class FcmService {
 
     public void subscribeToTopic(String fcmToken, String subjectNumber) {
 
-        List<String> registrationTokens = new ArrayList<>();
+        try {
+            firebaseMessaging.subscribeToTopic(List.of(fcmToken), subjectNumber);
+        } catch (FirebaseMessagingException e) {
+            throw new NotificationFailedException(ErrorCode.SUBSCRIBE_FAILED);
+        }
+    }
+
+    public void unsubscribeToTopic(String fcmToken, String subjectNumber) {
 
         try {
-            registrationTokens.add(fcmToken);
-            firebaseMessaging.subscribeToTopic(registrationTokens, subjectNumber);
+            firebaseMessaging.unsubscribeFromTopic(List.of(fcmToken), subjectNumber);
         } catch (FirebaseMessagingException e) {
             throw new NotificationFailedException(ErrorCode.SUBSCRIBE_FAILED);
         }

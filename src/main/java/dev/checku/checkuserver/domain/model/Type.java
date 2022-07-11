@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public enum Type {
 
-    ALL(""), ESSENTIAL("B04044"), OPTIONAL("B04045");
+    ALL(""), ESSENTIAL("B04044"), OPTIONAL("B04045"), OTHER("other");
 
     private String value;
 

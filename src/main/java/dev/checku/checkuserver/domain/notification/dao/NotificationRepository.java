@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
 
@@ -17,4 +18,7 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
             "where n.subjectNumber=:subjectNumber ")
     List<Notification> findAllBySubjectNumber(String subjectNumber);
 
+    Optional<Notification> findBySubjectNumberAndUser(String subjectNumber, User user);
+
+    Boolean existsBySubjectNumberAndUser(String subjectNumber, User user);
 }
