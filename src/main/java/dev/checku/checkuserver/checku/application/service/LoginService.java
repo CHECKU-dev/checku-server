@@ -1,4 +1,4 @@
-package dev.checku.checkuserver.domain.checku.application.service;
+package dev.checku.checkuserver.checku.application.service;
 
 import feign.Response;
 import lombok.RequiredArgsConstructor;
@@ -50,8 +50,6 @@ public class LoginService {
                 "dsParam",
                 "dm"
         );
-
-
         return session;
     }
 }

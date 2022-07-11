@@ -25,9 +25,9 @@ public class SendMessageDto {
 
         private String message;
 
-        public static Response of(String message) {
+        public static Response of() {
             return Response.builder()
-                    .message(message)
+                    .message("메세지 전송에 성공하였습니다.")
                     .build();
 
         }

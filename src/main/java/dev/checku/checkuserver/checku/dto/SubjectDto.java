@@ -1,4 +1,4 @@
-package dev.checku.checkuserver.domain.checku.dto;
+package dev.checku.checkuserver.checku.dto;
 
 import lombok.Builder;
 import lombok.Getter;

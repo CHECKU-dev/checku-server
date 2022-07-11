@@ -1,7 +1,7 @@
-package dev.checku.checkuserver.domain.checku.api;
+package dev.checku.checkuserver.checku.api;
 
-import dev.checku.checkuserver.domain.checku.application.service.CheckuService;
-import dev.checku.checkuserver.domain.checku.dto.SubjectDto;
+import dev.checku.checkuserver.checku.application.service.CheckuService;
+import dev.checku.checkuserver.checku.dto.SubjectDto;
 import dev.checku.checkuserver.global.advice.Login;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -31,8 +31,6 @@ public class CheckuApi {
 
     }
 
-    //TODO 전필, 전선 이외의 이수구분 처리
-
     @Login
     @GetMapping("/subjects")
     public ResponseEntity<List<SubjectDto.Response>> getSubjects(
@@ -40,6 +38,7 @@ public class CheckuApi {
             HttpServletRequest request
 
     ) {
+
         String session = request.getAttribute("session").toString();
         List<SubjectDto.Response> response = checkuService.getSubjectsByDepartment(dto, session);
         return ResponseEntity.ok(response);

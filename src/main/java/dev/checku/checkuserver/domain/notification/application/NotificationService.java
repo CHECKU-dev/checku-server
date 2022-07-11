@@ -34,7 +34,6 @@ public class NotificationService {
         Notification saveNotification = Notification.createNotification(notification, user);
 
         saveNotification = notificationRepository.save(saveNotification);
-
         fcmService.subscribeToTopic(user.getFcmToken(), saveNotification.getSubjectNumber());
 
         return NotificationApplyDto.Response.of(saveNotification);

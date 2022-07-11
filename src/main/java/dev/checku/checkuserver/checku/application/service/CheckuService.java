@@ -1,14 +1,14 @@
-package dev.checku.checkuserver.domain.checku.application.service;
+package dev.checku.checkuserver.checku.application.service;
 
 import dev.checku.checkuserver.domain.model.Department;
 import dev.checku.checkuserver.domain.model.Grade;
 import dev.checku.checkuserver.domain.model.Type;
-import dev.checku.checkuserver.domain.checku.dto.SubjectDto;
-import dev.checku.checkuserver.domain.checku.dto.PortalRes;
+import dev.checku.checkuserver.checku.dto.SubjectDto;
+import dev.checku.checkuserver.checku.dto.PortalRes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -59,7 +59,7 @@ public class CheckuService {
         if (dto.getGrade() != null) {
             grade = Grade.valueOf(dto.getGrade());
         }
-        if (dto.getType() != null) {
+        if (dto.getType() != null && !dto.getType().equals("OTHER")) {
             type = Type.valueOf(dto.getType());
         }
 
@@ -87,16 +87,14 @@ public class CheckuService {
                 "dsParam",
                 "dm");
 
-        if (grade == Grade.ALL) {
-            return subject.getSubjects()
-                    .parallelStream()
-                    .map(subjectDto -> SubjectDto.Response.of(subjectDto)).collect(Collectors.toList());
-        }
 
         Grade finalGrade = grade;
+
+        //TODO 정리
         return subject.getSubjects()
-                .parallelStream()
-                .filter(subjectDto -> subjectDto.getGrade() == Integer.parseInt(finalGrade.getValue()))
+                .stream()
+                .filter(subjectDto -> finalGrade != Grade.ALL ? subjectDto.getGrade() == Integer.parseInt(finalGrade.getValue()) : true)
+                .filter(subjectDto -> (dto.getType() != null && dto.getType().equals("OTHER")) ? !subjectDto.getSubjectType().equals("전필") && !subjectDto.getSubjectType().equals("전선") : true)
                 .map(subjectDto -> SubjectDto.Response.of(subjectDto)).collect(Collectors.toList());
 
     }

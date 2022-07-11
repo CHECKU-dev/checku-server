@@ -34,7 +34,7 @@ public class NotificationApi {
     public ResponseEntity<SendMessageDto.Response> sendMessageByTopic(@RequestBody SendMessageDto.Request request) {
 
         notificationService.sendMessageByTopic(request);
-        return ResponseEntity.ok(SendMessageDto.Response.of("메세지 전송에 성공하였습니다."));
+        return ResponseEntity.ok(SendMessageDto.Response.of());
     }
 
 
