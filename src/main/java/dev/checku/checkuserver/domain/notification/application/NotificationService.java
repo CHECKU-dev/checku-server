@@ -1,5 +1,6 @@
 package dev.checku.checkuserver.domain.notification.application;
 
+import dev.checku.checkuserver.checku.application.CheckuService;
 import dev.checku.checkuserver.domain.notification.dao.NotificationRepository;
 import dev.checku.checkuserver.domain.notification.dto.GetNotificationDto;
 import dev.checku.checkuserver.domain.notification.dto.NotificationApplyDto;
@@ -7,36 +8,51 @@ import dev.checku.checkuserver.domain.notification.dto.NotificationCancelDto;
 import dev.checku.checkuserver.domain.notification.dto.SendMessageDto;
 import dev.checku.checkuserver.domain.notification.entity.Notification;
 import dev.checku.checkuserver.domain.notification.exception.AlreadyAppliedNotificationException;
+import dev.checku.checkuserver.domain.notification.exception.SubjcetNotFoundException;
+import dev.checku.checkuserver.domain.topic.Topic;
+import dev.checku.checkuserver.domain.topic.TopicService;
 import dev.checku.checkuserver.domain.user.application.UserService;
 import dev.checku.checkuserver.domain.user.entity.User;
 import dev.checku.checkuserver.global.exception.EntityNotFoundException;
 import dev.checku.checkuserver.global.exception.ErrorCode;
 import dev.checku.checkuserver.infra.notification.FcmService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RestController
+@Service
 @RequiredArgsConstructor
-@RequestMapping("/api/notification")
+@Transactional(readOnly = true)
 public class NotificationService {
 
+    private final CheckuService checkuService;
     private final UserService userService;
     private final NotificationRepository notificationRepository;
     private final FcmService fcmService;
+    private final TopicService topicService;
 
     @Transactional
-    public NotificationApplyDto.Response applyNotification(NotificationApplyDto.Request request) {
+    public NotificationApplyDto.Response applyNotification(NotificationApplyDto.Request request, String session) {
+
+        try {
+            checkuService.getSubjects(List.of(request.getSubjectNumber()), session);
+        }catch (IndexOutOfBoundsException e) {
+            throw new SubjcetNotFoundException(ErrorCode.SUBJECT_NOT_FOUND);
+        }
 
         User user = userService.getUser(request.getUserId());
         Notification notification = request.toEntity();
 
         if (notificationRepository.existsBySubjectNumberAndUser(notification.getSubjectNumber(), user)) {
                 throw new AlreadyAppliedNotificationException(ErrorCode.ALREADY_APPLIED_NOTIFICATION);
+        }
+
+        if (!topicService.existsTopic(notification.getSubjectNumber())) {
+            Topic topic = Topic.createTopic(notification.getSubjectNumber());
+            topicService.saveTopic(topic);
         }
 
         Notification saveNotification = Notification.createNotification(notification, user);
@@ -74,6 +90,7 @@ public class NotificationService {
     }
 
 
+    @Transactional
     public void sendMessageByTopic(SendMessageDto.Request request) {
 
         // topic(=subjectNumber)를 기준으로 notifcation 조회
@@ -83,10 +100,13 @@ public class NotificationService {
                 .map(notification -> notification.getUser().getFcmToken()).collect(Collectors.toList());
 
         //TODO 변경
-        fcmService.sendTopicMessage(request.getTopic(), "TEST", "TEST", tokens);
+        fcmService.sendTopicMessage(request.getTopic(), "CHECKU 알림", request.getTopic()+" 번호 빈 자리", tokens);
 
         // notification 삭제
         notificationRepository.deleteAllInBatch(notificationList);
+
+        // topic 삭제
+        topicService.deleteTopic(request.getTopic());
 
     }
 }

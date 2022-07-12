@@ -1,4 +1,4 @@
-package dev.checku.checkuserver.checku.application.service;
+package dev.checku.checkuserver.checku.application;
 
 import feign.Response;
 import lombok.RequiredArgsConstructor;

@@ -1,6 +1,6 @@
 package dev.checku.checkuserver.checku.api;
 
-import dev.checku.checkuserver.checku.application.service.CheckuService;
+import dev.checku.checkuserver.checku.application.CheckuService;
 import dev.checku.checkuserver.checku.dto.SubjectDto;
 import dev.checku.checkuserver.global.advice.Login;
 import lombok.RequiredArgsConstructor;

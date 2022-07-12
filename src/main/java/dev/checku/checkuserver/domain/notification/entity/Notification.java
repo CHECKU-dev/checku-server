@@ -5,7 +5,6 @@ import dev.checku.checkuserver.domain.user.entity.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import javax.persistence.*;
 
@@ -13,7 +12,6 @@ import javax.persistence.*;
 @Table(name = "notification")
 @Getter
 @NoArgsConstructor
-@ToString
 public class Notification extends BaseTimeEntity {
 
     @Id
