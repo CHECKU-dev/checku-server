@@ -1,9 +1,8 @@
 package dev.checku.checkuserver.infra.notification.exception;
 
 
-import dev.checku.checkuserver.global.exception.BusinessException;
-import dev.checku.checkuserver.global.exception.ErrorCode;
-import org.apache.tomcat.jni.Error;
+import dev.checku.checkuserver.global.error.exception.BusinessException;
+import dev.checku.checkuserver.global.error.exception.ErrorCode;
 
 public class NotificationFailedException extends BusinessException {
 

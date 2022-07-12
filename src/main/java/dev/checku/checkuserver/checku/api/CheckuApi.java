@@ -19,7 +19,7 @@ public class CheckuApi {
     private final CheckuService checkuService;
 
     @Login
-    @GetMapping
+    @GetMapping("/my-subjects")
     public ResponseEntity<List<SubjectDto.Response>> getMySubjects(
             @RequestParam List<String> subjects,
             HttpServletRequest request

@@ -1,4 +1,4 @@
-package dev.checku.checkuserver.global.exception;
+package dev.checku.checkuserver.global.error.exception;
 
 import lombok.Getter;
 
@@ -13,7 +13,8 @@ public enum ErrorCode {
     NOTIFICATION_NOT_FOUND(400, "해당 알림은 존재하지 않습니다."),
     ALREADY_APPLIED_NOTIFICATION(400, "해당 과목은 이미 신청하였습니다."),
 
-    SUBJECT_NOT_FOUND(400, "해당 과목을 찾을 수 없습니다.");
+    SUBJECT_NOT_FOUND(400, "해당 과목을 찾을 수 없습니다."),
+    HAVA_A_VACANCY(400, "해당 과목은 빈 자리가 남아있습니다.");
 
     ErrorCode(int status, String message) {
         this.status = status;

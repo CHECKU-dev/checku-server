@@ -39,7 +39,6 @@ public class NotificationApi {
     ) {
 
         String session = request.getAttribute("session").toString();
-
         NotificationApplyDto.Response response = notificationService.applyNotification(dto, session);
         return ResponseEntity.ok(response);
     }

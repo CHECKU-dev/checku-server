@@ -1,6 +1,7 @@
 package dev.checku.checkuserver.domain.notification.application;
 
 import dev.checku.checkuserver.checku.application.CheckuService;
+import dev.checku.checkuserver.checku.dto.SubjectDto;
 import dev.checku.checkuserver.domain.notification.dao.NotificationRepository;
 import dev.checku.checkuserver.domain.notification.dto.GetNotificationDto;
 import dev.checku.checkuserver.domain.notification.dto.NotificationApplyDto;
@@ -13,8 +14,8 @@ import dev.checku.checkuserver.domain.topic.Topic;
 import dev.checku.checkuserver.domain.topic.TopicService;
 import dev.checku.checkuserver.domain.user.application.UserService;
 import dev.checku.checkuserver.domain.user.entity.User;
-import dev.checku.checkuserver.global.exception.EntityNotFoundException;
-import dev.checku.checkuserver.global.exception.ErrorCode;
+import dev.checku.checkuserver.global.error.exception.EntityNotFoundException;
+import dev.checku.checkuserver.global.error.exception.ErrorCode;
 import dev.checku.checkuserver.infra.notification.FcmService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,16 +39,19 @@ public class NotificationService {
     public NotificationApplyDto.Response applyNotification(NotificationApplyDto.Request request, String session) {
 
         try {
-            checkuService.getSubjects(List.of(request.getSubjectNumber()), session);
-        }catch (IndexOutOfBoundsException e) {
+            SubjectDto.Response response = checkuService.getSubjects(List.of(request.getSubjectNumber()), session).get(0);
+            response.isVacancy();
+
+        } catch (IndexOutOfBoundsException e) {
             throw new SubjcetNotFoundException(ErrorCode.SUBJECT_NOT_FOUND);
         }
+
 
         User user = userService.getUser(request.getUserId());
         Notification notification = request.toEntity();
 
         if (notificationRepository.existsBySubjectNumberAndUser(notification.getSubjectNumber(), user)) {
-                throw new AlreadyAppliedNotificationException(ErrorCode.ALREADY_APPLIED_NOTIFICATION);
+            throw new AlreadyAppliedNotificationException(ErrorCode.ALREADY_APPLIED_NOTIFICATION);
         }
 
         if (!topicService.existsTopic(notification.getSubjectNumber())) {
@@ -100,7 +104,7 @@ public class NotificationService {
                 .map(notification -> notification.getUser().getFcmToken()).collect(Collectors.toList());
 
         //TODO 변경
-        fcmService.sendTopicMessage(request.getTopic(), "CHECKU 알림", request.getTopic()+" 번호 빈 자리", tokens);
+        fcmService.sendTopicMessage(request.getTopic(), "CHECKU 알림", request.getTopic() + " 번호 빈 자리", tokens);
 
         // notification 삭제
         notificationRepository.deleteAllInBatch(notificationList);

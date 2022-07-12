@@ -7,7 +7,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
-import dev.checku.checkuserver.global.exception.ErrorCode;
+import dev.checku.checkuserver.global.error.exception.ErrorCode;
 import dev.checku.checkuserver.infra.notification.exception.NotificationFailedException;
 import lombok.RequiredArgsConstructor;
 
@@ -95,7 +95,7 @@ public class FcmService {
 //    }
 
 //    private String getAccessToken() throws IOException {
-//        String firebaseConfigPath = "firebase/firebase_service_key.json";
+//        String firebaseConfigPath = "firebase/2.json";
 //
 //        GoogleCredentials googleCredentials = GoogleCredentials
 //                .fromStream(new ClassPathResource(firebaseConfigPath).getInputStream())

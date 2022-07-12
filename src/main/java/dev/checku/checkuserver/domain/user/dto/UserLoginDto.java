@@ -1,5 +1,6 @@
 package dev.checku.checkuserver.domain.user.dto;
 
+import dev.checku.checkuserver.domain.topic.Topic;
 import dev.checku.checkuserver.domain.user.entity.User;
 import lombok.*;
 
@@ -34,7 +35,16 @@ public class UserLoginDto {
     public static class Response {
 
         private Long userId;
+
         private String fcmToken;
+
+        public static Response of(User user) {
+
+            return Response.builder()
+                    .userId(user.getId())
+                    .fcmToken(user.getFcmToken())
+                    .build();
+        }
 
     }
 

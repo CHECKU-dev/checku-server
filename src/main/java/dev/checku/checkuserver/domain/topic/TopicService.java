@@ -1,7 +1,7 @@
 package dev.checku.checkuserver.domain.topic;
 
-import dev.checku.checkuserver.global.exception.EntityNotFoundException;
-import dev.checku.checkuserver.global.exception.ErrorCode;
+import dev.checku.checkuserver.global.error.exception.EntityNotFoundException;
+import dev.checku.checkuserver.global.error.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
