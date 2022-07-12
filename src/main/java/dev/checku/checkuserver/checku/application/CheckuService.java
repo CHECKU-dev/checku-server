@@ -1,4 +1,4 @@
-package dev.checku.checkuserver.checku.application.service;
+package dev.checku.checkuserver.checku.application;
 
 import dev.checku.checkuserver.domain.model.Department;
 import dev.checku.checkuserver.domain.model.Grade;

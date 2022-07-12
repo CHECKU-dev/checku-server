@@ -1,4 +1,4 @@
-package dev.checku.checkuserver.global;
+package dev.checku.checkuserver.global.error;
 
 import lombok.Builder;
 import lombok.Getter;

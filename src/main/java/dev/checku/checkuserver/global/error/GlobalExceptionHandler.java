@@ -1,7 +1,7 @@
-package dev.checku.checkuserver.global;
+package dev.checku.checkuserver.global.error;
 
-import dev.checku.checkuserver.global.exception.BusinessException;
-import dev.checku.checkuserver.global.exception.FeignClientException;
+import dev.checku.checkuserver.global.error.exception.BusinessException;
+import dev.checku.checkuserver.global.error.exception.FeignClientException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

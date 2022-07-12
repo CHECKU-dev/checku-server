@@ -1,4 +1,4 @@
-package dev.checku.checkuserver.global.exception;
+package dev.checku.checkuserver.global.error.exception;
 
 public class EntityNotFoundException extends BusinessException {
 

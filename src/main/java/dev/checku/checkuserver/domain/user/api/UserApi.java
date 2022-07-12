@@ -18,7 +18,9 @@ public class UserApi {
 
     @PostMapping
     public ResponseEntity<UserLoginDto.Response> login(@RequestBody UserLoginDto.Request loginRequestDto) {
+
         UserLoginDto.Response loginResponseDto = userService.login(loginRequestDto);
+
         return ResponseEntity.ok(loginResponseDto);
     }
 

@@ -4,6 +4,7 @@ import dev.checku.checkuserver.domain.notification.entity.Notification;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
 
@@ -11,6 +12,7 @@ public class SendMessageDto {
 
     @Getter
     @Setter
+    @ToString
     public static class Request {
 
         @NotBlank

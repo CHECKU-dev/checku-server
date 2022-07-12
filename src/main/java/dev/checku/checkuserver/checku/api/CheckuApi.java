@@ -1,6 +1,6 @@
 package dev.checku.checkuserver.checku.api;
 
-import dev.checku.checkuserver.checku.application.service.CheckuService;
+import dev.checku.checkuserver.checku.application.CheckuService;
 import dev.checku.checkuserver.checku.dto.SubjectDto;
 import dev.checku.checkuserver.global.advice.Login;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public class CheckuApi {
     private final CheckuService checkuService;
 
     @Login
-    @GetMapping
+    @GetMapping("/my-subjects")
     public ResponseEntity<List<SubjectDto.Response>> getMySubjects(
             @RequestParam List<String> subjects,
             HttpServletRequest request

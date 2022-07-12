@@ -1,5 +1,7 @@
 package dev.checku.checkuserver.checku.dto;
 
+import dev.checku.checkuserver.domain.notification.exception.HaveAVacancyException;
+import dev.checku.checkuserver.global.error.exception.ErrorCode;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,7 +33,7 @@ public class SubjectDto {
         private String professor;
 
         // 과목명 *
-        private String name;
+        private String subjectName;
 
         // 현재 인원/제한인원 *
         private String numberOfPeople;
@@ -52,11 +54,11 @@ public class SubjectDto {
         private String subjectNumber;
 
         @Builder
-        public Response(Integer grade, String professor, String name, String numberOfPeople,
+        public Response(Integer grade, String professor, String subjectName, String numberOfPeople,
                         String remark, String subjectType, String department, String subjectNumber) {
             this.grade = grade;
             this.professor = professor;
-            this.name = name;
+            this.subjectName = subjectName;
             this.numberOfPeople = numberOfPeople;
             this.remark = remark;
             this.subjectType = subjectType;
@@ -70,7 +72,7 @@ public class SubjectDto {
             return Response.builder()
                     .grade(subject.getGrade())
                     .professor(subject.getProfessor())
-                    .name(subject.getName())
+                    .subjectName(subject.getName())
                     .numberOfPeople(subject.getNumberOfPeople())
                     .remark(subject.getRemark())
                     .subjectType(subject.getSubjectType())
@@ -80,7 +82,16 @@ public class SubjectDto {
         }
 
 
+        public void isVacancy() {
+            String[] nums = numberOfPeople.split("/");
+            Integer currentNumber = Integer.parseInt(nums[0]);
+            Integer limitNumber = Integer.parseInt(nums[1]);
 
+            if (currentNumber != limitNumber) {
+                throw new HaveAVacancyException(ErrorCode.HAVA_A_VACANCY);
+            }
+
+        }
     }
 
 }
