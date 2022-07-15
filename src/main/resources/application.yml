@@ -8,8 +8,8 @@ jasypt:
     password: ${JASYPT_PASSWORD}
 
 portal:
-  id: ${PORTAL_ID}
-  pwd: ${PORTAL_PWD}
+  id: dudwls143
+  pwd: ENC(Kxbc19YJRcpWi2fvhPxHCVazoY6AKj9W)
 
 spring:
   datasource:
