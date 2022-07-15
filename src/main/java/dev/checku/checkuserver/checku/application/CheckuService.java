@@ -5,6 +5,7 @@ import dev.checku.checkuserver.domain.model.Grade;
 import dev.checku.checkuserver.domain.model.Type;
 import dev.checku.checkuserver.checku.dto.SubjectDto;
 import dev.checku.checkuserver.checku.dto.PortalRes;
+import dev.checku.checkuserver.global.util.Values;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,43 +16,29 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CheckuService {
 
-
     private final PortalFeignClient portalFeignClient;
 
     public List<SubjectDto.Response> getSubjects(
             List<String> subjectIds,
             String session
     ) {
-        return subjectIds.parallelStream().map(id -> {
-            PortalRes subject = portalFeignClient.getSubject(session,
-                    "https://kuis.konkuk.ac.kr/index.do",
-                    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36",
-                    "#9e4ki",
-                    "e&*\biu",
-                    "W^_zie",
-                    "_qw3e4",
-                    "Ajd%md",
-                    "ekmf3",
-                    "JDow871",
-                    "NuMoe6",
-                    "ne+3|q",
-                    "Qnd@%1",
-                    "1130420",
-                    "2022",
-                    "B01012",
-                    "",
-                    "",
-                    id,
-                    "1",
-                    "@d1#",
-                    "dsParam",
-                    "dm");
+        return subjectIds.stream().map(subjectId -> {
+
+            Values.updateSubjectBody("2022", "B01012", "", "", subjectId);
+            PortalRes subject = portalFeignClient.getSubject(
+                    session,
+                    Values.headers,
+                    Values.subjectBody);
+
             return SubjectDto.Response.of(subject.getSubjects().get(0));
         }).collect(Collectors.toList());
     }
 
 
-    public List<SubjectDto.Response> getSubjectsByDepartment(SubjectDto.Request dto, String session) {
+    public List<SubjectDto.Response> getSubjectsByDepartment(
+            SubjectDto.Request dto,
+            String session
+    ) {
         Department department = Department.valueOf(dto.getDepartment());
         Grade grade = Grade.ALL;
         Type type = Type.ALL;
@@ -63,33 +50,16 @@ public class CheckuService {
             type = Type.valueOf(dto.getType());
         }
 
-        PortalRes subject = portalFeignClient.getSubject(session,
-                "https://kuis.konkuk.ac.kr/index.do",
-                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36",
-                "#9e4ki",
-                "e&*\biu",
-                "W^_zie",
-                "_qw3e4",
-                "Ajd%md",
-                "ekmf3",
-                "JDow871",
-                "NuMoe6",
-                "ne+3|q",
-                "Qnd@%1",
-                "1130420",
-                "2022",
-                "B01012",
-                department.getValue(),
-                type.getValue(),
-                "",
-                "1",
-                "@d1#",
-                "dsParam",
-                "dm");
+        Values.updateSubjectBody("2022", "B01012", type.getValue(), department.getValue(), "");
 
+        PortalRes subject = portalFeignClient.getSubject(
+                session,
+                Values.headers,
+                Values.subjectBody);
+
+        System.out.println(Values.subjectBody);
 
         Grade finalGrade = grade;
-
         //TODO 정리
         return subject.getSubjects()
                 .stream()

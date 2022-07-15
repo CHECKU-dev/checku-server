@@ -19,11 +19,11 @@ public class Values {
     private Values(@Value("${portal.id}") String id, @Value("${portal.pwd}") String pwd) {
         Values.ID = id;
         Values.PWD = pwd;
-
     }
 
     public static Map<String, String> headers = new HashMap<>();
     public static MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+    public static MultiValueMap<String, String> subjectBody = new LinkedMultiValueMap<>();
 
     @PostConstruct
     private static Map<String, String> initHeader() {
@@ -56,6 +56,44 @@ public class Values {
         body.add("@d1#tp", "dm");
 
         return body;
+    }
+
+    @PostConstruct
+    private static MultiValueMap<String, String> initSubjectBody() {
+
+        subjectBody = new LinkedMultiValueMap<>();
+        subjectBody.add("Oe2Ue", "#9e4ki");
+        subjectBody.add("Le093", "e&*\biu");
+        subjectBody.add("AWeh_3", "W^_zie");
+        subjectBody.add("Hd,poi", "_qw3e4");
+        subjectBody.add("EKf8_/", "Ajd%md");
+        subjectBody.add("WEh3m", "ekmf3");
+        subjectBody.add("rE\fje", "JDow871");
+        subjectBody.add("JKGhe8", "NuMoe6");
+        subjectBody.add("_)e7me", "ne+3|q");
+        subjectBody.add("3kd3Nj", "Qnd@%1");
+        subjectBody.add("_AUTH_MENU_KEY", "1130420");
+        subjectBody.add("@d1#argDeptFg", "1"); // 수강, 제청, 개설
+        subjectBody.add("@d#", "@d1#");
+        subjectBody.add("@d1#", "dsParam");
+        subjectBody.add("@d1#tp", "dm");
+
+        return subjectBody;
+    }
+
+    public static void updateSubjectBody(String year, String shtm, String subjectType,
+                                         String department, String subjectNumber) {
+
+        subjectBody.set("@d1#ltYy", year);
+        // 학기 구분
+        subjectBody.set("@d1#ltShtm", shtm);
+        // 이수 구분
+        subjectBody.set("@d1#pobtDiv", subjectType);
+        // 학과 번호
+        subjectBody.set("@d1#openSust", department);
+        // 수강번호
+        subjectBody.set("@d1#sbjtId", subjectNumber);
+
     }
 
 

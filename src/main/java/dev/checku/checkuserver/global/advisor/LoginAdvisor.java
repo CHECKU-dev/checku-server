@@ -23,7 +23,6 @@ public class LoginAdvisor {
 
         String session = loginService.login();
 
-
         HttpServletRequest servletRequest = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         servletRequest.setAttribute("session", session);
     }
