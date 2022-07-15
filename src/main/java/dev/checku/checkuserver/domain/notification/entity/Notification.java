@@ -24,7 +24,6 @@ public class Notification extends BaseTimeEntity {
     @Column(nullable = false)
     private String subjectName;
 
-
     @ManyToOne(
             fetch = FetchType.LAZY
     )
