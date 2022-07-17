@@ -2,15 +2,19 @@ package dev.checku.checkuserver.checku.dto;
 
 import dev.checku.checkuserver.domain.notification.exception.HaveAVacancyException;
 import dev.checku.checkuserver.global.error.exception.ErrorCode;
+import dev.checku.checkuserver.global.util.timeutils.TimeUtils;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SubjectDto {
 
-    @Getter @Setter
+    @Getter
+    @Setter
     public static class Request {
 
         @NotBlank(message = "학과는 필수값 입니다.")
@@ -23,7 +27,8 @@ public class SubjectDto {
     }
 
     //TODO 분리
-    @Getter @Setter
+    @Getter
+    @Setter
     public static class Response {
 
         // 학년 *
@@ -41,8 +46,8 @@ public class SubjectDto {
         // 비고 *
         private String remark;
 
-//        // 강의요시(강의실)
-//        private String timeAndPlace;
+        // 강의요시(강의실)
+        private String timeAndPlace;
 
         // 이수구분 *
         private String subjectType;
@@ -55,29 +60,48 @@ public class SubjectDto {
 
         @Builder
         public Response(Integer grade, String professor, String subjectName, String numberOfPeople,
-                        String remark, String subjectType, String department, String subjectNumber) {
+                        String remark, String timeAndPlace, String subjectType, String department, String subjectNumber) {
             this.grade = grade;
             this.professor = professor;
             this.subjectName = subjectName;
             this.numberOfPeople = numberOfPeople;
             this.remark = remark;
+            this.timeAndPlace = timeAndPlace;
             this.subjectType = subjectType;
             this.department = department;
             this.subjectNumber = subjectNumber;
         }
 
 
-        public static Response of(PortalRes.SubjectDto subject) {
+        public static Response of(PortalRes.SubjectDto subjectDto) {
+            // 교시를 시간으로 변경
+            if (subjectDto.getTimeAndPlace() != null) {
+                Pattern pattern = Pattern.compile("\\d{2}-\\d{2}");
+                Matcher matcher = pattern.matcher(subjectDto.getTimeAndPlace());
+                while (matcher.find()) {
+                    String period = matcher.group();
+                    String[] periodArr = period.split("-");
+                    String startPeriod = periodArr[0];
+                    String endPeriod = periodArr[1];
+                    subjectDto.setTimeAndPlace(
+                            subjectDto.getTimeAndPlace().replace(
+                                    period,
+                                    TimeUtils.toStartHour(startPeriod) + "-" + TimeUtils.toEndHour(endPeriod)
+                            )
+                    );
+                }
+            }
 
             return Response.builder()
-                    .grade(subject.getGrade())
-                    .professor(subject.getProfessor())
-                    .subjectName(subject.getName())
-                    .numberOfPeople(subject.getNumberOfPeople())
-                    .remark(subject.getRemark())
-                    .subjectType(subject.getSubjectType())
-                    .department(subject.getDepartment())
-                    .subjectNumber(subject.getSubjectNumber())
+                    .grade(subjectDto.getGrade())
+                    .professor(subjectDto.getProfessor())
+                    .subjectName(subjectDto.getName())
+                    .numberOfPeople(subjectDto.getNumberOfPeople())
+                    .remark(subjectDto.getRemark())
+                    .timeAndPlace(subjectDto.getTimeAndPlace())
+                    .subjectType(subjectDto.getSubjectType())
+                    .department(subjectDto.getDepartment())
+                    .subjectNumber(subjectDto.getSubjectNumber())
                     .build();
         }
 

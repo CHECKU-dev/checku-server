@@ -24,6 +24,7 @@ public class PortalRes {
             "TYPL_KOR_NM",
             "TLSN",
             "REMK",
+            "ROOM_NM",
             "POBT_DIV_NM", // 기교, 심교, ...
             "DMND_SUST",
             "SBJT_ID"
@@ -51,9 +52,9 @@ public class PortalRes {
         @JsonProperty(value = "REMK")
         private String remark;
 
-//        // 강의요시(강의실)
-//        @JsonProperty(value = "ROOM_NM")
-//        private String timeAndPlace;
+        // 강의요시(강의실)
+        @JsonProperty(value = "ROOM_NM")
+        private String timeAndPlace;
 
         // 이수구분 *
         @JsonProperty(value = "POBT_DIV_NM")
