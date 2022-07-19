@@ -24,7 +24,6 @@ public class CheckuApi {
             @RequestParam List<String> subjects,
             HttpServletRequest request
     ) {
-
         String session = request.getAttribute("session").toString();
         List<SubjectDto.Response> response = checkuService.getSubjects(subjects, session);
         return ResponseEntity.ok(response);

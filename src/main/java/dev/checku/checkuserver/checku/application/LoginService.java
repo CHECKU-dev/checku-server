@@ -23,7 +23,7 @@ public class LoginService {
 
         String session = "JSESSIONID=" + getSession();
 
-        ResponseEntity<String> login = portalFeignClient.login(
+        portalFeignClient.login(
                 session,
                 Values.headers,
                 Values.body

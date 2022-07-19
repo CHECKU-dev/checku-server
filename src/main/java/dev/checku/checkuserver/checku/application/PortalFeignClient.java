@@ -25,7 +25,7 @@ public interface PortalFeignClient {
     );
 
     @PostMapping(value = "/CourTotalTimetableInq/find.do", produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    PortalRes getSubject(
+    ResponseEntity<PortalRes> getSubject(
             @RequestHeader("Cookie") String cookie,
             @RequestHeader Map<String, String> headers,
             MultiValueMap<String, String> subjectBody);
