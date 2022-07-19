@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class CheckuService {
-
     private final PortalFeignClient portalFeignClient;
 
     public List<SubjectDto.Response> getSubjects(
@@ -56,8 +55,6 @@ public class CheckuService {
                 session,
                 Values.headers,
                 Values.subjectBody);
-
-        System.out.println(Values.subjectBody);
 
         Grade finalGrade = grade;
         //TODO 정리

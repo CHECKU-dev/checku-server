@@ -1,6 +1,5 @@
 package dev.checku.checkuserver.domain.user.dto;
 
-import dev.checku.checkuserver.domain.topic.Topic;
 import dev.checku.checkuserver.domain.user.entity.User;
 import lombok.*;
 
