@@ -11,7 +11,7 @@ portal:
   id: ENC(BbLrqZ2Jjx9f7hI6w5HDCJjeDvlNk7yD)
   pwd: ENC(Kxbc19YJRcpWi2fvhPxHCVazoY6AKj9W)
 
-spring:
+
   datasource:
     url: jdbc:h2:mem:mydb
     username: sa

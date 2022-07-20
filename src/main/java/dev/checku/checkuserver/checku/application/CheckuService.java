@@ -16,43 +16,25 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class CheckuService {
+
     private final PortalFeignClient portalFeignClient;
+
 
     public List<SubjectDto.Response> getSubjects(
             List<String> subjectIds,
             String session
     ) {
+        return subjectIds.parallelStream()
+                .map(subjectId -> {
+                    ResponseEntity<PortalRes> response = portalFeignClient.getSubject(
+                            session,
+                            Values.headers,
+                            Values.getSubjectBody("2022", "B01012", "", "", subjectId));
 
-//        List<SubjectDto.Response> responses = new ArrayList<>();
-//
-//        subjectIds.parallelStream().forEachOrdered(subjectId -> {
-//
-//            System.out.println(subjectId);
-//
-//            Values.updateSubjectBody("2022", "B01012", "", "", subjectId);
-//
-//            ResponseEntity<PortalRes> response = portalFeignClient.getSubject(
-//                    session,
-//                    Values.headers,
-//                    Values.subjectBody);
-//
-//            responses.add(SubjectDto.Response.of(response.getBody().getSubjects().get(0)));
-//
-//        });
-//
-//        return responses;
+                    return SubjectDto.Response.of(response.getBody().getSubjects().get(0));
 
-        return subjectIds.stream().map(subjectId -> {
+                }).collect(Collectors.toList());
 
-            Values.updateSubjectBody("2022", "B01012", "", "", subjectId);
-
-            ResponseEntity<PortalRes> response = portalFeignClient.getSubject(
-                    session,
-                    Values.headers,
-                    Values.subjectBody);
-
-            return SubjectDto.Response.of(response.getBody().getSubjects().get(0));
-        }).collect(Collectors.toList());
     }
 
 
@@ -71,12 +53,12 @@ public class CheckuService {
             type = Type.valueOf(dto.getType());
         }
 
-        Values.updateSubjectBody("2022", "B01012", type.getValue(), department.getValue(), "");
+//        Values.updateSubjectBody("2022", "B01012", type.getValue(), department.getValue(), "");
 
         ResponseEntity<PortalRes> response = portalFeignClient.getSubject(
                 session,
                 Values.headers,
-                Values.subjectBody);
+                Values.getSubjectBody("2022", "B01012", type.getValue(), department.getValue(), ""));
 
         Grade finalGrade = grade;
         //TODO 정리

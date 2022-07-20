@@ -36,13 +36,11 @@ public class CheckuApi {
             @Valid SubjectDto.Request dto,
             HttpServletRequest request
     ) {
-
         String session = request.getAttribute("session").toString();
         List<SubjectDto.Response> response = checkuService.getSubjectsByDepartment(dto, session);
         return ResponseEntity.ok(response);
 
     }
-
 
 
 }
