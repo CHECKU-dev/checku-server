@@ -12,7 +12,6 @@ import java.util.Map;
 @Component
 public class Values {
 
-
     private static String ID;
     private static String PWD;
 
@@ -23,7 +22,6 @@ public class Values {
 
     public static Map<String, String> headers = new HashMap<>();
     public static MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-    public static MultiValueMap<String, String> subjectBody = new LinkedMultiValueMap<>();
 
     @PostConstruct
     private static Map<String, String> initHeader() {
@@ -58,43 +56,39 @@ public class Values {
         return body;
     }
 
-    @PostConstruct
-    private static MultiValueMap<String, String> initSubjectBody() {
+    public static MultiValueMap<String, String> getSubjectBody(
+            String year, String shtm, String subjectType,
+            String department, String subjectNumber) {
 
-        subjectBody = new LinkedMultiValueMap<>();
-        subjectBody.add("Oe2Ue", "#9e4ki");
-        subjectBody.add("Le093", "e&*\biu");
-        subjectBody.add("AWeh_3", "W^_zie");
-        subjectBody.add("Hd,poi", "_qw3e4");
-        subjectBody.add("EKf8_/", "Ajd%md");
-        subjectBody.add("WEh3m", "ekmf3");
-        subjectBody.add("rE\fje", "JDow871");
-        subjectBody.add("JKGhe8", "NuMoe6");
-        subjectBody.add("_)e7me", "ne+3|q");
-        subjectBody.add("3kd3Nj", "Qnd@%1");
-        subjectBody.add("_AUTH_MENU_KEY", "1130420");
-        subjectBody.add("@d1#argDeptFg", "1"); // 수강, 제청, 개설
-        subjectBody.add("@d#", "@d1#");
-        subjectBody.add("@d1#", "dsParam");
-        subjectBody.add("@d1#tp", "dm");
-
-        return subjectBody;
-    }
-
-    public static void updateSubjectBody(String year, String shtm, String subjectType,
-                                         String department, String subjectNumber) {
-
-        subjectBody.set("@d1#ltYy", year);
+        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+        body.add("Oe2Ue", "#9e4ki");
+        body.add("Le093", "e&*\biu");
+        body.add("AWeh_3", "W^_zie");
+        body.add("Hd,poi", "_qw3e4");
+        body.add("EKf8_/", "Ajd%md");
+        body.add("WEh3m", "ekmf3");
+        body.add("rE\fje", "JDow871");
+        body.add("JKGhe8", "NuMoe6");
+        body.add("_)e7me", "ne+3|q");
+        body.add("3kd3Nj", "Qnd@%1");
+        body.add("_AUTH_MENU_KEY", "1130420");
+        body.add("@d1#argDeptFg", "1"); // 수강, 제청, 개설
+        body.add("@d#", "@d1#");
+        body.add("@d1#", "dsParam");
+        body.add("@d1#tp", "dm");
+        body.add("@d1#ltYy", year);
         // 학기 구분
-        subjectBody.set("@d1#ltShtm", shtm);
+        body.add("@d1#ltShtm", shtm);
         // 이수 구분
-        subjectBody.set("@d1#pobtDiv", subjectType);
+        body.add("@d1#pobtDiv", subjectType);
         // 학과 번호
-        subjectBody.set("@d1#openSust", department);
+        body.add("@d1#openSust", department);
         // 수강번호
-        subjectBody.set("@d1#sbjtId", subjectNumber);
+        body.add("@d1#sbjtId", subjectNumber);
+        return body;
 
     }
+
 
 
 }

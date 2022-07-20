@@ -1,6 +1,8 @@
 package dev.checku.checkuserver.global.advisor;
 
 import dev.checku.checkuserver.checku.application.LoginService;
+import feign.Request;
+import feign.RetryableException;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
@@ -22,7 +24,6 @@ public class LoginAdvisor {
     public void portalLogin(JoinPoint joinPoint) {
 
         String session = loginService.login();
-
         HttpServletRequest servletRequest = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         servletRequest.setAttribute("session", session);
     }

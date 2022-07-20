@@ -1,5 +1,7 @@
-package dev.checku.checkuserver.domain.topic;
+package dev.checku.checkuserver.domain.topic.application;
 
+import dev.checku.checkuserver.domain.topic.entity.Topic;
+import dev.checku.checkuserver.domain.topic.repository.TopicRepository;
 import dev.checku.checkuserver.global.error.exception.EntityNotFoundException;
 import dev.checku.checkuserver.global.error.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;

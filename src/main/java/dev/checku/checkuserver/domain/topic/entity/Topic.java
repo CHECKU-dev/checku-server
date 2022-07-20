@@ -1,4 +1,4 @@
-package dev.checku.checkuserver.domain.topic;
+package dev.checku.checkuserver.domain.topic.entity;
 
 import lombok.Builder;
 import lombok.Getter;

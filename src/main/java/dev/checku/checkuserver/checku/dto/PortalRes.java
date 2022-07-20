@@ -34,7 +34,7 @@ public class PortalRes {
 
         // 학년 *
         @JsonProperty(value = "OPEN_SHYR")
-        private Integer grade;
+        private String grade;
 
         // 교수명
         @JsonProperty(value = "KOR_NM")

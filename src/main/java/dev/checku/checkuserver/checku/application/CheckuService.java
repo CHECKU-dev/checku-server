@@ -7,6 +7,7 @@ import dev.checku.checkuserver.checku.dto.SubjectDto;
 import dev.checku.checkuserver.checku.dto.PortalRes;
 import dev.checku.checkuserver.global.util.Values;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -18,20 +19,22 @@ public class CheckuService {
 
     private final PortalFeignClient portalFeignClient;
 
+
     public List<SubjectDto.Response> getSubjects(
             List<String> subjectIds,
             String session
     ) {
-        return subjectIds.stream().map(subjectId -> {
+        return subjectIds.parallelStream()
+                .map(subjectId -> {
+                    ResponseEntity<PortalRes> response = portalFeignClient.getSubject(
+                            session,
+                            Values.headers,
+                            Values.getSubjectBody("2022", "B01012", "", "", subjectId));
 
-            Values.updateSubjectBody("2022", "B01012", "", "", subjectId);
-            PortalRes subject = portalFeignClient.getSubject(
-                    session,
-                    Values.headers,
-                    Values.subjectBody);
+                    return SubjectDto.Response.of(response.getBody().getSubjects().get(0));
 
-            return SubjectDto.Response.of(subject.getSubjects().get(0));
-        }).collect(Collectors.toList());
+                }).collect(Collectors.toList());
+
     }
 
 
@@ -50,20 +53,18 @@ public class CheckuService {
             type = Type.valueOf(dto.getType());
         }
 
-        Values.updateSubjectBody("2022", "B01012", type.getValue(), department.getValue(), "");
+//        Values.updateSubjectBody("2022", "B01012", type.getValue(), department.getValue(), "");
 
-        PortalRes subject = portalFeignClient.getSubject(
+        ResponseEntity<PortalRes> response = portalFeignClient.getSubject(
                 session,
                 Values.headers,
-                Values.subjectBody);
-
-        System.out.println(Values.subjectBody);
+                Values.getSubjectBody("2022", "B01012", type.getValue(), department.getValue(), ""));
 
         Grade finalGrade = grade;
         //TODO 정리
-        return subject.getSubjects()
+        return response.getBody().getSubjects()
                 .stream()
-                .filter(subjectDto -> finalGrade != Grade.ALL ? subjectDto.getGrade() == Integer.parseInt(finalGrade.getValue()) : true)
+                .filter(subjectDto -> finalGrade != Grade.ALL ? subjectDto.getGrade() == finalGrade.getValue() : true)
                 .filter(subjectDto -> (dto.getType() != null && dto.getType().equals("OTHER")) ? !subjectDto.getSubjectType().equals("전필") && !subjectDto.getSubjectType().equals("전선") : true)
                 .map(subjectDto -> SubjectDto.Response.of(subjectDto)).collect(Collectors.toList());
 
