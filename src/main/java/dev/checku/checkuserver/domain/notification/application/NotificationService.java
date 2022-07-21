@@ -1,7 +1,7 @@
 package dev.checku.checkuserver.domain.notification.application;
 
 import dev.checku.checkuserver.checku.application.CheckuService;
-import dev.checku.checkuserver.checku.dto.SubjectDto;
+import dev.checku.checkuserver.checku.dto.GetSubjectDto;
 import dev.checku.checkuserver.domain.notification.dao.NotificationRepository;
 import dev.checku.checkuserver.domain.notification.dto.GetNotificationDto;
 import dev.checku.checkuserver.domain.notification.dto.NotificationApplyDto;
@@ -18,7 +18,6 @@ import dev.checku.checkuserver.global.error.exception.EntityNotFoundException;
 import dev.checku.checkuserver.global.error.exception.ErrorCode;
 import dev.checku.checkuserver.infra.notification.FcmService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,7 +39,7 @@ public class NotificationService {
     public NotificationApplyDto.Response applyNotification(NotificationApplyDto.Request request, String session) {
 
         try {
-            SubjectDto.Response response = checkuService.getSubjects(List.of(request.getSubjectNumber()), session).get(0);
+            GetSubjectDto.Response response = checkuService.getSubjects(List.of(request.getSubjectNumber()), session).get(0);
             response.isVacancy();
 
         } catch (IndexOutOfBoundsException e) {

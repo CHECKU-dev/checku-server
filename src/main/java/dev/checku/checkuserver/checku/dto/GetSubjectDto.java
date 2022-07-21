@@ -11,7 +11,7 @@ import javax.validation.constraints.NotBlank;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SubjectDto {
+public class GetSubjectDto {
 
     @Getter
     @Setter
@@ -77,25 +77,25 @@ public class SubjectDto {
         }
 
 
-        public static Response of(PortalRes.SubjectDto subjectDto) {
+        public static Response from(PortalRes.SubjectDto subjectDto) {
             // 교시를 시간으로 변경
-            //TODO 변경
-//            if (subjectDto.getTimeAndPlace() != null) {
-//                Pattern pattern = Pattern.compile("\\d{2}-\\d{2}");
-//                Matcher matcher = pattern.matcher(subjectDto.getTimeAndPlace());
-//                while (matcher.find()) {
-//                    String period = matcher.group();
-//                    String[] periodArr = period.split("-");
-//                    String startPeriod = periodArr[0];
-//                    String endPeriod = periodArr[1];
-//                    subjectDto.setTimeAndPlace(
-//                            subjectDto.getTimeAndPlace().replace(
-//                                    period,
-//                                    TimeUtils.toStartHour(startPeriod) + "-" + TimeUtils.toEndHour(endPeriod)
-//                            )
-//                    );
-//                }
-//            }
+            //TODO 정리
+            if (subjectDto.getTimeAndPlace() != null) {
+                Pattern pattern = Pattern.compile("\\d{2}-\\d{2}");
+                Matcher matcher = pattern.matcher(subjectDto.getTimeAndPlace());
+                while (matcher.find()) {
+                    String period = matcher.group();
+                    String[] periodArr = period.split("-");
+                    String startPeriod = periodArr[0];
+                    String endPeriod = periodArr[1];
+                    subjectDto.setTimeAndPlace(
+                            subjectDto.getTimeAndPlace().replace(
+                                    period,
+                                    TimeUtils.toStartHour(startPeriod) + "-" + TimeUtils.toEndHour(endPeriod)
+                            )
+                    );
+                }
+            }
 
             // TODO 유틸로 묶기 이전에 empty 찾던거랑 같이
             String[] findEmpty = subjectDto.getNumberOfPeople().split("/");
