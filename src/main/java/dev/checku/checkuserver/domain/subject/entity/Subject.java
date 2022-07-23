@@ -1,6 +1,5 @@
-package dev.checku.checkuserver.domain.subject;
+package dev.checku.checkuserver.domain.subject.entity;
 
-import dev.checku.checkuserver.domain.notification.entity.Notification;
 import dev.checku.checkuserver.domain.user.entity.User;
 import lombok.Builder;
 import lombok.Getter;

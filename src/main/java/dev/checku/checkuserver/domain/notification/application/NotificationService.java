@@ -1,7 +1,8 @@
 package dev.checku.checkuserver.domain.notification.application;
 
 import dev.checku.checkuserver.checku.application.CheckuService;
-import dev.checku.checkuserver.checku.dto.GetSubjectDto;
+import dev.checku.checkuserver.domain.subject.application.SubjectService;
+import dev.checku.checkuserver.domain.subject.dto.GetSubjectsDto;
 import dev.checku.checkuserver.domain.notification.dao.NotificationRepository;
 import dev.checku.checkuserver.domain.notification.dto.GetNotificationDto;
 import dev.checku.checkuserver.domain.notification.dto.NotificationApplyDto;
@@ -29,7 +30,7 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class NotificationService {
 
-    private final CheckuService checkuService;
+    private final SubjectService subjectService;
     private final UserService userService;
     private final NotificationRepository notificationRepository;
     private final FcmService fcmService;
@@ -38,14 +39,9 @@ public class NotificationService {
     @Transactional
     public NotificationApplyDto.Response applyNotification(NotificationApplyDto.Request request, String session) {
 
-        try {
-            GetSubjectDto.Response response = checkuService.getSubjects(List.of(request.getSubjectNumber()), session).get(0);
-            response.isVacancy();
 
-        } catch (IndexOutOfBoundsException e) {
-            throw new SubjcetNotFoundException(ErrorCode.SUBJECT_NOT_FOUND);
-        }
-
+        //TODO 확인
+        subjectService.checkValidSubject(request.getSubjectNumber(), session);
 
         User user = userService.getUser(request.getUserId());
         Notification notification = request.toEntity();

@@ -1,8 +1,6 @@
 package dev.checku.checkuserver.global.advisor;
 
-import dev.checku.checkuserver.checku.application.LoginService;
-import feign.Request;
-import feign.RetryableException;
+import dev.checku.checkuserver.domain.subject.application.LoginService;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
