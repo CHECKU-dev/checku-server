@@ -1,7 +1,9 @@
-package dev.checku.checkuserver.checku.dto;
+package dev.checku.checkuserver.domain.subject.dto;
 
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dev.checku.checkuserver.domain.notification.exception.HaveAVacancyException;
+import dev.checku.checkuserver.global.error.exception.ErrorCode;
 import lombok.*;
 
 import java.util.List;
@@ -67,6 +69,19 @@ public class PortalRes {
         // 과목번호 *
         @JsonProperty(value = "SBJT_ID")
         private String subjectNumber;
+
+        public void isVacancy() {
+            String[] nums = numberOfPeople.split("/");
+
+            Integer currentNumber = Integer.parseInt(nums[0]);
+            Integer limitNumber = Integer.parseInt(nums[1]);
+
+            // 0 / 0 -> 고려해봐야됨
+            if (currentNumber < limitNumber) {
+                throw new HaveAVacancyException(ErrorCode.HAVA_A_VACANCY);
+            }
+
+        }
 
     }
 

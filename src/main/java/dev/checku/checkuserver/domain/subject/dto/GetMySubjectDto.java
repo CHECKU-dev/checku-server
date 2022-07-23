@@ -1,32 +1,23 @@
-package dev.checku.checkuserver.checku.dto;
+package dev.checku.checkuserver.domain.subject.dto;
 
-import dev.checku.checkuserver.domain.notification.exception.HaveAVacancyException;
-import dev.checku.checkuserver.global.error.exception.ErrorCode;
 import dev.checku.checkuserver.global.util.timeutils.TimeUtils;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.NotBlank;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class GetSubjectDto {
+public class GetMySubjectDto {
 
     @Getter
     @Setter
     public static class Request {
 
-        @NotBlank(message = "학과는 필수값 입니다.")
-        private String department;
-
-        private String grade;
-
-        private String type;
+        private Long userId;
 
     }
 
-    //TODO 분리
     @Getter
     @Setter
     public static class Response {
@@ -113,20 +104,6 @@ public class GetSubjectDto {
                     .department(subjectDto.getDepartment())
                     .subjectNumber(subjectDto.getSubjectNumber())
                     .build();
-        }
-
-
-        public void isVacancy() {
-            String[] nums = numberOfPeople.split("/");
-
-            Integer currentNumber = Integer.parseInt(nums[0]);
-            Integer limitNumber = Integer.parseInt(nums[1]);
-
-            // 0 / 0 -> 고려해봐야됨
-            if (currentNumber < limitNumber) {
-                throw new HaveAVacancyException(ErrorCode.HAVA_A_VACANCY);
-            }
-
         }
     }
 
