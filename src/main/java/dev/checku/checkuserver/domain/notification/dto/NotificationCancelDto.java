@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 public class NotificationCancelDto {
 
@@ -14,7 +15,7 @@ public class NotificationCancelDto {
     @ToString
     public static class Request {
 
-        @NotBlank
+        @NotNull
         private Long userId;
 
         @NotBlank
