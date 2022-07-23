@@ -5,6 +5,7 @@ import dev.checku.checkuserver.domain.user.entity.User;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 public class NotificationApplyDto {
 
@@ -13,7 +14,7 @@ public class NotificationApplyDto {
     @ToString
     public static class Request {
 
-        @NotBlank
+        @NotNull
         private Long userId;
 
         @NotBlank

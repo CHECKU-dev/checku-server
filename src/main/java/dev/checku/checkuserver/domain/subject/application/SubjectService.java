@@ -8,8 +8,8 @@ import dev.checku.checkuserver.domain.model.Grade;
 import dev.checku.checkuserver.domain.model.Type;
 import dev.checku.checkuserver.domain.subject.dao.SubjectRepository;
 import dev.checku.checkuserver.domain.subject.dto.GetMySubjectDto;
-import dev.checku.checkuserver.domain.subject.dto.RemoveSubjectDto;
-import dev.checku.checkuserver.domain.subject.dto.SaveSubjectDto;
+import dev.checku.checkuserver.domain.subject.dto.RemoveSubjectRequest;
+import dev.checku.checkuserver.domain.subject.dto.SaveSubjectRequest;
 import dev.checku.checkuserver.domain.subject.entity.Subject;
 import dev.checku.checkuserver.domain.user.application.UserService;
 import dev.checku.checkuserver.domain.user.entity.User;
@@ -64,14 +64,12 @@ public class SubjectService {
 
 
     @Transactional
-    public SaveSubjectDto.Response saveSubject(SaveSubjectDto.Request request) {
+    public void saveSubject(SaveSubjectRequest request) {
 
         User user = userService.getUser(request.getUserId());
         Subject subject = Subject.createSubject(request.getSubjectNumber(), user);
 
-        Subject savedSubject = subjectRepository.save(subject);
-
-        return SaveSubjectDto.Response.from(savedSubject);
+        subjectRepository.save(subject);
     }
 
     public List<GetMySubjectDto.Response> getMySubjects(GetMySubjectDto.Request dto, String session) {
@@ -92,14 +90,12 @@ public class SubjectService {
     }
 
     @Transactional
-    public RemoveSubjectDto.Response removeSubject(RemoveSubjectDto.Request request) {
+    public void removeSubject(RemoveSubjectRequest request) {
 
         User user = userService.getUser(request.getUserId());
         Subject subject = subjectRepository.findBySubjectNumberAndUser(request.getSubjectNumber(), user);
 
         subjectRepository.delete(subject);
-
-        return RemoveSubjectDto.Response.from();
 
     }
 

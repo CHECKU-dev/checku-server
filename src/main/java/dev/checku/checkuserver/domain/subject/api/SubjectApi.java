@@ -3,8 +3,8 @@ package dev.checku.checkuserver.domain.subject.api;
 import dev.checku.checkuserver.domain.subject.dto.GetSubjectsDto;
 import dev.checku.checkuserver.domain.subject.application.SubjectService;
 import dev.checku.checkuserver.domain.subject.dto.GetMySubjectDto;
-import dev.checku.checkuserver.domain.subject.dto.RemoveSubjectDto;
-import dev.checku.checkuserver.domain.subject.dto.SaveSubjectDto;
+import dev.checku.checkuserver.domain.subject.dto.RemoveSubjectRequest;
+import dev.checku.checkuserver.domain.subject.dto.SaveSubjectRequest;
 import dev.checku.checkuserver.global.advice.Login;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,19 +49,17 @@ public class SubjectApi {
     }
 
     @PostMapping("/my-subjects")
-    public ResponseEntity<SaveSubjectDto.Response> saveSubject(
-            @RequestBody @Valid SaveSubjectDto.Request request
-    ){
-        SaveSubjectDto.Response response = subjectService.saveSubject(request);
-        return ResponseEntity.ok(response);
+    public void saveSubject(
+            @RequestBody @Valid SaveSubjectRequest request
+    ) {
+        subjectService.saveSubject(request);
     }
 
     @DeleteMapping("/my-subjects")
-    public ResponseEntity<RemoveSubjectDto.Response> removeSubject(
-            @Valid RemoveSubjectDto.Request request
-    ){
-        RemoveSubjectDto.Response response = subjectService.removeSubject(request);
-        return ResponseEntity.ok(response);
+    public void removeSubject(
+            @Valid RemoveSubjectRequest request
+    ) {
+        subjectService.removeSubject(request);
     }
 
 }
