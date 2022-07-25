@@ -1,5 +1,6 @@
 package dev.checku.checkuserver.domain.subject.entity;
 
+import dev.checku.checkuserver.domain.common.BaseTimeEntity;
 import dev.checku.checkuserver.domain.user.entity.User;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,7 +12,7 @@ import javax.persistence.*;
 @Table(name = "subject")
 @Getter
 @NoArgsConstructor
-public class Subject {
+public class Subject extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
