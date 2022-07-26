@@ -23,6 +23,9 @@ public class Schedule{
     private String date;
 
     @Column(nullable = false)
+    private String time;
+
+    @Column(nullable = false)
     private LocalDateTime deadline;
 
 
