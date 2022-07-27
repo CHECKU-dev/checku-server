@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 public class GetNotificationDto {
@@ -28,7 +27,7 @@ public class GetNotificationDto {
         private String subjectName;
 
         @Builder
-        public Response( String subjectNumber, String subjectName) {
+        public Response(String subjectNumber, String subjectName) {
             this.subjectNumber = subjectNumber;
             this.subjectName = subjectName;
         }

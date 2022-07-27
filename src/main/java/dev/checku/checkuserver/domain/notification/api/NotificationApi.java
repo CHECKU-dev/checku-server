@@ -44,14 +44,14 @@ public class NotificationApi {
     }
 
     @DeleteMapping
-    public ResponseEntity<NotificationCancelDto.Response> cancelNotification(@RequestBody NotificationCancelDto.Request request) {
+    public ResponseEntity<NotificationCancelDto.Response> cancelNotification(NotificationCancelDto.Request request) {
 
         NotificationCancelDto.Response response = notificationService.cancelNotification(request);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping
-    public ResponseEntity<List<GetNotificationDto.Response>> getNotification(@RequestBody GetNotificationDto.Request request) {
+    public ResponseEntity<List<GetNotificationDto.Response>> getNotification(GetNotificationDto.Request request) {
 
         List<GetNotificationDto.Response> response = notificationService.getNotification(request);
         return ResponseEntity.ok(response);
