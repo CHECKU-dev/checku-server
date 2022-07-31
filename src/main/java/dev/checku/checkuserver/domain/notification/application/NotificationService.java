@@ -38,7 +38,6 @@ public class NotificationService {
     @Transactional
     public NotificationApplyDto.Response applyNotification(NotificationApplyDto.Request request, String session) {
 
-
         //TODO 확인
         subjectService.checkValidSubject(request.getSubjectNumber(), session);
 
