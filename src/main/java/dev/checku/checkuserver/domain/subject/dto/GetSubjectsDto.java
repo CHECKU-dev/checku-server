@@ -24,6 +24,8 @@ public class GetSubjectsDto {
 
         private String type;
 
+        private Boolean isVacancy;
+
     }
 
     //TODO 분리
