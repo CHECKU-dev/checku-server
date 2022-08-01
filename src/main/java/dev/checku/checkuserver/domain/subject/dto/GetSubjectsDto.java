@@ -17,7 +17,6 @@ public class GetSubjectsDto {
     @Setter
     public static class Request {
 
-        @NotBlank(message = "학과는 필수값 입니다.")
         private String department;
 
         private String grade;
