@@ -12,6 +12,7 @@ import java.util.Map;
 @Component
 public class Values {
 
+
     private static String ID;
     private static String PWD;
 

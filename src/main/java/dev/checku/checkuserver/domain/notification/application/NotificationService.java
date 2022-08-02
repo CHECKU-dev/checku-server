@@ -1,7 +1,6 @@
 package dev.checku.checkuserver.domain.notification.application;
 
-import dev.checku.checkuserver.domain.subject.application.SubjectService;
-import dev.checku.checkuserver.domain.subject.dto.GetSubjectsDto;
+import dev.checku.checkuserver.domain.subject.application.MySubjectService;
 import dev.checku.checkuserver.domain.notification.dao.NotificationRepository;
 import dev.checku.checkuserver.domain.notification.dto.GetNotificationDto;
 import dev.checku.checkuserver.domain.notification.dto.NotificationApplyDto;
@@ -9,7 +8,6 @@ import dev.checku.checkuserver.domain.notification.dto.NotificationCancelDto;
 import dev.checku.checkuserver.domain.notification.dto.SendMessageDto;
 import dev.checku.checkuserver.domain.notification.entity.Notification;
 import dev.checku.checkuserver.domain.notification.exception.AlreadyAppliedNotificationException;
-import dev.checku.checkuserver.domain.notification.exception.SubjcetNotFoundException;
 import dev.checku.checkuserver.domain.topic.entity.Topic;
 import dev.checku.checkuserver.domain.topic.application.TopicService;
 import dev.checku.checkuserver.domain.user.application.UserService;
@@ -29,7 +27,7 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class NotificationService {
 
-    private final SubjectService subjectService;
+    private final MySubjectService mySubjectService;
     private final UserService userService;
     private final NotificationRepository notificationRepository;
     private final FcmService fcmService;
@@ -39,7 +37,7 @@ public class NotificationService {
     public NotificationApplyDto.Response applyNotification(NotificationApplyDto.Request request, String session) {
 
         //TODO 확인
-        subjectService.checkValidSubject(request.getSubjectNumber(), session);
+        mySubjectService.checkValidSubject(request.getSubjectNumber(), session);
 
         User user = userService.getUser(request.getUserId());
         Notification notification = request.toEntity();

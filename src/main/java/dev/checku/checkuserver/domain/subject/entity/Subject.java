@@ -1,7 +1,6 @@
 package dev.checku.checkuserver.domain.subject.entity;
 
-import dev.checku.checkuserver.domain.common.BaseTimeEntity;
-import dev.checku.checkuserver.domain.user.entity.User;
+import dev.checku.checkuserver.domain.model.SubjectType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +11,7 @@ import javax.persistence.*;
 @Table(name = "subject")
 @Getter
 @NoArgsConstructor
-public class Subject extends BaseTimeEntity {
+public class Subject {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,25 +20,29 @@ public class Subject extends BaseTimeEntity {
     @Column(nullable = false, unique = true)
     private String subjectNumber;
 
-    @ManyToOne(
-            fetch = FetchType.LAZY
-    )
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @Column(nullable = false)
+    private String subjectName;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private SubjectType subjectType;
 
     @Builder
-    public Subject(String subjectNumber, User user) {
+    public Subject(String subjectNumber,String subjectName, SubjectType subjectType) {
         this.subjectNumber = subjectNumber;
-        this.user = user;
+        this.subjectName = subjectName;
+        this.subjectType = subjectType;
     }
 
-    public static Subject createSubject(String subjectNumber, User user) {
-
+    public static Subject createSubject(String subjectNumber,String subjectName, SubjectType subjectType) {
         return Subject.builder()
                 .subjectNumber(subjectNumber)
-                .user(user)
+                .subjectName(subjectName)
+                .subjectType(subjectType)
                 .build();
     }
+
+
 
 
 

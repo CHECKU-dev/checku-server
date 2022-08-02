@@ -1,6 +1,5 @@
 package dev.checku.checkuserver.domain.subject.application;
 
-import dev.checku.checkuserver.domain.subject.application.PortalFeignClient;
 import dev.checku.checkuserver.global.util.Values;
 import feign.Response;
 import lombok.RequiredArgsConstructor;
