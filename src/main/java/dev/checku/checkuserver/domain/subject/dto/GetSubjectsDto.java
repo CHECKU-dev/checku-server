@@ -1,10 +1,12 @@
 package dev.checku.checkuserver.domain.subject.dto;
 
+import dev.checku.checkuserver.domain.subject.entity.MySubject;
 import dev.checku.checkuserver.global.util.timeutils.TimeUtils;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,6 +15,8 @@ public class GetSubjectsDto {
     @Getter
     @Setter
     public static class Request {
+
+        private Long userId;
 
         private String department;
 
@@ -59,9 +63,11 @@ public class GetSubjectsDto {
         // 과목번호 *
         private String subjectNumber;
 
+        private Boolean isMySubject;
+
         @Builder
         public Response(String grade, String professor, String subjectName, String numberOfPeople, String emptySeat,
-                        String remark, String timeAndPlace, String subjectType, String department, String subjectNumber) {
+                        String remark, String timeAndPlace, String subjectType, String department, String subjectNumber, Boolean isMySubject) {
             this.grade = grade;
             this.professor = professor;
             this.subjectName = subjectName;
@@ -72,10 +78,11 @@ public class GetSubjectsDto {
             this.subjectType = subjectType;
             this.department = department;
             this.subjectNumber = subjectNumber;
+            this.isMySubject = isMySubject;
         }
 
 
-        public static Response from(PortalRes.SubjectDto subjectDto) {
+        public static Response from(PortalRes.SubjectDto subjectDto, List<String> subjectList) {
             // 교시를 시간으로 변경
             //TODO 정리
             if (subjectDto.getTimeAndPlace() != null) {
@@ -110,6 +117,7 @@ public class GetSubjectsDto {
                     .subjectType(subjectDto.getSubjectType())
                     .department(subjectDto.getDepartment())
                     .subjectNumber(subjectDto.getSubjectNumber())
+                    .isMySubject(subjectList.contains(subjectDto.getSubjectNumber()))
                     .build();
         }
 

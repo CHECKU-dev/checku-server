@@ -38,6 +38,10 @@ public class MySubjectService {
             GetSubjectsDto.Request dto,
             String session
     ) {
+        User user = userService.getUser(dto.getUserId());
+        List<String> subjectList = mySubjectRepository.findAllByUser(user)
+                .stream().map(MySubject::getSubjectNumber).collect(Collectors.toList());
+
         Department department = Department.valueOf(dto.getDepartment());
         Grade grade = Grade.ALL;
         Type type = Type.ALL;
@@ -66,7 +70,7 @@ public class MySubjectService {
                 .filter(subjectDto -> finalGrade != Grade.ALL ? subjectDto.getGrade().equals(finalGrade.getValue()) : true)
                 .filter(subjectDto -> (dto.getType() != null && dto.getType().equals("OTHER")) ? !subjectDto.getSubjectType().equals("전필") && !subjectDto.getSubjectType().equals("전선") : true)
                 .filter(subjectDto -> finalIsVacancy ? SubjectUtil.isVacancy(subjectDto.getNumberOfPeople()) : true)
-                .map(GetSubjectsDto.Response::from).collect(Collectors.toList());
+                .map(subject -> GetSubjectsDto.Response.from(subject, subjectList)).collect(Collectors.toList());
 
     }
 
