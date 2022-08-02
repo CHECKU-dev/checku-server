@@ -3,6 +3,11 @@ package dev.checku.checkuserver.global.util;
 
 public class SubjectUtil {
 
+    private SubjectUtil() {
+    }
+
+    public static Integer PAGE_SIZE = 10;
+
     public static Boolean isVacancy(String numberOfPeople) {
         String[] nums = numberOfPeople.split("/");
 
@@ -14,6 +19,7 @@ public class SubjectUtil {
             return true;
         }
         return  false;
-
     }
+
+
 }

@@ -5,26 +5,20 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class GetSubjectsDto {
+public class GetSearchSubjectDto {
 
     @Getter
     @Setter
     public static class Request {
 
-        private String department;
-
-        private String grade;
-
-        private String type;
-
-        private Boolean isVacancy;
-
+        @NotBlank
+        private String searchQuery;
     }
 
-    //TODO 분리
     @Getter
     @Setter
     public static class Response {
@@ -112,8 +106,6 @@ public class GetSubjectsDto {
                     .subjectNumber(subjectDto.getSubjectNumber())
                     .build();
         }
-
-
     }
 
 }

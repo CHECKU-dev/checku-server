@@ -1,27 +1,20 @@
 package dev.checku.checkuserver.domain.subject.application;
 
-import dev.checku.checkuserver.domain.notification.exception.HaveAVacancyException;
-import dev.checku.checkuserver.domain.notification.exception.SubjcetNotFoundException;
-import dev.checku.checkuserver.domain.subject.dto.GetSubjectsDto;
-import dev.checku.checkuserver.domain.subject.dto.PortalRes;
-import dev.checku.checkuserver.domain.model.Department;
-import dev.checku.checkuserver.domain.model.Grade;
-import dev.checku.checkuserver.domain.model.Type;
+import dev.checku.checkuserver.domain.model.SubjectType;
 import dev.checku.checkuserver.domain.subject.dao.SubjectRepository;
-import dev.checku.checkuserver.domain.subject.dto.GetMySubjectDto;
-import dev.checku.checkuserver.domain.subject.dto.RemoveSubjectRequest;
-import dev.checku.checkuserver.domain.subject.dto.SaveSubjectRequest;
+import dev.checku.checkuserver.domain.subject.dto.GetSearchSubjectDto;
+import dev.checku.checkuserver.domain.subject.dto.PortalRes;
 import dev.checku.checkuserver.domain.subject.entity.Subject;
-import dev.checku.checkuserver.domain.user.application.UserService;
-import dev.checku.checkuserver.domain.user.entity.User;
-import dev.checku.checkuserver.global.error.exception.ErrorCode;
-import dev.checku.checkuserver.global.util.SubjectUtil;
 import dev.checku.checkuserver.global.util.Values;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,101 +23,87 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class SubjectService {
 
-    private final UserService userService;
     private final SubjectRepository subjectRepository;
     private final PortalFeignClient portalFeignClient;
 
-    public List<GetSubjectsDto.Response> getSubjectsByDepartment(
-            GetSubjectsDto.Request dto,
-            String session
-    ) {
-        Department department = Department.valueOf(dto.getDepartment());
-        Grade grade = Grade.ALL;
-        Type type = Type.ALL;
-        boolean isVacancy = false;
+    private PortalRes getAllSubjectsFromPortal(String session) {
 
-        if (dto.getGrade() != null) {
-            grade = Grade.valueOf(dto.getGrade());
-        }
-        if (dto.getType() != null && !dto.getType().equals("OTHER")) {
-            type = Type.valueOf(dto.getType());
-        }
-        if (dto.getIsVacancy() != null) {
-            isVacancy = true;
-        }
-
-        ResponseEntity<PortalRes> response = portalFeignClient.getSubject(
+        ResponseEntity<PortalRes> response = portalFeignClient.getSubjects(
                 session,
-                Values.headers,
-                Values.getSubjectBody("2022", "B01012", type.getValue(), department.getValue(), ""));
+                "https://kuis.konkuk.ac.kr/index.do",
+                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36",
+                "#9e4ki",
+                "e&*\biu",
+                "W^_zie",
+                "_qw3e4",
+                "Ajd%md",
+                "ekmf3",
+                "JDow871",
+                "NuMoe6",
+                "ne+3|q",
+                "Qnd@%1",
+                "@d1#",
+                "dsParam",
+                "dm",
+                "1130420",
+                "2022",
+                "B01012",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "1",
+                ""
+        );
 
-        //TODO 정리
-        Grade finalGrade = grade;
-        Boolean finalIsVacancy = isVacancy;
-        return response.getBody().getSubjects()
-                .stream()
-                .filter(subjectDto -> finalGrade != Grade.ALL ? subjectDto.getGrade().equals(finalGrade.getValue()) : true)
-                .filter(subjectDto -> (dto.getType() != null && dto.getType().equals("OTHER")) ? !subjectDto.getSubjectType().equals("전필") && !subjectDto.getSubjectType().equals("전선") : true)
-                .filter(subjectDto -> finalIsVacancy ? SubjectUtil.isVacancy(subjectDto.getNumberOfPeople()) : true)
-                .map(GetSubjectsDto.Response::from).collect(Collectors.toList());
-
+        return response.getBody();
     }
-
 
     @Transactional
-    public void saveSubject(SaveSubjectRequest request) {
+    public void insertSubjects(String session) {
+        PortalRes subjectListDto = getAllSubjectsFromPortal(session);
+        List<PortalRes.SubjectDto> subjects = subjectListDto.getSubjects();
 
-        User user = userService.getUser(request.getUserId());
-        Subject subject = Subject.createSubject(request.getSubjectNumber(), user);
+        List<Subject> subjectList = new ArrayList<>();
 
-        subjectRepository.save(subject);
+        for (PortalRes.SubjectDto subjectDto : subjects) {
+            if (subjectDto.getSubjectNumber() != null) {
+                Subject subject;
+                if (subjectDto.getSubjectType().equals("전선") || subjectDto.getSubjectType().equals("전필")) {
+                    subject = Subject.createSubject(subjectDto.getSubjectNumber(), subjectDto.getName(), SubjectType.MAJOR);
+                } else {
+                    subject = Subject.createSubject(subjectDto.getSubjectNumber(), subjectDto.getName(), SubjectType.LIBERAL_ARTS);
+                }
+                subjectList.add(subject);
+            }
+        }
+        subjectRepository.saveAll(subjectList);
+
     }
 
-    public List<GetMySubjectDto.Response> getMySubjects(GetMySubjectDto.Request dto, String session) {
 
-        User user = userService.getUser(dto.getUserId());
-        List<Subject> mySubjects = subjectRepository.findAllByUser(user);
+    public Slice<GetSearchSubjectDto.Response> getSubjectsBySearch(GetSearchSubjectDto.Request dto, Pageable pageable, String session) {
 
-        return mySubjects.parallelStream()
-                .map(subject -> {
+        List<Subject> subject = subjectRepository.findSubjectBySearch(dto.getSearchQuery(), pageable);
+
+        List<GetSearchSubjectDto.Response> results = subject.parallelStream()
+                .map(mySubject -> {
                     ResponseEntity<PortalRes> response = portalFeignClient.getSubject(
                             session,
                             Values.headers,
-                            Values.getSubjectBody("2022", "B01012", "", "", subject.getSubjectNumber()));
+                            Values.getSubjectBody("2022", "B01012", "", "", mySubject.getSubjectNumber()));
 
-                    return GetMySubjectDto.Response.from(response.getBody().getSubjects().get(0));
+                    return GetSearchSubjectDto.Response.from(response.getBody().getSubjects().get(0));
 
                 }).collect(Collectors.toList());
-    }
 
-    @Transactional
-    public void removeSubject(RemoveSubjectRequest request) {
-
-        User user = userService.getUser(request.getUserId());
-        Subject subject = subjectRepository.findBySubjectNumberAndUser(request.getSubjectNumber(), user);
-
-        subjectRepository.delete(subject);
-
-    }
-
-    public void checkValidSubject(String subjectNumber, String session) {
-
-        ResponseEntity<PortalRes> response = portalFeignClient.getSubject(
-                session,
-                Values.headers,
-                Values.getSubjectBody("2022", "B01012", "", "", subjectNumber));
-
-        try {
-            PortalRes.SubjectDto subjectDto = response.getBody().getSubjects().get(0);
-
-            // 빈 자리 존재하는 과목인 경우 알림 제공 안됨
-            if (SubjectUtil.isVacancy(subjectDto.getNumberOfPeople())) {
-                throw new HaveAVacancyException(ErrorCode.HAVA_A_VACANCY);
-            }
-//            subjectDto.isVacancy();
-        } catch (IndexOutOfBoundsException e) {
-            throw new SubjcetNotFoundException(ErrorCode.SUBJECT_NOT_FOUND);
+        boolean hasNext = false;
+        if (results.size() > pageable.getPageSize()) {
+            results.remove(pageable.getPageSize());
+            hasNext = true;
         }
 
+        return new SliceImpl<>(results, pageable, hasNext);
     }
 }

@@ -2,8 +2,6 @@ package dev.checku.checkuserver.domain.subject.dto;
 
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import dev.checku.checkuserver.domain.notification.exception.HaveAVacancyException;
-import dev.checku.checkuserver.global.error.exception.ErrorCode;
 import lombok.*;
 
 import java.util.List;
