@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,10 +54,10 @@ public class SubjectApi {
     }
 
     @PostMapping("/my-subjects")
-    public void saveMySubject(
+    public void saveOrRemoveMySubject(
             @RequestBody @Valid SaveSubjectRequest request
     ) {
-        mySubjectService.saveSubject(request);
+        mySubjectService.saveOrRemoveSubject(request);
     }
 
     @DeleteMapping("/my-subjects")

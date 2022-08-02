@@ -76,12 +76,23 @@ public class MySubjectService {
 
 
     @Transactional
-    public void saveSubject(SaveSubjectRequest request) {
+    public void saveOrRemoveSubject(SaveSubjectRequest request) {
 
         User user = userService.getUser(request.getUserId());
-        MySubject mySubject = MySubject.createSubject(request.getSubjectNumber(), user);
+        // 삭제
+        if (mySubjectRepository.existsBySubjectNumberAndUser(request.getSubjectNumber(), user)) {
+            MySubject mySubject = mySubjectRepository.findBySubjectNumberAndUser(request.getSubjectNumber(), user);
+            mySubjectRepository.delete(mySubject);
+        }
+        // 추가
+        else {
+            MySubject mySubject = MySubject.createSubject(request.getSubjectNumber(), user);
+            mySubjectRepository.save(mySubject);
 
-        mySubjectRepository.save(mySubject);
+        }
+
+
+
     }
 
     public List<GetMySubjectDto.Response> getMySubjects(GetMySubjectDto.Request dto, String session) {
