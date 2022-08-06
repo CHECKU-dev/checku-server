@@ -23,10 +23,14 @@ public class NotificationApplyDto {
         @NotBlank
         private String subjectName;
 
+        @NotBlank
+        private String professor;
+
         public Notification toEntity() {
             return Notification.builder()
                     .subjectNumber(subjectNumber)
                     .subjectName(subjectName)
+                    .professor(professor)
                     .build();
         }
 

@@ -39,7 +39,7 @@ public class MySubjectService {
             String session
     ) {
         User user = userService.getUser(dto.getUserId());
-        List<String> subjectList = mySubjectRepository.findAllByUser(user)
+        List<String> subjectList = getAllSubjectByUser(user)
                 .stream().map(MySubject::getSubjectNumber).collect(Collectors.toList());
 
         Department department = Department.valueOf(dto.getDepartment());
@@ -141,5 +141,9 @@ public class MySubjectService {
             throw new SubjcetNotFoundException(ErrorCode.SUBJECT_NOT_FOUND);
         }
 
+    }
+
+    public List<MySubject> getAllSubjectByUser(User user) {
+        return mySubjectRepository.findAllByUser(user);
     }
 }

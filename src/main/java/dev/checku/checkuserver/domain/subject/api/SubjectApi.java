@@ -83,7 +83,7 @@ public class SubjectApi {
     ) {
 
         Pageable pageable = PageRequest.of(
-                page.isPresent() ? page.get() : 0,
+                page.orElse(0),
                 PAGE_SIZE
         );
 

@@ -26,10 +26,13 @@ public class GetNotificationDto {
 
         private String subjectName;
 
+        private String professor;
+
         @Builder
-        public Response(String subjectNumber, String subjectName) {
+        public Response(String subjectNumber, String subjectName, String professor) {
             this.subjectNumber = subjectNumber;
             this.subjectName = subjectName;
+            this.professor = professor;
         }
 
         public static Response of(Notification notification) {
@@ -37,6 +40,7 @@ public class GetNotificationDto {
             return Response.builder()
                     .subjectNumber(notification.getSubjectNumber())
                     .subjectName(notification.getSubjectName())
+                    .professor(notification.getProfessor())
                     .build();
 
         }

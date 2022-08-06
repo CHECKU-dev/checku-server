@@ -24,6 +24,9 @@ public class Notification extends BaseTimeEntity {
     @Column(nullable = false)
     private String subjectName;
 
+    @Column(nullable = false)
+    private String professor;
+
     @ManyToOne(
             fetch = FetchType.LAZY
     )
@@ -32,9 +35,10 @@ public class Notification extends BaseTimeEntity {
 
 
     @Builder
-    public Notification(String subjectNumber,String subjectName, User user) {
+    public Notification(String subjectNumber,String subjectName, String professor, User user) {
         this.subjectNumber = subjectNumber;
         this.subjectName = subjectName;
+        this.professor = professor;
         this.user = user;
     }
 
@@ -43,6 +47,7 @@ public class Notification extends BaseTimeEntity {
         return Notification.builder()
                 .subjectName(notification.getSubjectName())
                 .subjectNumber(notification.getSubjectNumber())
+                .professor(notification.getProfessor())
                 .user(user)
                 .build();
     }
