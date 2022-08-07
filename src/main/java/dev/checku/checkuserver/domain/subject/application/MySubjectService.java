@@ -38,6 +38,10 @@ public class MySubjectService {
             GetSubjectsDto.Request dto,
             String session
     ) {
+        User user = userService.getUser(dto.getUserId());
+        List<String> subjectList = getAllSubjectByUser(user)
+                .stream().map(MySubject::getSubjectNumber).collect(Collectors.toList());
+
         Department department = Department.valueOf(dto.getDepartment());
         Grade grade = Grade.ALL;
         Type type = Type.ALL;
@@ -66,18 +70,29 @@ public class MySubjectService {
                 .filter(subjectDto -> finalGrade != Grade.ALL ? subjectDto.getGrade().equals(finalGrade.getValue()) : true)
                 .filter(subjectDto -> (dto.getType() != null && dto.getType().equals("OTHER")) ? !subjectDto.getSubjectType().equals("전필") && !subjectDto.getSubjectType().equals("전선") : true)
                 .filter(subjectDto -> finalIsVacancy ? SubjectUtil.isVacancy(subjectDto.getNumberOfPeople()) : true)
-                .map(GetSubjectsDto.Response::from).collect(Collectors.toList());
+                .map(subject -> GetSubjectsDto.Response.from(subject, subjectList)).collect(Collectors.toList());
 
     }
 
 
     @Transactional
-    public void saveSubject(SaveSubjectRequest request) {
+    public void saveOrRemoveSubject(SaveSubjectRequest request) {
 
         User user = userService.getUser(request.getUserId());
-        MySubject mySubject = MySubject.createSubject(request.getSubjectNumber(), user);
+        // 삭제
+        if (mySubjectRepository.existsBySubjectNumberAndUser(request.getSubjectNumber(), user)) {
+            MySubject mySubject = mySubjectRepository.findBySubjectNumberAndUser(request.getSubjectNumber(), user);
+            mySubjectRepository.delete(mySubject);
+        }
+        // 추가
+        else {
+            MySubject mySubject = MySubject.createSubject(request.getSubjectNumber(), user);
+            mySubjectRepository.save(mySubject);
 
-        mySubjectRepository.save(mySubject);
+        }
+
+
+
     }
 
     public List<GetMySubjectDto.Response> getMySubjects(GetMySubjectDto.Request dto, String session) {
@@ -126,5 +141,9 @@ public class MySubjectService {
             throw new SubjcetNotFoundException(ErrorCode.SUBJECT_NOT_FOUND);
         }
 
+    }
+
+    public List<MySubject> getAllSubjectByUser(User user) {
+        return mySubjectRepository.findAllByUser(user);
     }
 }

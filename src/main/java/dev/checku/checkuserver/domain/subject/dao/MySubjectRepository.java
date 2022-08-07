@@ -11,4 +11,6 @@ public interface MySubjectRepository extends JpaRepository<MySubject, Long> {
     List<MySubject> findAllByUser(User user);
 
     MySubject findBySubjectNumberAndUser(String subjectNumber, User user);
+
+    Boolean existsBySubjectNumberAndUser(String subjectNumber, User user);
 }

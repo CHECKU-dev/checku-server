@@ -57,5 +57,16 @@ public class NotificationApi {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/test/{token}")
+    public ResponseEntity<Void> test(
+            @PathVariable("token") String token
+    ){
+
+
+        notificationService.testNotification(token);
+        return ResponseEntity.ok().build();
+
+    }
+
 
 }

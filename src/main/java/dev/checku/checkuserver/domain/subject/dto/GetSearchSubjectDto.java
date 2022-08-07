@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,6 +16,9 @@ public class GetSearchSubjectDto {
     @Getter
     @Setter
     public static class Request {
+
+        @NotNull
+        private Long userId;
 
         @NotBlank
         private String searchQuery;
@@ -53,9 +58,11 @@ public class GetSearchSubjectDto {
         // 과목번호 *
         private String subjectNumber;
 
+        private Boolean isMySubject;
+
         @Builder
         public Response(String grade, String professor, String subjectName, String numberOfPeople, String emptySeat,
-                        String remark, String timeAndPlace, String subjectType, String department, String subjectNumber) {
+                        String remark, String timeAndPlace, String subjectType, String department, String subjectNumber, Boolean isMySubject) {
             this.grade = grade;
             this.professor = professor;
             this.subjectName = subjectName;
@@ -66,12 +73,15 @@ public class GetSearchSubjectDto {
             this.subjectType = subjectType;
             this.department = department;
             this.subjectNumber = subjectNumber;
+            this.isMySubject = isMySubject;
+
         }
 
 
-        public static Response from(PortalRes.SubjectDto subjectDto) {
+        public static Response from(PortalRes.SubjectDto subjectDto, List<String> subjectList) {
             // 교시를 시간으로 변경
             //TODO 정리
+
             if (subjectDto.getTimeAndPlace() != null) {
                 Pattern pattern = Pattern.compile("\\d{2}-\\d{2}");
                 Matcher matcher = pattern.matcher(subjectDto.getTimeAndPlace());
@@ -81,11 +91,9 @@ public class GetSearchSubjectDto {
                     String startPeriod = periodArr[0];
                     String endPeriod = periodArr[1];
                     subjectDto.setTimeAndPlace(
-                            subjectDto.getTimeAndPlace().replace(
-                                    period,
-                                    TimeUtils.toStartHour(startPeriod) + "-" + TimeUtils.toEndHour(endPeriod)
-                            )
-                    );
+                            subjectDto.getTimeAndPlace()
+                                    .replace(period, TimeUtils.toStartHour(startPeriod) + "-" + TimeUtils.toEndHour(endPeriod))
+                                    .replaceAll("\\([^()]+\\)", "").trim());
                 }
             }
 
@@ -95,7 +103,7 @@ public class GetSearchSubjectDto {
 
             return Response.builder()
                     .grade(subjectDto.getGrade().equals("9") ? "전체" : subjectDto.getGrade())
-                    .professor(subjectDto.getProfessor())
+                    .professor(subjectDto.getProfessor() != null ? subjectDto.getProfessor().trim() : subjectDto.getProfessor())
                     .subjectName(subjectDto.getName())
                     .numberOfPeople(subjectDto.getNumberOfPeople())
                     .emptySeat(emptySeat)
@@ -104,6 +112,7 @@ public class GetSearchSubjectDto {
                     .subjectType(subjectDto.getSubjectType())
                     .department(subjectDto.getDepartment())
                     .subjectNumber(subjectDto.getSubjectNumber())
+                    .isMySubject(subjectList.contains(subjectDto.getSubjectNumber()))
                     .build();
         }
     }

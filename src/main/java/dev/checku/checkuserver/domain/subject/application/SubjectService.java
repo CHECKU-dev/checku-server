@@ -4,7 +4,12 @@ import dev.checku.checkuserver.domain.model.SubjectType;
 import dev.checku.checkuserver.domain.subject.dao.SubjectRepository;
 import dev.checku.checkuserver.domain.subject.dto.GetSearchSubjectDto;
 import dev.checku.checkuserver.domain.subject.dto.PortalRes;
+import dev.checku.checkuserver.domain.subject.entity.MySubject;
 import dev.checku.checkuserver.domain.subject.entity.Subject;
+import dev.checku.checkuserver.domain.user.application.UserService;
+import dev.checku.checkuserver.domain.user.entity.User;
+import dev.checku.checkuserver.global.error.exception.EntityNotFoundException;
+import dev.checku.checkuserver.global.error.exception.ErrorCode;
 import dev.checku.checkuserver.global.util.Values;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,6 +29,8 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class SubjectService {
 
+    private final UserService userService;
+    private final MySubjectService mySubjectService;
     private final SubjectRepository subjectRepository;
     private final PortalFeignClient portalFeignClient;
 
@@ -82,9 +90,18 @@ public class SubjectService {
 
     }
 
+    public Subject getSubjectBySubjectNumber(String subjectNumber) {
+        return subjectRepository.findBySubjectNumber(subjectNumber)
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.SUBJECT_NOT_FOUND));
+
+    }
+
 
     public Slice<GetSearchSubjectDto.Response> getSubjectsBySearch(GetSearchSubjectDto.Request dto, Pageable pageable, String session) {
 
+        User user = userService.getUser(dto.getUserId());
+        List<String> subjectList = mySubjectService.getAllSubjectByUser(user)
+                .stream().map(MySubject::getSubjectNumber).collect(Collectors.toList());
         List<Subject> subject = subjectRepository.findSubjectBySearch(dto.getSearchQuery(), pageable);
 
         List<GetSearchSubjectDto.Response> results = subject.parallelStream()
@@ -94,7 +111,7 @@ public class SubjectService {
                             Values.headers,
                             Values.getSubjectBody("2022", "B01012", "", "", mySubject.getSubjectNumber()));
 
-                    return GetSearchSubjectDto.Response.from(response.getBody().getSubjects().get(0));
+                    return GetSearchSubjectDto.Response.from(response.getBody().getSubjects().get(0), subjectList);
 
                 }).collect(Collectors.toList());
 
