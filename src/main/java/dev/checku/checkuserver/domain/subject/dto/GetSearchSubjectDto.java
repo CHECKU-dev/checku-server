@@ -81,6 +81,7 @@ public class GetSearchSubjectDto {
         public static Response from(PortalRes.SubjectDto subjectDto, List<String> subjectList) {
             // 교시를 시간으로 변경
             //TODO 정리
+
             if (subjectDto.getTimeAndPlace() != null) {
                 Pattern pattern = Pattern.compile("\\d{2}-\\d{2}");
                 Matcher matcher = pattern.matcher(subjectDto.getTimeAndPlace());
@@ -90,11 +91,9 @@ public class GetSearchSubjectDto {
                     String startPeriod = periodArr[0];
                     String endPeriod = periodArr[1];
                     subjectDto.setTimeAndPlace(
-                            subjectDto.getTimeAndPlace().replace(
-                                    period,
-                                    TimeUtils.toStartHour(startPeriod) + "-" + TimeUtils.toEndHour(endPeriod)
-                            )
-                    );
+                            subjectDto.getTimeAndPlace()
+                                    .replace(period, TimeUtils.toStartHour(startPeriod) + "-" + TimeUtils.toEndHour(endPeriod))
+                                    .replaceAll("\\([^()]+\\)", "").trim());
                 }
             }
 
@@ -104,7 +103,7 @@ public class GetSearchSubjectDto {
 
             return Response.builder()
                     .grade(subjectDto.getGrade().equals("9") ? "전체" : subjectDto.getGrade())
-                    .professor(subjectDto.getProfessor())
+                    .professor(subjectDto.getProfessor() != null ? subjectDto.getProfessor().trim() : subjectDto.getProfessor())
                     .subjectName(subjectDto.getName())
                     .numberOfPeople(subjectDto.getNumberOfPeople())
                     .emptySeat(emptySeat)

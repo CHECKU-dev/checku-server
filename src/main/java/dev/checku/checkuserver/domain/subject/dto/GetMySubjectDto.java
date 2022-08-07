@@ -82,10 +82,9 @@ public class GetMySubjectDto {
                     String startPeriod = periodArr[0];
                     String endPeriod = periodArr[1];
                     subjectDto.setTimeAndPlace(
-                            subjectDto.getTimeAndPlace().replace(
-                                    period,
-                                    TimeUtils.toStartHour(startPeriod) + "-" + TimeUtils.toEndHour(endPeriod)
-                            )
+                            subjectDto.getTimeAndPlace()
+                                    .replace(period, TimeUtils.toStartHour(startPeriod) + "-" + TimeUtils.toEndHour(endPeriod))
+                                    .replaceAll("\\([^()]+\\)", "").trim()
                     );
                 }
             }
@@ -96,7 +95,7 @@ public class GetMySubjectDto {
 
             return Response.builder()
                     .grade(subjectDto.getGrade().equals("9") ? "전체" : subjectDto.getGrade())
-                    .professor(subjectDto.getProfessor())
+                    .professor(subjectDto.getProfessor() != null ? subjectDto.getProfessor().trim() : subjectDto.getProfessor())
                     .subjectName(subjectDto.getName())
                     .numberOfPeople(subjectDto.getNumberOfPeople())
                     .emptySeat(emptySeat)
