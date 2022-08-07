@@ -8,6 +8,8 @@ import dev.checku.checkuserver.domain.notification.dto.NotificationCancelDto;
 import dev.checku.checkuserver.domain.notification.dto.SendMessageDto;
 import dev.checku.checkuserver.domain.notification.entity.Notification;
 import dev.checku.checkuserver.domain.notification.exception.AlreadyAppliedNotificationException;
+import dev.checku.checkuserver.domain.subject.application.SubjectService;
+import dev.checku.checkuserver.domain.subject.entity.Subject;
 import dev.checku.checkuserver.domain.topic.entity.Topic;
 import dev.checku.checkuserver.domain.topic.application.TopicService;
 import dev.checku.checkuserver.domain.user.application.UserService;
@@ -28,6 +30,7 @@ import java.util.stream.Collectors;
 public class NotificationService {
 
     private final MySubjectService mySubjectService;
+    private final SubjectService subjectService;
     private final UserService userService;
     private final NotificationRepository notificationRepository;
     private final FcmService fcmService;
@@ -91,20 +94,30 @@ public class NotificationService {
     @Transactional
     public void sendMessageByTopic(SendMessageDto.Request request) {
 
+        Subject subject = subjectService.getSubjectBySubjectNumber(request.getTopic());
         // topic(=subjectNumber)를 기준으로 notifcation 조회
         List<Notification> notificationList = notificationRepository.findAllBySubjectNumber(request.getTopic());
 
         List<String> tokens = notificationList.stream()
                 .map(notification -> notification.getUser().getFcmToken()).collect(Collectors.toList());
 
+
         //TODO 변경
-        fcmService.sendTopicMessage(request.getTopic(), "CHECKU 알림", request.getTopic() + " 번호 빈 자리", tokens);
+        fcmService.sendTopicMessage(request.getTopic(), "체쿠", subject.getSubjectName()+  "(" + subject.getSubjectNumber() + ")" +  " 빈 자리가 있습니다.", tokens);
 
         // notification 삭제
         notificationRepository.deleteAllInBatch(notificationList);
 
         // topic 삭제
         topicService.deleteTopic(request.getTopic());
+
+    }
+
+    public void testNotification(String token) {
+
+        System.out.println(token);
+
+        fcmService.sendMessageTo(token, "체쿠", "대학영어1(1225) 빈 자리가 있습니다");
 
     }
 }

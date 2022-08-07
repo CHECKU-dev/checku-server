@@ -78,31 +78,33 @@ public class FcmService {
         this.firebaseMessaging = FirebaseMessaging.getInstance(app);
     }
 
-//    public void sendMessageTo(String targetToken, String title, String body, String type) {
-//
-//        try {
-//            FcmMessage message = makeMessage(targetToken, title, body, type);
-//            fcmClient.requestNotification(CONTENT_TYPE, "Bearer " + getAccessToken(), message);
-//        } catch (IOException e) {
-//            throw new NotificationFailedException(ErrorCode.NOTIFICATION_FAILED);
-//        }
-//
-//    }
+    public void sendMessageTo(String targetToken, String title, String body) {
 
-//    private FcmMessage makeMessage(String targetToken, String title, String body, String type) {
-//        FcmMessage message = FcmMessage.of(targetToken, title, body, type);
-//        return message;
-//    }
+        try {
+            Notification notification = Notification.builder().setTitle(title).setBody(body).build();
 
-//    private String getAccessToken() throws IOException {
-//        String firebaseConfigPath = "firebase/2.json";
-//
-//        GoogleCredentials googleCredentials = GoogleCredentials
-//                .fromStream(new ClassPathResource(firebaseConfigPath).getInputStream())
-//                .createScoped(List.of("https://www.googleapis.com/auth/cloud-platform"));
-//
-//        googleCredentials.refreshIfExpired();
-//        return googleCredentials.getAccessToken().getTokenValue();
-//    }
+            Message msg = Message.builder().putData("body", body).setToken(targetToken).setNotification(notification).build();
+            this.firebaseMessaging.send(msg);
+        } catch (FirebaseMessagingException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private FcmMessage makeMessage(String targetToken, String title, String body, String type) {
+        FcmMessage message = FcmMessage.of(targetToken, title, body, type);
+        return message;
+    }
+
+    private String getAccessToken() throws IOException {
+        String firebaseConfigPath = "firebase/firebase_service_key.json";
+
+        GoogleCredentials googleCredentials = GoogleCredentials
+                .fromStream(new ClassPathResource(firebaseConfigPath).getInputStream())
+                .createScoped(List.of("https://www.googleapis.com/auth/cloud-platform"));
+
+        googleCredentials.refreshIfExpired();
+        return googleCredentials.getAccessToken().getTokenValue();
+    }
 
 }
