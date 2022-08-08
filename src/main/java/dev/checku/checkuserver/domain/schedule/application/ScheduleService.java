@@ -1,5 +1,7 @@
-package dev.checku.checkuserver.domain.schedule;
+package dev.checku.checkuserver.domain.schedule.application;
 
+import dev.checku.checkuserver.domain.schedule.dto.GetScheduleResponse;
+import dev.checku.checkuserver.domain.schedule.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -10,6 +10,8 @@ public enum ErrorCode {
 
     USER_NOT_FOUND(400, "해당 회원은 존재하지 않습니다."),
 
+    TOPIC_NOT_FOUND(400, "해당 토픽은 존재하지 않습니다"),
+
     NOTIFICATION_NOT_FOUND(400, "해당 알림은 존재하지 않습니다."),
     ALREADY_APPLIED_NOTIFICATION(400, "해당 과목은 이미 신청하였습니다."),
 

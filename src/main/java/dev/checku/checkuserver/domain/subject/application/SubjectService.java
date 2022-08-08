@@ -38,31 +38,8 @@ public class SubjectService {
 
         ResponseEntity<PortalRes> response = portalFeignClient.getSubjects(
                 session,
-                "https://kuis.konkuk.ac.kr/index.do",
-                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36",
-                "#9e4ki",
-                "e&*\biu",
-                "W^_zie",
-                "_qw3e4",
-                "Ajd%md",
-                "ekmf3",
-                "JDow871",
-                "NuMoe6",
-                "ne+3|q",
-                "Qnd@%1",
-                "@d1#",
-                "dsParam",
-                "dm",
-                "1130420",
-                "2022",
-                "B01012",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "1",
-                ""
+                Values.headers,
+                Values.getSubjectBody("2022", "B01012", "", "", "")
         );
 
         return response.getBody();

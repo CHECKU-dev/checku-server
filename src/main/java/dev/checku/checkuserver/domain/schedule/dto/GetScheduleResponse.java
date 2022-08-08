@@ -1,5 +1,6 @@
-package dev.checku.checkuserver.domain.schedule;
+package dev.checku.checkuserver.domain.schedule.dto;
 
+import dev.checku.checkuserver.domain.schedule.entity.Schedule;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

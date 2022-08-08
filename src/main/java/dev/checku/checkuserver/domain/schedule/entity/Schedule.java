@@ -1,4 +1,4 @@
-package dev.checku.checkuserver.domain.schedule;
+package dev.checku.checkuserver.domain.schedule.entity;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
