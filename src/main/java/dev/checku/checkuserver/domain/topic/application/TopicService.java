@@ -30,7 +30,7 @@ public class TopicService {
     public void deleteTopic(String subjectNumber) {
 
         Topic topic = topicRepository.findBySubjectNumber(subjectNumber)
-                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.TOPIC_NOT_FOUND));
 
         topicRepository.delete(topic);
     }

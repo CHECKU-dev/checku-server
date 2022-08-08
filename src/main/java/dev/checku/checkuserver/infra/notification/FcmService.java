@@ -48,7 +48,6 @@ public class FcmService {
 
     public void sendTopicMessage(String topic, String title, String body, List<String> tokens) {
         try {
-//            Notification notification = Notification.builder().setTitle(title).setBody(body).setImage(image).build();
             Notification notification = Notification.builder().setTitle(title).setBody(body).build();
 
             Message msg = Message.builder().setTopic(topic).setNotification(notification).build();

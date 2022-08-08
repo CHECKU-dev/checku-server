@@ -18,7 +18,7 @@ public class MySubject extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long mySubjectId;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String subjectNumber;
 
     @ManyToOne(
