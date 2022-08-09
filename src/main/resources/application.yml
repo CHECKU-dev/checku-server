@@ -5,13 +5,13 @@ server:
 
 
 spring:
-  profiles:
-    active: dev
-#  datasource:
-#    url: ENC(EJ1jFIX2q4UiZTSWRu0ZTPZzKGlmijV2kk6p65cJNrvW3Y3krF4khvDoifFYSKD6X8U1JH+WGMvlJafTyt1RV1g7IO/ZHt3tnYgcyYOiIveWNcuqXBQoJLK7Ma+/X97bSlrSQcQOc52z/vxVk/Ur7Q==)
-#    username: ENC(aGHYR63qef6rzq/iQjziTA==)
-#    password: ENC(FWKWzF73KODPLiwC0l36gq48cIgaitQA)
-#    driver-class-name: com.mysql.cj.jdbc.Driver
+#  profiles:
+#    active: dev
+  datasource:
+    url: ENC(EJ1jFIX2q4UiZTSWRu0ZTPZzKGlmijV2kk6p65cJNrvW3Y3krF4khvDoifFYSKD6X8U1JH+WGMvlJafTyt1RV1g7IO/ZHt3tnYgcyYOiIveWNcuqXBQoJLK7Ma+/X97bSlrSQcQOc52z/vxVk/Ur7Q==)
+    username: ENC(aGHYR63qef6rzq/iQjziTA==)
+    password: ENC(FWKWzF73KODPLiwC0l36gq48cIgaitQA)
+    driver-class-name: com.mysql.cj.jdbc.Driver
   h2:
     console:
       enabled: true
@@ -22,7 +22,7 @@ spring:
   jpa:
     open-in-view: false
     hibernate:
-      ddl-auto: none
+      ddl-auto: create
     properties:
       hibernate:
         format_sql: true # sql 예쁘게 출력
