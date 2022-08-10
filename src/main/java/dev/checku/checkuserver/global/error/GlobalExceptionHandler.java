@@ -68,7 +68,7 @@ public class GlobalExceptionHandler {
      * 비즈니스 로직 실행 중 오류 발생
      */
     @ExceptionHandler(value = { BusinessException.class })
-    protected ResponseEntity<ErrorResponse> handleConflit(BusinessException e) {
+    protected ResponseEntity<ErrorResponse> handleConflict(BusinessException e) {
 
         log.error("BusinessException", e);
         List<String> errorMessages = List.of(e.getMessage());

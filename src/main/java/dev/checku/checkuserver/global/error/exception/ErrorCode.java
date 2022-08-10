@@ -7,6 +7,8 @@ public enum ErrorCode {
 
     NOTIFICATION_FAILED(400, "알림 전송에 실패하였습니다."),
     SUBSCRIBE_FAILED(400, "구독에 실패하였습니다."),
+    UNSUBSCRIBE_FAILED(400, "구독 취소에 실패하였습니다."),
+
 
     USER_NOT_FOUND(400, "해당 회원은 존재하지 않습니다."),
 

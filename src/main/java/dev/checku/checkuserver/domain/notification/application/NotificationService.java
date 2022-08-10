@@ -40,7 +40,7 @@ public class NotificationService {
     public NotificationApplyDto.Response applyNotification(NotificationApplyDto.Request request, String session) {
 
         //TODO 확인
-        mySubjectService.checkValidSubject(request.getSubjectNumber(), session);
+//        mySubjectService.checkValidSubject(request.getSubjectNumber(), session);
 
         User user = userService.getUser(request.getUserId());
         Notification notification = request.toEntity();
@@ -70,8 +70,8 @@ public class NotificationService {
         Notification notification = notificationRepository.findBySubjectNumberAndUser(subjectNumber, user)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOTIFICATION_NOT_FOUND));
 
-        notificationRepository.delete(notification);
         fcmService.unsubscribeToTopic(user.getFcmToken(), subjectNumber);
+        notificationRepository.delete(notification);
 
         return NotificationCancelDto.Response.of(subjectNumber);
 
@@ -83,8 +83,7 @@ public class NotificationService {
 
         List<Notification> notificationList = notificationRepository.findAllByUser(user);
 
-        return notificationList.stream().map(notification ->
-                GetNotificationDto.Response.of(notification)).collect(Collectors.toList());
+        return notificationList.stream().map(GetNotificationDto.Response::of).collect(Collectors.toList());
 
     }
 
@@ -95,15 +94,14 @@ public class NotificationService {
     public void sendMessageByTopic(SendMessageDto.Request request) {
 
         Subject subject = subjectService.getSubjectBySubjectNumber(request.getTopic());
+
         // topic(=subjectNumber)를 기준으로 notifcation 조회
         List<Notification> notificationList = notificationRepository.findAllBySubjectNumber(request.getTopic());
 
         List<String> tokens = notificationList.stream()
                 .map(notification -> notification.getUser().getFcmToken()).collect(Collectors.toList());
 
-
-        //TODO 변경
-        fcmService.sendTopicMessage(request.getTopic(), "체쿠", subject.getSubjectName()+  "(" + subject.getSubjectNumber() + ")" +  " 빈 자리가 있습니다.", tokens);
+        fcmService.sendTopicMessage(request.getTopic(), "체쿠", subject.getSubjectName() + "(" + subject.getSubjectNumber() + ")" + " 빈 자리가 있습니다.", tokens);
 
         // notification 삭제
         notificationRepository.deleteAllInBatch(notificationList);
