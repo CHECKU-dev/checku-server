@@ -53,12 +53,14 @@ public class SubjectApi {
 
     }
 
+    // TODO SAVE SUBJECT DELETE SUBJECT 구분
     @PostMapping("/my-subjects")
     public void saveOrRemoveMySubject(
             @RequestBody @Valid SaveSubjectRequest request
     ) {
         mySubjectService.saveOrRemoveSubject(request);
     }
+
 
     @DeleteMapping("/my-subjects")
     public void removeMySubject(

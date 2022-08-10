@@ -40,7 +40,6 @@ public class SubjectRepositoryImpl implements SubjectRepositoryCustom {
 
     private BooleanExpression searchByLike(String searchQuery) {
         return subject.subjectName.like("%" + searchQuery + "%");
-
     }
 
 

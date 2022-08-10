@@ -14,6 +14,7 @@ import dev.checku.checkuserver.domain.subject.dto.SaveSubjectRequest;
 import dev.checku.checkuserver.domain.subject.entity.MySubject;
 import dev.checku.checkuserver.domain.user.application.UserService;
 import dev.checku.checkuserver.domain.user.entity.User;
+import dev.checku.checkuserver.global.error.exception.EntityNotFoundException;
 import dev.checku.checkuserver.global.error.exception.ErrorCode;
 import dev.checku.checkuserver.global.util.SubjectUtil;
 import dev.checku.checkuserver.global.util.Values;
@@ -81,7 +82,7 @@ public class MySubjectService {
         User user = userService.getUser(request.getUserId());
         // 삭제
         if (mySubjectRepository.existsBySubjectNumberAndUser(request.getSubjectNumber(), user)) {
-            MySubject mySubject = mySubjectRepository.findBySubjectNumberAndUser(request.getSubjectNumber(), user);
+            MySubject mySubject = getMySubject(request.getSubjectNumber(), user);
             mySubjectRepository.delete(mySubject);
         }
         // 추가
@@ -92,7 +93,11 @@ public class MySubjectService {
         }
 
 
+    }
 
+    public MySubject getMySubject(String subjectNumber, User user) {
+        return mySubjectRepository.findBySubjectNumberAndUser(subjectNumber, user)
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.MY_SUBJECT_NOT_FOUND));
     }
 
     public List<GetMySubjectDto.Response> getMySubjects(GetMySubjectDto.Request dto, String session) {
@@ -116,7 +121,7 @@ public class MySubjectService {
     public void removeSubject(RemoveSubjectRequest request) {
 
         User user = userService.getUser(request.getUserId());
-        MySubject mySubject = mySubjectRepository.findBySubjectNumberAndUser(request.getSubjectNumber(), user);
+        MySubject mySubject = getMySubject(request.getSubjectNumber(), user);
 
         mySubjectRepository.delete(mySubject);
 
