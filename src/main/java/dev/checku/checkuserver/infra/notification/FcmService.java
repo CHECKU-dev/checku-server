@@ -28,13 +28,14 @@ public class FcmService {
 
     private FirebaseMessaging firebaseMessaging;
 
-    public void subscribeToTopic(String fcmToken, String subjectNumber) {
+    public boolean subscribeToTopic(String fcmToken, String subjectNumber) {
 
         try {
             firebaseMessaging.subscribeToTopic(List.of(fcmToken), subjectNumber);
         } catch (FirebaseMessagingException e) {
             throw new NotificationFailedException(ErrorCode.SUBSCRIBE_FAILED);
         }
+        return true;
     }
 
     public void unsubscribeToTopic(String fcmToken, String subjectNumber) {
@@ -42,7 +43,7 @@ public class FcmService {
         try {
             firebaseMessaging.unsubscribeFromTopic(List.of(fcmToken), subjectNumber);
         } catch (FirebaseMessagingException e) {
-            throw new NotificationFailedException(ErrorCode.SUBSCRIBE_FAILED);
+            throw new NotificationFailedException(ErrorCode.UNSUBSCRIBE_FAILED);
         }
     }
 
@@ -50,7 +51,7 @@ public class FcmService {
         try {
             Notification notification = Notification.builder().setTitle(title).setBody(body).build();
 
-            Message msg = Message.builder().setTopic(topic).setNotification(notification).build();
+            Message msg = Message.builder().setTopic(topic).putData("body", body).setNotification(notification).build();
 
             firebaseMessaging.send(msg);
             firebaseMessaging.unsubscribeFromTopic(tokens, topic);
@@ -59,7 +60,6 @@ public class FcmService {
         catch (FirebaseMessagingException e) {
             throw new NotificationFailedException(ErrorCode.NOTIFICATION_FAILED);
         }
-
     }
 
     @PostConstruct
