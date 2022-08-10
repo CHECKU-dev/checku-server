@@ -81,6 +81,8 @@ public class SubjectService {
                 .stream().map(MySubject::getSubjectNumber).collect(Collectors.toList());
         List<Subject> subject = subjectRepository.findSubjectBySearch(dto.getSearchQuery(), pageable);
 
+        System.out.println(subject);
+
         List<GetSearchSubjectDto.Response> results = subject.parallelStream()
                 .map(mySubject -> {
                     ResponseEntity<PortalRes> response = portalFeignClient.getSubject(
