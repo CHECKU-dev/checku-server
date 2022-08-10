@@ -34,7 +34,6 @@ public class UserService {
         }
 
         return UserLoginDto.Response.of(user);
-
     }
 
     public User getUser(Long userId) {
