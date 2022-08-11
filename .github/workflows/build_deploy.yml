@@ -1,4 +1,4 @@
-name: project-lion-api
+name: checku-build-deploy
 on:
   push:
     branches: [ main ]
