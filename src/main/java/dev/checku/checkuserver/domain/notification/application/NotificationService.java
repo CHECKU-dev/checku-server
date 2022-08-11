@@ -39,8 +39,7 @@ public class NotificationService {
     @Transactional
     public NotificationApplyDto.Response applyNotification(NotificationApplyDto.Request request, String session) {
 
-        //TODO 확인
-//        mySubjectService.checkValidSubject(request.getSubjectNumber(), session);
+        mySubjectService.checkValidSubject(request.getSubjectNumber(), session);
 
         User user = userService.getUser(request.getUserId());
         Notification notification = request.toEntity();
