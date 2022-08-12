@@ -11,14 +11,11 @@ public class SubjectUtil {
     public static Boolean isVacancy(String numberOfPeople) {
         String[] nums = numberOfPeople.split("/");
 
-        Integer currentNumber = Integer.parseInt(nums[0]);
-        Integer limitNumber = Integer.parseInt(nums[1]);
+        int currentNumber = Integer.parseInt(nums[0]);
+        int limitNumber = Integer.parseInt(nums[1]);
 
         // 0 / 0 -> 고려해봐야됨
-        if (currentNumber < limitNumber) {
-            return true;
-        }
-        return  false;
+        return currentNumber < limitNumber;
     }
 
 
