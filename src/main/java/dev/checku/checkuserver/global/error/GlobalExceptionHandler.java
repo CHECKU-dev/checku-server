@@ -1,7 +1,10 @@
 package dev.checku.checkuserver.global.error;
 
+import dev.checku.checkuserver.domain.log.application.ErrorLogService;
+import dev.checku.checkuserver.domain.log.dto.ErrorLogDto;
 import dev.checku.checkuserver.global.error.exception.BusinessException;
 import dev.checku.checkuserver.global.error.exception.FeignClientException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +21,10 @@ import java.util.List;
 
 @Slf4j
 @RestControllerAdvice
+@RequiredArgsConstructor
 public class GlobalExceptionHandler {
+
+    private final ErrorLogService errorLogService;
 
     /**
      * javax.validation.Valid 또는 @Validated binding error가 발생할 경우
@@ -34,6 +40,7 @@ public class GlobalExceptionHandler {
             List<FieldError> fieldErrors = bindingResult.getFieldErrors();
             for (FieldError fieldError : fieldErrors) {
                 errorMessages.add(fieldError.getDefaultMessage());
+                errorLogService.saveErrorLog(ErrorLogDto.of(HttpStatus.BAD_REQUEST.value(), fieldError.getDefaultMessage()));
             }
         }
 
@@ -48,6 +55,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     protected ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
         log.error("handleMethodArgumentTypeMismatchException", e);
+        errorLogService.saveErrorLog(ErrorLogDto.of(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
         List<String> errorMessages = List.of(e.getMessage());
         ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.BAD_REQUEST, errorMessages);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
@@ -59,6 +67,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     protected ResponseEntity<ErrorResponse> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
         log.error("handleHttpRequestMethodNotSupportedException", e);
+        errorLogService.saveErrorLog(ErrorLogDto.of(HttpStatus.METHOD_NOT_ALLOWED.value(), e.getMessage()));
         List<String> errorMessages = List.of(e.getMessage());
         ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.METHOD_NOT_ALLOWED, errorMessages);
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(errorResponse);
@@ -69,8 +78,8 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(value = { BusinessException.class })
     protected ResponseEntity<ErrorResponse> handleConflict(BusinessException e) {
-
         log.error("BusinessException", e);
+        errorLogService.saveErrorLog(ErrorLogDto.of(e.getStatus(), e.getMessage()));
         List<String> errorMessages = List.of(e.getMessage());
         HttpStatus httpStatus = HttpStatus.valueOf(e.getStatus());
         ErrorResponse errorResponse = ErrorResponse.of(httpStatus, errorMessages);
@@ -83,6 +92,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(FeignClientException.class)
     protected ResponseEntity<ErrorResponse> handleFeignClientException(FeignClientException e) {
         log.error("FeignClientException", e);
+        errorLogService.saveErrorLog(ErrorLogDto.of(e.getStatus(), e.getMessage()));
         List<String> errorMessages = List.of(e.getMessage());
         HttpStatus httpStatus = HttpStatus.valueOf(e.getStatus());
         ErrorResponse errorResponse = ErrorResponse.of(httpStatus, errorMessages);
@@ -96,6 +106,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<ErrorResponse> handleException(Exception e) {
         log.error("Exception", e);
+        errorLogService.saveErrorLog(ErrorLogDto.of(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage()));
         List<String> errorMessages = List.of(e.getMessage());
         ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, errorMessages);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
