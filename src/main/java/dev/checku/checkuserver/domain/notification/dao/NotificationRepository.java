@@ -21,4 +21,7 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
     Optional<Notification> findBySubjectNumberAndUser(String subjectNumber, User user);
 
     Boolean existsBySubjectNumberAndUser(String subjectNumber, User user);
+
+    Boolean existsBySubjectNumber(String subjectNumber);
+
 }
