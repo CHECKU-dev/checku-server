@@ -1,6 +1,5 @@
 package dev.checku.checkuserver.domain.subject.dto;
 
-import dev.checku.checkuserver.domain.subject.entity.MySubject;
 import dev.checku.checkuserver.global.util.timeutils.TimeUtils;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,7 +23,7 @@ public class GetSubjectsDto {
 
         private String type;
 
-        private Boolean isVacancy;
+        private Boolean vacancy;
 
     }
 

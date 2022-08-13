@@ -46,7 +46,7 @@ public class MySubjectService {
         Department department = Department.valueOf(dto.getDepartment());
         Grade grade = Grade.ALL;
         Type type = Type.ALL;
-        boolean isVacancy = false;
+        Boolean isVacancy = false;
 
         if (dto.getGrade() != null) {
             grade = Grade.valueOf(dto.getGrade());
@@ -54,7 +54,7 @@ public class MySubjectService {
         if (dto.getType() != null && !dto.getType().equals("OTHER")) {
             type = Type.valueOf(dto.getType());
         }
-        if (dto.getIsVacancy() != null) {
+        if (dto.getVacancy() != null && dto.getVacancy()) {
             isVacancy = true;
         }
 
@@ -66,13 +66,13 @@ public class MySubjectService {
         //TODO 정리
         Grade finalGrade = grade;
         Boolean finalIsVacancy = isVacancy;
+        System.out.println(isVacancy);
         return response.getBody().getSubjects()
                 .stream()
-                .filter(subjectDto -> finalGrade != Grade.ALL ? subjectDto.getGrade().equals(finalGrade.getValue()) : true)
-                .filter(subjectDto -> (dto.getType() != null && dto.getType().equals("OTHER")) ? !subjectDto.getSubjectType().equals("전필") && !subjectDto.getSubjectType().equals("전선") : true)
+                .filter(subjectDto -> finalGrade == Grade.ALL || subjectDto.getGrade().equals(finalGrade.getValue()))
+                .filter(subjectDto -> dto.getType() == null || !dto.getType().equals("OTHER") || !subjectDto.getSubjectType().equals("전필") && !subjectDto.getSubjectType().equals("전선"))
                 .filter(subjectDto -> finalIsVacancy ? SubjectUtil.isVacancy(subjectDto.getNumberOfPeople()) : true)
                 .map(subject -> GetSubjectsDto.Response.from(subject, subjectList)).collect(Collectors.toList());
-
     }
 
 

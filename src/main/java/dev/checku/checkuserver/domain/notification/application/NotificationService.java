@@ -72,6 +72,10 @@ public class NotificationService {
         fcmService.unsubscribeToTopic(user.getFcmToken(), subjectNumber);
         notificationRepository.delete(notification);
 
+        if (!notificationRepository.existsBySubjectNumber(subjectNumber)) {
+            topicService.deleteTopic(subjectNumber);
+        }
+
         return NotificationCancelDto.Response.of(subjectNumber);
 
     }

@@ -52,6 +52,9 @@ dependencies {
     // mysql
     runtimeOnly 'mysql:mysql-connector-java'
 
+    // aop
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+
 }
 
 dependencyManagement {
