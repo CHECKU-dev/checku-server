@@ -22,6 +22,8 @@ public class ErrorLog extends BaseTimeEntity {
     @Lob
     private String errorMessage;
 
+
+
     @Builder
     public ErrorLog(int status, String errorMessage) {
         this.status = status;

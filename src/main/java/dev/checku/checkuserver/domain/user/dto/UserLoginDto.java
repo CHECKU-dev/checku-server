@@ -4,6 +4,7 @@ import dev.checku.checkuserver.domain.user.entity.User;
 import lombok.*;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -14,6 +15,9 @@ public class UserLoginDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Request {
+
+//        @NotNull
+//        private Long userId;
 
         @NotEmpty
         private String fcmToken;

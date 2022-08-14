@@ -7,7 +7,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Getter @Setter
-public class RemoveSubjectRequest {
+public class SaveSubjectReq {
 
     @NotNull
     private Long userId;

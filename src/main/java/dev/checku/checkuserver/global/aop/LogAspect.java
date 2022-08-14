@@ -25,7 +25,7 @@ public class LogAspect {
 
     private final LogService logService;
 
-    @Around("within(dev.checku.checkuserver.domain..api..*)")
+    @Around("within(dev.checku.checkuserver.domain..api..*) && !@annotation(dev.checku.checkuserver.global.advice.NoLogging)")
     public Object logging(ProceedingJoinPoint pjp) throws Throwable {
 
         String params = getRequestParams();

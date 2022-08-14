@@ -19,6 +19,8 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import java.util.ArrayList;
 import java.util.List;
 
+import static dev.checku.checkuserver.global.error.exception.ErrorCode.NETWORK_ERROR;
+
 @Slf4j
 @RestControllerAdvice
 @RequiredArgsConstructor
@@ -36,11 +38,12 @@ public class GlobalExceptionHandler {
         List<String> errorMessages = new ArrayList<>();
 
         BindingResult bindingResult = e.getBindingResult();
-        if(bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
             List<FieldError> fieldErrors = bindingResult.getFieldErrors();
             for (FieldError fieldError : fieldErrors) {
                 errorMessages.add(fieldError.getDefaultMessage());
-                errorLogService.saveErrorLog(ErrorLogDto.of(HttpStatus.BAD_REQUEST.value(), fieldError.getDefaultMessage()));
+//                , ExceptionUtils.getStackTrace(e)
+                saveErrorLog(HttpStatus.BAD_REQUEST.value(), fieldError.getDefaultMessage());
             }
         }
 
@@ -55,7 +58,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     protected ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
         log.error("handleMethodArgumentTypeMismatchException", e);
-        errorLogService.saveErrorLog(ErrorLogDto.of(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
+        saveErrorLog(HttpStatus.BAD_REQUEST.value(), e.getMessage());
         List<String> errorMessages = List.of(e.getMessage());
         ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.BAD_REQUEST, errorMessages);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
@@ -67,7 +70,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     protected ResponseEntity<ErrorResponse> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
         log.error("handleHttpRequestMethodNotSupportedException", e);
-        errorLogService.saveErrorLog(ErrorLogDto.of(HttpStatus.METHOD_NOT_ALLOWED.value(), e.getMessage()));
+        saveErrorLog(HttpStatus.METHOD_NOT_ALLOWED.value(), e.getMessage());
         List<String> errorMessages = List.of(e.getMessage());
         ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.METHOD_NOT_ALLOWED, errorMessages);
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(errorResponse);
@@ -76,10 +79,10 @@ public class GlobalExceptionHandler {
     /**
      * 비즈니스 로직 실행 중 오류 발생
      */
-    @ExceptionHandler(value = { BusinessException.class })
+    @ExceptionHandler(value = {BusinessException.class})
     protected ResponseEntity<ErrorResponse> handleConflict(BusinessException e) {
         log.error("BusinessException", e);
-        errorLogService.saveErrorLog(ErrorLogDto.of(e.getStatus(), e.getMessage()));
+        saveErrorLog(e.getStatus(), e.getMessage());
         List<String> errorMessages = List.of(e.getMessage());
         HttpStatus httpStatus = HttpStatus.valueOf(e.getStatus());
         ErrorResponse errorResponse = ErrorResponse.of(httpStatus, errorMessages);
@@ -92,7 +95,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(FeignClientException.class)
     protected ResponseEntity<ErrorResponse> handleFeignClientException(FeignClientException e) {
         log.error("FeignClientException", e);
-        errorLogService.saveErrorLog(ErrorLogDto.of(e.getStatus(), e.getMessage()));
+        saveErrorLog(e.getStatus(), e.getMessage());
         List<String> errorMessages = List.of(e.getMessage());
         HttpStatus httpStatus = HttpStatus.valueOf(e.getStatus());
         ErrorResponse errorResponse = ErrorResponse.of(httpStatus, errorMessages);
@@ -106,10 +109,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<ErrorResponse> handleException(Exception e) {
         log.error("Exception", e);
-        errorLogService.saveErrorLog(ErrorLogDto.of(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage()));
-        List<String> errorMessages = List.of(e.getMessage());
-        ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, errorMessages);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        saveErrorLog(HttpStatus.BAD_REQUEST.value(), NETWORK_ERROR.getMessage());
+        List<String> errorMessages = List.of(NETWORK_ERROR.getMessage());
+        ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.BAD_REQUEST, errorMessages);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+    private void saveErrorLog(int statusCode, String errorMessage) {
+        errorLogService.saveErrorLog(ErrorLogDto.of(statusCode, errorMessage));
     }
 
 }

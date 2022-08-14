@@ -62,7 +62,6 @@ public class NotificationApi {
             @PathVariable("token") String token
     ){
 
-
         notificationService.testNotification(token);
         return ResponseEntity.ok().build();
 
