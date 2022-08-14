@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class GetScheduleResponse {
+public class GetScheduleRes {
 
     private Long scheduleId;
 
@@ -23,7 +23,7 @@ public class GetScheduleResponse {
 
 
     @Builder
-    public GetScheduleResponse(Long scheduleId, String title, String date, String time, LocalDateTime deadline) {
+    public GetScheduleRes(Long scheduleId, String title, String date, String time, LocalDateTime deadline) {
         this.scheduleId = scheduleId;
         this.title = title;
         this.date = date;
@@ -31,9 +31,9 @@ public class GetScheduleResponse {
         this.deadline = deadline;
     }
 
-    public static GetScheduleResponse from(Schedule schedule) {
+    public static GetScheduleRes from(Schedule schedule) {
 
-        return GetScheduleResponse.builder()
+        return GetScheduleRes.builder()
                 .scheduleId(schedule.getScheduleId())
                 .date(schedule.getDate())
                 .time(schedule.getTime())

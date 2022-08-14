@@ -9,8 +9,8 @@ import dev.checku.checkuserver.domain.model.Grade;
 import dev.checku.checkuserver.domain.model.Type;
 import dev.checku.checkuserver.domain.subject.dao.MySubjectRepository;
 import dev.checku.checkuserver.domain.subject.dto.GetMySubjectDto;
-import dev.checku.checkuserver.domain.subject.dto.RemoveSubjectRequest;
-import dev.checku.checkuserver.domain.subject.dto.SaveSubjectRequest;
+import dev.checku.checkuserver.domain.subject.dto.RemoveSubjectReq;
+import dev.checku.checkuserver.domain.subject.dto.SaveSubjectReq;
 import dev.checku.checkuserver.domain.subject.entity.MySubject;
 import dev.checku.checkuserver.domain.user.application.UserService;
 import dev.checku.checkuserver.domain.user.entity.User;
@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -77,7 +78,7 @@ public class MySubjectService {
 
 
     @Transactional
-    public void saveOrRemoveSubject(SaveSubjectRequest request) {
+    public void saveOrRemoveSubject(SaveSubjectReq request) {
 
         User user = userService.getUser(request.getUserId());
         // 삭제
@@ -118,7 +119,7 @@ public class MySubjectService {
     }
 
     @Transactional
-    public void removeSubject(RemoveSubjectRequest request) {
+    public void removeSubject(RemoveSubjectReq request) {
 
         User user = userService.getUser(request.getUserId());
         MySubject mySubject = getMySubject(request.getSubjectNumber(), user);
@@ -135,7 +136,7 @@ public class MySubjectService {
                 Values.getSubjectBody("2022", "B01012", "", "", subjectNumber));
 
         try {
-            PortalRes.SubjectDto subjectDto = response.getBody().getSubjects().get(0);
+            PortalRes.SubjectDto subjectDto = Objects.requireNonNull(response.getBody()).getSubjects().get(0);
 
             // 빈 자리 존재하는 과목인 경우 알림 제공 안됨
             if (SubjectUtil.isVacancy(subjectDto.getNumberOfPeople())) {
