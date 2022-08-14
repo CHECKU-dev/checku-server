@@ -94,7 +94,7 @@ public class GetMySubjectDto {
             String emptySeat = String.valueOf(Integer.parseInt(findEmpty[1]) - Integer.parseInt(findEmpty[0]));
 
             return Response.builder()
-                    .grade(subjectDto.getGrade().equals("9") ? "전체" : subjectDto.getGrade())
+                    .grade(subjectDto.getGrade().equals("9") ? "전체" : subjectDto.getGrade() + "학년")
                     .professor(subjectDto.getProfessor() != null ? subjectDto.getProfessor().trim() : subjectDto.getProfessor())
                     .subjectName(subjectDto.getName())
                     .numberOfPeople(subjectDto.getNumberOfPeople())
