@@ -3,7 +3,7 @@ on:
   push:
     branches: [ main ]
 env:
-  NAME: yoon11 
+  NAME: yoon11  
   REPO: checku 
 
 jobs:
