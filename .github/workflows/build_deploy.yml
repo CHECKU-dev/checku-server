@@ -47,4 +47,4 @@ jobs:
 
       - name: deploy run
         run: |
-          sudo sh /home/ubuntu/run.sh
+          sudo sh /home/ec2-user/run.sh
