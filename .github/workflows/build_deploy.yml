@@ -3,8 +3,8 @@ on:
   push:
     branches: [ main ]
 env:
-  NAME: yoon11 # 자신의 계정 명
-  REPO: checku # 도커 허브에 만든 Repository 이름
+  NAME: yoon11 
+  REPO: checku 
 
 jobs:
   build:
@@ -47,4 +47,4 @@ jobs:
 
       - name: deploy run
         run: |
-          sudo sh /home/ubuntu/run.sh
+          sudo sh /home/ec2-user/run.sh
