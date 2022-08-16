@@ -1,4 +1,4 @@
-package dev.checku.checkuserver.domain.user.dao;
+package dev.checku.checkuserver.domain.user.repository;
 
 import dev.checku.checkuserver.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;

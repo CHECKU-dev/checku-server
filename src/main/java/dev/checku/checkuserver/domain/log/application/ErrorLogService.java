@@ -1,8 +1,7 @@
 package dev.checku.checkuserver.domain.log.application;
 
-import dev.checku.checkuserver.domain.log.dao.ErrorLogRepository;
+import dev.checku.checkuserver.domain.log.repository.ErrorLogRepository;
 import dev.checku.checkuserver.domain.log.dto.ErrorLogDto;
-import dev.checku.checkuserver.domain.log.entity.ErrorLog;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

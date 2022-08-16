@@ -1,4 +1,4 @@
-package dev.checku.checkuserver.domain.notification.dao;
+package dev.checku.checkuserver.domain.notification.repository;
 
 import dev.checku.checkuserver.domain.notification.entity.Notification;
 import dev.checku.checkuserver.domain.user.entity.User;

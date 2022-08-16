@@ -1,6 +1,6 @@
 package dev.checku.checkuserver.domain.user.application;
 
-import dev.checku.checkuserver.domain.user.dao.UserRepository;
+import dev.checku.checkuserver.domain.user.repository.UserRepository;
 import dev.checku.checkuserver.domain.user.entity.User;
 import dev.checku.checkuserver.domain.user.dto.UserLoginDto;
 import dev.checku.checkuserver.global.error.exception.EntityNotFoundException;

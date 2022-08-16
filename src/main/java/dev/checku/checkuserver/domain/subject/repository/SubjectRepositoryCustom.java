@@ -1,4 +1,4 @@
-package dev.checku.checkuserver.domain.subject.dao;
+package dev.checku.checkuserver.domain.subject.repository;
 
 
 import dev.checku.checkuserver.domain.subject.entity.Subject;

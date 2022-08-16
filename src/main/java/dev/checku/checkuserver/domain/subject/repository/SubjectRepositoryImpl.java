@@ -1,4 +1,4 @@
-package dev.checku.checkuserver.domain.subject.dao;
+package dev.checku.checkuserver.domain.subject.repository;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
