@@ -3,8 +3,8 @@ on:
   push:
     branches: [ main ]
 env:
-  NAME: yoon11  
-  REPO: checku 
+  NAME: yoon11
+  REPO: checku
 
 jobs:
   build:
