@@ -1,7 +1,7 @@
 package dev.checku.checkuserver.domain.notification.application;
 
 import dev.checku.checkuserver.domain.subject.application.MySubjectService;
-import dev.checku.checkuserver.domain.notification.dao.NotificationRepository;
+import dev.checku.checkuserver.domain.notification.repository.NotificationRepository;
 import dev.checku.checkuserver.domain.notification.dto.GetNotificationDto;
 import dev.checku.checkuserver.domain.notification.dto.NotificationApplyDto;
 import dev.checku.checkuserver.domain.notification.dto.NotificationCancelDto;

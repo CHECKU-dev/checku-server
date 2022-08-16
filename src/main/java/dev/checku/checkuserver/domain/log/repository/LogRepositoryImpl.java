@@ -1,4 +1,4 @@
-package dev.checku.checkuserver.domain.log.dao;
+package dev.checku.checkuserver.domain.log.repository;
 
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;

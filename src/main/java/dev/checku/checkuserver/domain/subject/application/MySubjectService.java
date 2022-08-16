@@ -7,7 +7,7 @@ import dev.checku.checkuserver.domain.subject.dto.PortalRes;
 import dev.checku.checkuserver.domain.model.Department;
 import dev.checku.checkuserver.domain.model.Grade;
 import dev.checku.checkuserver.domain.model.Type;
-import dev.checku.checkuserver.domain.subject.dao.MySubjectRepository;
+import dev.checku.checkuserver.domain.subject.repository.MySubjectRepository;
 import dev.checku.checkuserver.domain.subject.dto.GetMySubjectDto;
 import dev.checku.checkuserver.domain.subject.dto.RemoveSubjectReq;
 import dev.checku.checkuserver.domain.subject.dto.SaveSubjectReq;

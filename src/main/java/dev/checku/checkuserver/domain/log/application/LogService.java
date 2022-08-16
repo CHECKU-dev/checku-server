@@ -1,6 +1,6 @@
 package dev.checku.checkuserver.domain.log.application;
 
-import dev.checku.checkuserver.domain.log.dao.LogRepository;
+import dev.checku.checkuserver.domain.log.repository.LogRepository;
 import dev.checku.checkuserver.domain.log.dto.GetLogDto;
 import dev.checku.checkuserver.domain.log.dto.LogDto;
 import dev.checku.checkuserver.domain.log.entity.Log;

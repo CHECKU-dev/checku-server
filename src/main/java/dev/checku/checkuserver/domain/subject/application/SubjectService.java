@@ -1,7 +1,7 @@
 package dev.checku.checkuserver.domain.subject.application;
 
 import dev.checku.checkuserver.domain.model.SubjectType;
-import dev.checku.checkuserver.domain.subject.dao.SubjectRepository;
+import dev.checku.checkuserver.domain.subject.repository.SubjectRepository;
 import dev.checku.checkuserver.domain.subject.dto.GetSearchSubjectDto;
 import dev.checku.checkuserver.domain.subject.dto.PortalRes;
 import dev.checku.checkuserver.domain.subject.entity.MySubject;
@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
