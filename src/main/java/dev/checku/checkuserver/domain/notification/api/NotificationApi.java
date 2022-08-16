@@ -26,6 +26,7 @@ public class NotificationApi {
     public ResponseEntity<SendMessageDto.Response> sendMessageByTopic(@RequestBody SendMessageDto.Request request) {
 
         log.info("메세지 전송(Topic: {})", request.getTopic());
+
         notificationService.sendMessageByTopic(request);
         return ResponseEntity.ok(SendMessageDto.Response.of());
     }

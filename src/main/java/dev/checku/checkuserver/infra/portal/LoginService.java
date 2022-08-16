@@ -1,4 +1,4 @@
-package dev.checku.checkuserver.domain.subject.application;
+package dev.checku.checkuserver.infra.portal;
 
 import dev.checku.checkuserver.global.util.Values;
 import feign.Response;

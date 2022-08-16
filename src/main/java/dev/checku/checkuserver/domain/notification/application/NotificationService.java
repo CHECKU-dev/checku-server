@@ -18,6 +18,7 @@ import dev.checku.checkuserver.global.error.exception.EntityNotFoundException;
 import dev.checku.checkuserver.global.error.exception.ErrorCode;
 import dev.checku.checkuserver.infra.notification.FcmService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -90,9 +91,7 @@ public class NotificationService {
 
     }
 
-
-    // TODO Async 테스트 해보기
-//    @Async
+    @Async
     @Transactional
     public void sendMessageByTopic(SendMessageDto.Request request) {
 
@@ -115,9 +114,6 @@ public class NotificationService {
     }
 
     public void testNotification(String token) {
-
-        System.out.println(token);
-
         fcmService.sendMessageTo(token, "체쿠", "대학영어1(1225) 빈 자리가 있습니다");
 
     }

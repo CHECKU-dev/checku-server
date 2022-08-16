@@ -3,13 +3,14 @@ package dev.checku.checkuserver.domain.subject.application;
 import dev.checku.checkuserver.domain.model.SubjectType;
 import dev.checku.checkuserver.domain.subject.repository.SubjectRepository;
 import dev.checku.checkuserver.domain.subject.dto.GetSearchSubjectDto;
-import dev.checku.checkuserver.domain.subject.dto.PortalRes;
 import dev.checku.checkuserver.domain.subject.entity.MySubject;
 import dev.checku.checkuserver.domain.subject.entity.Subject;
 import dev.checku.checkuserver.domain.user.application.UserService;
 import dev.checku.checkuserver.domain.user.entity.User;
 import dev.checku.checkuserver.global.error.exception.EntityNotFoundException;
 import dev.checku.checkuserver.global.error.exception.ErrorCode;
+import dev.checku.checkuserver.infra.portal.PortalFeignClient;
+import dev.checku.checkuserver.infra.portal.PortalRes;
 import dev.checku.checkuserver.global.util.Values;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -79,8 +80,6 @@ public class SubjectService {
         List<String> subjectList = mySubjectService.getAllSubjectByUser(user)
                 .stream().map(MySubject::getSubjectNumber).collect(Collectors.toList());
         List<Subject> subject = subjectRepository.findSubjectBySearch(dto.getSearchQuery(), pageable);
-
-        System.out.println(subject);
 
         List<GetSearchSubjectDto.Response> results = subject.parallelStream()
                 .map(mySubject -> {

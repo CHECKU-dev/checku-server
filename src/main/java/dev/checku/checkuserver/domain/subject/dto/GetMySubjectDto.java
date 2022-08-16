@@ -1,5 +1,7 @@
 package dev.checku.checkuserver.domain.subject.dto;
 
+import dev.checku.checkuserver.domain.model.Grade;
+import dev.checku.checkuserver.infra.portal.PortalRes;
 import dev.checku.checkuserver.global.util.timeutils.TimeUtils;
 import lombok.Builder;
 import lombok.Getter;
@@ -94,7 +96,7 @@ public class GetMySubjectDto {
             String emptySeat = String.valueOf(Integer.parseInt(findEmpty[1]) - Integer.parseInt(findEmpty[0]));
 
             return Response.builder()
-                    .grade(subjectDto.getGrade().equals("9") ? "전체" : subjectDto.getGrade() + "학년")
+                    .grade(Grade.of(subjectDto.getGrade()).getDescription())
                     .professor(subjectDto.getProfessor() != null ? subjectDto.getProfessor().trim() : subjectDto.getProfessor())
                     .subjectName(subjectDto.getName())
                     .numberOfPeople(subjectDto.getNumberOfPeople())

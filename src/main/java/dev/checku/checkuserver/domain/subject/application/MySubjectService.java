@@ -3,7 +3,6 @@ package dev.checku.checkuserver.domain.subject.application;
 import dev.checku.checkuserver.domain.notification.exception.HaveAVacancyException;
 import dev.checku.checkuserver.domain.notification.exception.SubjcetNotFoundException;
 import dev.checku.checkuserver.domain.subject.dto.GetSubjectsDto;
-import dev.checku.checkuserver.domain.subject.dto.PortalRes;
 import dev.checku.checkuserver.domain.model.Department;
 import dev.checku.checkuserver.domain.model.Grade;
 import dev.checku.checkuserver.domain.model.Type;
@@ -16,6 +15,8 @@ import dev.checku.checkuserver.domain.user.application.UserService;
 import dev.checku.checkuserver.domain.user.entity.User;
 import dev.checku.checkuserver.global.error.exception.EntityNotFoundException;
 import dev.checku.checkuserver.global.error.exception.ErrorCode;
+import dev.checku.checkuserver.infra.portal.PortalFeignClient;
+import dev.checku.checkuserver.infra.portal.PortalRes;
 import dev.checku.checkuserver.global.util.SubjectUtil;
 import dev.checku.checkuserver.global.util.Values;
 import lombok.RequiredArgsConstructor;
@@ -67,10 +68,9 @@ public class MySubjectService {
         //TODO 정리
         Grade finalGrade = grade;
         Boolean finalIsVacancy = isVacancy;
-        System.out.println(isVacancy);
         return response.getBody().getSubjects()
                 .stream()
-                .filter(subjectDto -> finalGrade == Grade.ALL || subjectDto.getGrade().equals(finalGrade.getValue()))
+                .filter(subjectDto -> finalGrade == Grade.ALL || subjectDto.getGrade().equals(finalGrade.getGrade()))
                 .filter(subjectDto -> dto.getType() == null || !dto.getType().equals("OTHER") || !subjectDto.getSubjectType().equals("전필") && !subjectDto.getSubjectType().equals("전선"))
                 .filter(subjectDto -> finalIsVacancy ? SubjectUtil.isVacancy(subjectDto.getNumberOfPeople()) : true)
                 .map(subject -> GetSubjectsDto.Response.from(subject, subjectList)).collect(Collectors.toList());
@@ -142,7 +142,6 @@ public class MySubjectService {
             if (SubjectUtil.isVacancy(subjectDto.getNumberOfPeople())) {
                 throw new HaveAVacancyException(ErrorCode.HAVA_A_VACANCY);
             }
-//            subjectDto.isVacancy();
         } catch (IndexOutOfBoundsException e) {
             throw new SubjcetNotFoundException(ErrorCode.SUBJECT_NOT_FOUND);
         }
