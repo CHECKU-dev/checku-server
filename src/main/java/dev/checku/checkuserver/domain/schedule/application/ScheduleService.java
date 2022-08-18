@@ -1,6 +1,6 @@
 package dev.checku.checkuserver.domain.schedule.application;
 
-import dev.checku.checkuserver.domain.schedule.dto.GetScheduleRes;
+import dev.checku.checkuserver.domain.schedule.dto.ScheduleSearchDto;
 import dev.checku.checkuserver.domain.schedule.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,9 +16,10 @@ public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
 
-    public List<GetScheduleRes> getSchedule() {
-        return scheduleRepository.findAll().stream().map(GetScheduleRes::from).collect(Collectors.toList());
-
+    public List<ScheduleSearchDto.Response> getSchedule() {
+        return scheduleRepository.findAll().stream()
+                .map(ScheduleSearchDto.Response::from)
+                .collect(Collectors.toList());
     }
 
 }

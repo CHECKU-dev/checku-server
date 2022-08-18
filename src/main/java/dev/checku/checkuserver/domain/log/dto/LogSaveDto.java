@@ -8,7 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class LogDto {
+public class LogSaveDto {
 
     private String methodName;
 
@@ -24,8 +24,8 @@ public class LogDto {
                 .build();
     }
 
-    public static LogDto of(String methodName, String params, Long executionTime) {
-        return LogDto.builder()
+    public static LogSaveDto of(String methodName, String params, Long executionTime) {
+        return LogSaveDto.builder()
                 .methodName(methodName)
                 .params(params)
                 .executionTime(executionTime)

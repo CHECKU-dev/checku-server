@@ -17,7 +17,7 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
-import static dev.checku.checkuserver.global.util.SubjectUtil.PAGE_SIZE;
+import static dev.checku.checkuserver.global.util.SubjectUtils.PAGE_SIZE;
 
 @Slf4j
 @RestController
@@ -30,7 +30,7 @@ public class SubjectApi {
 
     @Login
     @GetMapping("/subjects")
-    public ResponseEntity<List<GetSubjectsDto.Response>> getSubjectsByDepartment(
+    public ResponseEntity<List<GetSubjectsDto.Response>> subjectSearchByDepartment(
             @Valid GetSubjectsDto.Request dto,
             HttpServletRequest request
     ) {
@@ -43,27 +43,25 @@ public class SubjectApi {
     //TODO DTO 나누기
     @Login
     @GetMapping("/my-subjects")
-    public ResponseEntity<List<GetMySubjectDto.Response>> getMySubjects(
+    public ResponseEntity<List<GetMySubjectDto.Response>> mySubjectSearch(
             @Valid GetMySubjectDto.Request dto,
             HttpServletRequest request
     ) {
         String session = request.getAttribute("session").toString();
         List<GetMySubjectDto.Response> response = mySubjectService.getMySubjects(dto, session);
         return ResponseEntity.ok(response);
-
     }
 
     // TODO SAVE SUBJECT DELETE SUBJECT 구분
     @PostMapping("/my-subjects")
-    public void saveOrRemoveMySubject(
+    public void mySubjectRegisterOfRemove(
             @RequestBody @Valid SaveSubjectReq request
     ) {
         mySubjectService.saveOrRemoveSubject(request);
     }
 
-
     @DeleteMapping("/my-subjects")
-    public void removeMySubject(
+    public void mySubjectRemove(
             @Valid RemoveSubjectReq request
     ) {
         mySubjectService.removeSubject(request);
@@ -71,26 +69,25 @@ public class SubjectApi {
 
     @Login
     @PostMapping("/subjects")
-    public void saveSubject(HttpServletRequest request) {
+    public void subjectInsert(HttpServletRequest request) {
         String session = request.getAttribute("session").toString();
         subjectService.insertSubjects(session);
     }
 
     @Login
     @GetMapping("/subjects/search")
-    public ResponseEntity<Slice<GetSearchSubjectDto.Response>> getSubjectsBySearch(
+    public ResponseEntity<Slice<GetSearchSubjectDto.Response>> subjectSearchByKeyword(
             @Valid GetSearchSubjectDto.Request dto,
             HttpServletRequest request,
             Optional<Integer> page
     ) {
-
         Pageable pageable = PageRequest.of(
                 page.orElse(0),
                 PAGE_SIZE
         );
 
         String session = request.getAttribute("session").toString();
-        Slice<GetSearchSubjectDto.Response> response = subjectService.getSubjectsBySearch(dto, pageable, session);
+        Slice<GetSearchSubjectDto.Response> response = subjectService.getSubjectsByKeyword(dto, pageable, session);
 
         return ResponseEntity.ok(response);
     }

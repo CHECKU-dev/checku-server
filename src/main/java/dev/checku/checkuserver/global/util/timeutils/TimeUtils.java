@@ -1,9 +1,10 @@
 package dev.checku.checkuserver.global.util.timeutils;
 
-public class TimeUtils {
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
-    private TimeUtils() {
-    }
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class TimeUtils {
 
     public static String toStartHour(String period) {
         return TimeTable.from(period).getStartHour();

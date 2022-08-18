@@ -1,8 +1,8 @@
 package dev.checku.checkuserver.domain.log.application;
 
 import dev.checku.checkuserver.domain.log.repository.LogRepository;
-import dev.checku.checkuserver.domain.log.dto.GetLogDto;
-import dev.checku.checkuserver.domain.log.dto.LogDto;
+import dev.checku.checkuserver.domain.log.dto.LogSearchDto;
+import dev.checku.checkuserver.domain.log.dto.LogSaveDto;
 import dev.checku.checkuserver.domain.log.entity.Log;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,17 +22,16 @@ public class LogService {
     private final LogRepository logRepository;
 
     @Transactional
-    public void saveLog(LogDto logdto) {
+    public void saveLog(LogSaveDto logdto) {
         logRepository.save(logdto.toEntity());
     }
 
-    public Page<GetLogDto.Response> getLogList(Pageable pageable) {
-
+    public Page<LogSearchDto.Response> getLogList(Pageable pageable) {
         Page<Log> log = logRepository.findLog(pageable);
-        List<GetLogDto.Response> collect = log.stream()
-                .map(GetLogDto.Response::of).collect(Collectors.toList());
+        List<LogSearchDto.Response> collect = log.stream()
+                .map(LogSearchDto.Response::of)
+                .collect(Collectors.toList());
 
         return new PageImpl<>(collect, pageable, log.getTotalElements());
-
     }
 }

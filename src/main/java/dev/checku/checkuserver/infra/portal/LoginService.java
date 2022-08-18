@@ -1,6 +1,6 @@
 package dev.checku.checkuserver.infra.portal;
 
-import dev.checku.checkuserver.global.util.Values;
+import dev.checku.checkuserver.global.util.PortalUtils;
 import feign.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,12 +19,11 @@ public class LoginService {
     }
 
     public String login() {
-
         String session = "JSESSIONID=" + getSession();
         portalFeignClient.login(
                 session,
-                Values.headers,
-                Values.body
+                PortalUtils.header,
+                PortalUtils.body
         );
 
         return session;

@@ -68,7 +68,6 @@ public class PortalRes {
         @JsonProperty(value = "SBJT_ID")
         private String subjectNumber;
 
-
     }
 
 }

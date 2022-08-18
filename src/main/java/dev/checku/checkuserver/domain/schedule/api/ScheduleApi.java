@@ -1,7 +1,7 @@
 package dev.checku.checkuserver.domain.schedule.api;
 
 import dev.checku.checkuserver.domain.schedule.application.ScheduleService;
-import dev.checku.checkuserver.domain.schedule.dto.GetScheduleRes;
+import dev.checku.checkuserver.domain.schedule.dto.ScheduleSearchDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +20,7 @@ public class ScheduleApi {
     private final ScheduleService scheduleService;
 
     @GetMapping
-    public ResponseEntity<List<GetScheduleRes>> getSchedule() {
+    public ResponseEntity<List<ScheduleSearchDto.Response>> scheduleSearch() {
         return ResponseEntity.ok(scheduleService.getSchedule());
     }
 

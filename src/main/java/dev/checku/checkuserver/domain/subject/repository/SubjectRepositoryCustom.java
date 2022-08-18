@@ -9,5 +9,6 @@ import java.util.List;
 
 public interface SubjectRepositoryCustom {
 
-    List<Subject> findSubjectBySearch(String searchQuery, Pageable pageable);
+    List<Subject> findSubjectByKeyword(String searchQuery, Pageable pageable);
+
 }
