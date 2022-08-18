@@ -22,7 +22,7 @@ public class SubjectRepositoryImpl implements SubjectRepositoryCustom {
     }
 
     @Override
-    public List<Subject> findSubjectBySearch(String searchQuery, Pageable pageable) {
+    public List<Subject> findSubjectByKeyword(String searchQuery, Pageable pageable) {
 
         List<Subject> results = queryFactory
                 .selectFrom(subject)

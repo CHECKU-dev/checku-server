@@ -19,7 +19,6 @@ public class FeignConfig {
         return Logger.Level.BASIC;
     }
 
-
     @Bean
     @ConditionalOnMissingBean(value = ErrorDecoder.class)
     public FeignClientExceptionErrorDecoder commonFeignErrorDecoder() {

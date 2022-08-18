@@ -1,10 +1,12 @@
 package dev.checku.checkuserver.domain.model;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;
 
 @Getter
+@RequiredArgsConstructor
 public enum Grade {
 
 //    ALL(""), FIRST("1"), SECOND("2"), THIRD("3"), FOURTH("4");
@@ -24,11 +26,6 @@ public enum Grade {
 
     private final Integer grade;
     private final String description;
-
-    Grade(Integer grade, String description) {
-        this.grade = grade;
-        this.description = description;
-    }
 
     public static Grade of(Integer grade) {
         return Arrays.stream(values())

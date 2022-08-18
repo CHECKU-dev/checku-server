@@ -11,7 +11,7 @@ import dev.checku.checkuserver.global.error.exception.EntityNotFoundException;
 import dev.checku.checkuserver.global.error.exception.ErrorCode;
 import dev.checku.checkuserver.infra.portal.PortalFeignClient;
 import dev.checku.checkuserver.infra.portal.PortalRes;
-import dev.checku.checkuserver.global.util.Values;
+import dev.checku.checkuserver.global.util.PortalUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -35,11 +35,10 @@ public class SubjectService {
     private final PortalFeignClient portalFeignClient;
 
     private PortalRes getAllSubjectsFromPortal(String session) {
-
         ResponseEntity<PortalRes> response = portalFeignClient.getSubjects(
                 session,
-                Values.headers,
-                Values.getSubjectBody("2022", "B01012", "", "", "")
+                PortalUtils.header,
+                PortalUtils.createBody("2022", "B01012", "", "", "")
         );
 
         return response.getBody();
@@ -49,7 +48,6 @@ public class SubjectService {
     public void insertSubjects(String session) {
         PortalRes subjectListDto = getAllSubjectsFromPortal(session);
         List<PortalRes.SubjectDto> subjects = subjectListDto.getSubjects();
-
         List<Subject> subjectList = new ArrayList<>();
 
         for (PortalRes.SubjectDto subjectDto : subjects) {
@@ -63,34 +61,34 @@ public class SubjectService {
                 subjectList.add(subject);
             }
         }
-        subjectRepository.saveAll(subjectList);
 
+        subjectRepository.saveAll(subjectList);
     }
 
     public Subject getSubjectBySubjectNumber(String subjectNumber) {
         return subjectRepository.findBySubjectNumber(subjectNumber)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.SUBJECT_NOT_FOUND));
-
     }
 
 
-    public Slice<GetSearchSubjectDto.Response> getSubjectsBySearch(GetSearchSubjectDto.Request dto, Pageable pageable, String session) {
+    public Slice<GetSearchSubjectDto.Response> getSubjectsByKeyword(GetSearchSubjectDto.Request dto, Pageable pageable, String session) {
+        User user = userService.getUserById(dto.getUserId());
 
-        User user = userService.getUser(dto.getUserId());
-        List<String> subjectList = mySubjectService.getAllSubjectByUser(user)
-                .stream().map(MySubject::getSubjectNumber).collect(Collectors.toList());
-        List<Subject> subject = subjectRepository.findSubjectBySearch(dto.getSearchQuery(), pageable);
+        List<String> subjectList = mySubjectService.getAllSubjectsByUser(user).stream()
+                .map(MySubject::getSubjectNumber)
+                .collect(Collectors.toList());
+
+        List<Subject> subject = subjectRepository.findSubjectByKeyword(dto.getSearchQuery(), pageable);
 
         List<GetSearchSubjectDto.Response> results = subject.parallelStream()
                 .map(mySubject -> {
                     ResponseEntity<PortalRes> response = portalFeignClient.getSubject(
                             session,
-                            Values.headers,
-                            Values.getSubjectBody("2022", "B01012", "", "", mySubject.getSubjectNumber()));
-
+                            PortalUtils.header,
+                            PortalUtils.createBody("2022", "B01012", "", "", mySubject.getSubjectNumber()));
                     return GetSearchSubjectDto.Response.from(response.getBody().getSubjects().get(0), subjectList);
-
-                }).collect(Collectors.toList());
+                })
+                .collect(Collectors.toList());
 
         boolean hasNext = false;
         if (results.size() > pageable.getPageSize()) {

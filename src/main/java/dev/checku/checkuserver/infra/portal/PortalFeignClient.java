@@ -19,20 +19,20 @@ public interface PortalFeignClient {
     @PostMapping(value = "/Login/login.do", produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     ResponseEntity<String> login(
             @RequestHeader("Cookie") String cookie,
-            @RequestHeader Map<String, String> headers,
+            @RequestHeader Map<String, String> header,
             MultiValueMap<String, String> request
     );
 
     @PostMapping(value = "/CourTotalTimetableInq/find.do", produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     ResponseEntity<PortalRes> getSubject(
             @RequestHeader("Cookie") String cookie,
-            @RequestHeader Map<String, String> headers,
+            @RequestHeader Map<String, String> header,
             MultiValueMap<String, String> subjectBody);
 
     @PostMapping(value = "/CourTotalTimetableInq/find.do", produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     ResponseEntity<PortalRes> getSubjects(
             @RequestHeader("Cookie") String cookie,
-            @RequestHeader Map<String, String> headers,
+            @RequestHeader Map<String, String> header,
             MultiValueMap<String, String> subjectBody);
 
 

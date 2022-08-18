@@ -1,14 +1,14 @@
 package dev.checku.checkuserver.global.util;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
-public class SubjectUtil {
-
-    private SubjectUtil() {
-    }
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class SubjectUtils {
 
     public static Integer PAGE_SIZE = 10;
 
-    public static Boolean isVacancy(String numberOfPeople) {
+    public static Boolean hasVacancy(String numberOfPeople) {
         String[] nums = numberOfPeople.split("/");
 
         int currentNumber = Integer.parseInt(nums[0]);
@@ -17,6 +17,5 @@ public class SubjectUtil {
         // 0 / 0 -> 고려해봐야됨
         return currentNumber < limitNumber;
     }
-
 
 }

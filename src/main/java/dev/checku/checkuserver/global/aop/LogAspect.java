@@ -2,7 +2,7 @@ package dev.checku.checkuserver.global.aop;
 
 import com.google.common.base.Joiner;
 import dev.checku.checkuserver.domain.log.application.LogService;
-import dev.checku.checkuserver.domain.log.dto.LogDto;
+import dev.checku.checkuserver.domain.log.dto.LogSaveDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -27,39 +27,30 @@ public class LogAspect {
 
     @Around("within(dev.checku.checkuserver.domain..api..*) && !@annotation(dev.checku.checkuserver.global.advice.NoLogging)")
     public Object logging(ProceedingJoinPoint pjp) throws Throwable {
-
         String params = getRequestParams();
-
         long startAt = System.currentTimeMillis();
-
         Object result = pjp.proceed();
-
         long endAt = System.currentTimeMillis();
 
-        LogDto logDto = LogDto.of(pjp.getSignature().getName(), params, endAt - startAt);
-
-        logService.saveLog(logDto);
+        LogSaveDto logSaveDto = LogSaveDto.of(pjp.getSignature().getName(), params, endAt - startAt);
+        logService.saveLog(logSaveDto);
 
         return result;
-
     }
 
     private String getRequestParams() {
-
         String params = "";
-
         RequestAttributes requestAttribute = RequestContextHolder.getRequestAttributes();
 
         if (requestAttribute != null) {
-            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
-                    .getRequestAttributes()).getRequest();
+            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 
             Map<String, String[]> paramMap = request.getParameterMap();
-
             if (!paramMap.isEmpty()) {
                 params = paramMapToString(paramMap);
             }
         }
+
         return params;
     }
 

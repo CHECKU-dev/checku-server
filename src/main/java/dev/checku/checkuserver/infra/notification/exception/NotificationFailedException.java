@@ -9,4 +9,5 @@ public class NotificationFailedException extends BusinessException {
     public NotificationFailedException(ErrorCode errorCode) {
         super(errorCode.getMessage());
     }
+
 }

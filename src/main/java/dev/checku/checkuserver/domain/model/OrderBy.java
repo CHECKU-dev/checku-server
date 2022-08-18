@@ -7,4 +7,5 @@ public enum OrderBy {
     public static OrderBy from(String orderBy) {
         return OrderBy.valueOf(orderBy.toUpperCase());
     }
+    
 }

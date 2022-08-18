@@ -4,7 +4,6 @@ import dev.checku.checkuserver.domain.user.entity.User;
 import lombok.*;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -15,7 +14,6 @@ public class UserLoginDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Request {
-
 //        @NotNull
 //        private Long userId;
 
@@ -27,7 +25,6 @@ public class UserLoginDto {
                     .fcmToken(fcmToken)
                     .build();
         }
-
     }
 
     @Getter
@@ -36,7 +33,6 @@ public class UserLoginDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Response {
-
         private Long userId;
 
         private String fcmToken;
@@ -48,7 +44,6 @@ public class UserLoginDto {
                     .fcmToken(user.getFcmToken())
                     .build();
         }
-
     }
 
 }
