@@ -151,7 +151,7 @@ public class PortalUtils {
         JSESSIONID = jsessionid;
     }
 
-    @Scheduled(cron = "0/10 * * * * *")
+    @Scheduled(cron = "0 0/59 * * * *")
     public void refreshJsessionid() {
         if (!loginService.login().isBlank()) {
             JSESSIONID = loginService.login();
