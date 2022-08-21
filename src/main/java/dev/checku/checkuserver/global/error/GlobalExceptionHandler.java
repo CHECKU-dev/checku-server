@@ -3,7 +3,6 @@ package dev.checku.checkuserver.global.error;
 import dev.checku.checkuserver.domain.log.application.ErrorLogService;
 import dev.checku.checkuserver.domain.log.dto.ErrorLogDto;
 import dev.checku.checkuserver.global.error.exception.BusinessException;
-import dev.checku.checkuserver.global.error.exception.ErrorCode;
 import dev.checku.checkuserver.global.error.exception.FeignClientException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

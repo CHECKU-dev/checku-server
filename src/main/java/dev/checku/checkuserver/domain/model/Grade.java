@@ -17,10 +17,10 @@ public enum Grade {
 //        this.value = value;
 //    }
 
-    FRESHMAN(1, "1학년"),
-    SOPHOMORE(2, "2학년"),
-    JUNIOR(3, "3학년"),
-    SENIOR(4, "4학년"),
+    FIRST(1, "1학년"),
+    SECOND(2, "2학년"),
+    THIRD(3, "3학년"),
+    FOURTH(4, "4학년"),
     ALL(9, "전체"),
     UNKNOWN(null, "");
 

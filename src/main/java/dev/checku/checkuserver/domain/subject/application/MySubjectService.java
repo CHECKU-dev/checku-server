@@ -1,24 +1,24 @@
 package dev.checku.checkuserver.domain.subject.application;
 
-import dev.checku.checkuserver.domain.notification.exception.SubjectHasVacancyException;
-import dev.checku.checkuserver.domain.notification.exception.SubjcetNotFoundException;
-import dev.checku.checkuserver.domain.subject.dto.GetSubjectsDto;
 import dev.checku.checkuserver.domain.model.Department;
 import dev.checku.checkuserver.domain.model.Grade;
 import dev.checku.checkuserver.domain.model.Type;
-import dev.checku.checkuserver.domain.subject.repository.MySubjectRepository;
+import dev.checku.checkuserver.domain.notification.exception.SubjcetNotFoundException;
+import dev.checku.checkuserver.domain.notification.exception.SubjectHasVacancyException;
 import dev.checku.checkuserver.domain.subject.dto.GetMySubjectDto;
+import dev.checku.checkuserver.domain.subject.dto.GetSubjectsDto;
 import dev.checku.checkuserver.domain.subject.dto.RemoveSubjectReq;
 import dev.checku.checkuserver.domain.subject.dto.SaveSubjectReq;
 import dev.checku.checkuserver.domain.subject.entity.MySubject;
+import dev.checku.checkuserver.domain.subject.repository.MySubjectRepository;
 import dev.checku.checkuserver.domain.user.application.UserService;
 import dev.checku.checkuserver.domain.user.entity.User;
 import dev.checku.checkuserver.global.error.exception.EntityNotFoundException;
 import dev.checku.checkuserver.global.error.exception.ErrorCode;
+import dev.checku.checkuserver.global.util.PortalUtils;
+import dev.checku.checkuserver.global.util.SubjectUtils;
 import dev.checku.checkuserver.infra.portal.PortalFeignClient;
 import dev.checku.checkuserver.infra.portal.PortalRes;
-import dev.checku.checkuserver.global.util.SubjectUtils;
-import dev.checku.checkuserver.global.util.PortalUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -38,8 +38,7 @@ public class MySubjectService {
     private final PortalFeignClient portalFeignClient;
 
     public List<GetSubjectsDto.Response> getSubjectsByDepartment(
-            GetSubjectsDto.Request dto,
-            String session
+            GetSubjectsDto.Request dto
     ) {
         User user = userService.getUserById(dto.getUserId());
         List<String> subjectList = getAllSubjectsByUser(user)
@@ -51,7 +50,7 @@ public class MySubjectService {
         boolean isVacancy = false;
 
         if (dto.getGrade() != null) {
-            grade = Grade.valueOf(dto.getGrade());
+            grade = Grade.valueOf(dto.getGrade().toUpperCase());
         }
         if (dto.getType() != null && !dto.getType().equals("OTHER")) {
             type = Type.valueOf(dto.getType());
@@ -61,7 +60,7 @@ public class MySubjectService {
         }
 
         ResponseEntity<PortalRes> response = portalFeignClient.getSubject(
-                session,
+                PortalUtils.JSESSIONID,
                 PortalUtils.header,
                 PortalUtils.createBody("2022", "B01012", type.getValue(), department.getValue(), "")
         );
@@ -102,7 +101,7 @@ public class MySubjectService {
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.MY_SUBJECT_NOT_FOUND));
     }
 
-    public List<GetMySubjectDto.Response> getMySubjects(GetMySubjectDto.Request dto, String session) {
+    public List<GetMySubjectDto.Response> getMySubjects(GetMySubjectDto.Request dto) {
 
         User user = userService.getUserById(dto.getUserId());
         List<MySubject> myMySubjects = mySubjectRepository.findAllByUser(user);
@@ -110,13 +109,28 @@ public class MySubjectService {
         return myMySubjects.parallelStream()
                 .map(mySubject -> {
                     ResponseEntity<PortalRes> response = portalFeignClient.getSubject(
-                            session,
+                            PortalUtils.JSESSIONID,
                             PortalUtils.header,
                             PortalUtils.createBody("2022", "B01012", "", "", mySubject.getSubjectNumber()));
 
                     return GetMySubjectDto.Response.from(response.getBody().getSubjects().get(0));
 
                 }).collect(Collectors.toList());
+
+        /* 디버그용 */
+//        return myMySubjects.parallelStream()
+//                .map(mySubject -> {
+//                    ResponseEntity<String> response = portalFeignClient.getSubject2(
+//                            PortalUtils.JSESSIONID,
+//                            PortalUtils.header,
+//                            PortalUtils.createBody("2022", "B01012", "", "", mySubject.getSubjectNumber()));
+//
+//                    System.out.println(response.getBody());
+//
+////                    return GetMySubjectDto.Response.from(response.getBody().getSubjects().get(0));
+//
+//                    return null;
+//                }).collect(Collectors.toList());
     }
 
     @Transactional
@@ -129,9 +143,9 @@ public class MySubjectService {
 
     }
 
-    public void checkValidSubject(String subjectNumber, String session) {
+    public void checkValidSubject(String subjectNumber) {
         ResponseEntity<PortalRes> response = portalFeignClient.getSubject(
-                session,
+                PortalUtils.JSESSIONID,
                 PortalUtils.header,
                 PortalUtils.createBody("2022", "B01012", "", "", subjectNumber)
         );

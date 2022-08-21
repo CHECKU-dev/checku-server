@@ -5,7 +5,6 @@ import dev.checku.checkuserver.domain.notification.dto.NotificationCancelDto;
 import dev.checku.checkuserver.domain.notification.dto.NotificationRegisterDto;
 import dev.checku.checkuserver.domain.notification.dto.NotificationSearchDto;
 import dev.checku.checkuserver.domain.notification.dto.NotificationSendDto;
-import dev.checku.checkuserver.global.advice.Login;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -29,14 +28,12 @@ public class NotificationApi {
         return ResponseEntity.ok(NotificationSendDto.Response.of());
     }
 
-    @Login
     @PostMapping
     public ResponseEntity<NotificationRegisterDto.Response> notificationRegister(
             @RequestBody NotificationRegisterDto.Request dto,
             HttpServletRequest request
     ) {
-        String session = request.getAttribute("session").toString();
-        NotificationRegisterDto.Response response = notificationService.applyNotification(dto, session);
+        NotificationRegisterDto.Response response = notificationService.applyNotification(dto);
         return ResponseEntity.ok(response);
     }
 

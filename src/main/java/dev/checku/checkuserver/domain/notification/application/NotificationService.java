@@ -38,8 +38,8 @@ public class NotificationService {
     private final TopicService topicService;
 
     @Transactional
-    public NotificationRegisterDto.Response applyNotification(NotificationRegisterDto.Request request, String session) {
-        mySubjectService.checkValidSubject(request.getSubjectNumber(), session);
+    public NotificationRegisterDto.Response applyNotification(NotificationRegisterDto.Request request) {
+        mySubjectService.checkValidSubject(request.getSubjectNumber());
 
         User user = userService.getUserById(request.getUserId());
         Notification notification = request.toEntity();
@@ -77,7 +77,6 @@ public class NotificationService {
         }
 
         return NotificationCancelDto.Response.of(subjectNumber);
-
     }
 
     public List<NotificationSearchDto.Response> getNotification(NotificationSearchDto.Request request) {
