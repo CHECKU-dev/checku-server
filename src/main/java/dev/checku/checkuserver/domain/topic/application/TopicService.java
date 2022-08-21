@@ -21,17 +21,16 @@ public class TopicService {
         topicRepository.save(topic);
     }
 
-    public Boolean existsTopic(String subjectNumber) {
-
+    public Boolean existsBySubjectNumber(String subjectNumber) {
         return topicRepository.existsBySubjectNumber(subjectNumber);
     }
 
     @Transactional
-    public void deleteTopic(String subjectNumber) {
-
+    public void deleteTopicBySubjectNumber(String subjectNumber) {
         Topic topic = topicRepository.findBySubjectNumber(subjectNumber)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.TOPIC_NOT_FOUND));
 
         topicRepository.delete(topic);
     }
+
 }

@@ -1,7 +1,7 @@
 package dev.checku.checkuserver.domain.log.api;
 
 import dev.checku.checkuserver.domain.log.application.LogService;
-import dev.checku.checkuserver.domain.log.dto.GetLogDto;
+import dev.checku.checkuserver.domain.log.dto.LogSearchDto;
 import dev.checku.checkuserver.domain.model.OrderBy;
 import dev.checku.checkuserver.global.advice.NoLogging;
 import lombok.RequiredArgsConstructor;
@@ -28,10 +28,9 @@ public class LogApi {
 
     @NoLogging
     @GetMapping
-    public ResponseEntity<Page<GetLogDto.Response>> getLogList (
-            @Valid GetLogDto.Request request,
+    public ResponseEntity<Page<LogSearchDto.Response>> logList(
+            @Valid LogSearchDto.Request request,
             Optional<Integer> page
-
     ) {
         Pageable pageable = PageRequest.of(
                 page.orElse(0),
@@ -41,7 +40,7 @@ public class LogApi {
                         Sort.by(Sort.Direction.DESC, request.getOrderBy())
         );
 
-        Page<GetLogDto.Response> response = logService.getLogList(pageable);
+        Page<LogSearchDto.Response> response = logService.getLogList(pageable);
         return ResponseEntity.ok(response);
 
     }

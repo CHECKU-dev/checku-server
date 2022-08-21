@@ -16,7 +16,7 @@ import static dev.checku.checkuserver.domain.log.entity.QLog.log;
 @Repository
 public class LogRepositoryImpl implements LogRepositoryCustom {
 
-    private JPAQueryFactory queryFactory;
+    private final JPAQueryFactory queryFactory;
 
     public LogRepositoryImpl(EntityManager em) {
         this.queryFactory = new JPAQueryFactory(em);
@@ -39,7 +39,6 @@ public class LogRepositoryImpl implements LogRepositoryCustom {
     }
 
     private OrderSpecifier<?> listSort(Pageable pageable) {
-
         if (!pageable.getSort().isEmpty()) {
             for (Sort.Order order : pageable.getSort()) {
                 Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;

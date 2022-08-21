@@ -1,5 +1,7 @@
 package dev.checku.checkuserver.domain.subject.dto;
 
+import dev.checku.checkuserver.domain.model.Grade;
+import dev.checku.checkuserver.infra.portal.PortalRes;
 import dev.checku.checkuserver.global.util.timeutils.TimeUtils;
 import lombok.Builder;
 import lombok.Getter;
@@ -77,11 +79,9 @@ public class GetSearchSubjectDto {
 
         }
 
-
+        // TODO 정리
         public static Response from(PortalRes.SubjectDto subjectDto, List<String> subjectList) {
             // 교시를 시간으로 변경
-            //TODO 정리
-
             if (subjectDto.getTimeAndPlace() != null) {
                 Pattern pattern = Pattern.compile("\\d{2}-\\d{2}");
                 Matcher matcher = pattern.matcher(subjectDto.getTimeAndPlace());
@@ -93,16 +93,17 @@ public class GetSearchSubjectDto {
                     subjectDto.setTimeAndPlace(
                             subjectDto.getTimeAndPlace()
                                     .replace(period, TimeUtils.toStartHour(startPeriod) + "-" + TimeUtils.toEndHour(endPeriod))
-                                    .replaceAll("\\([^()]+\\)", "").trim());
+                                    .replaceAll("\\([^()]+\\)", "").trim()
+                    );
                 }
             }
 
-            // TODO 유틸로 묶기 이전에 empty 찾던거랑 같이
             String[] findEmpty = subjectDto.getNumberOfPeople().split("/");
             String emptySeat = String.valueOf(Integer.parseInt(findEmpty[1]) - Integer.parseInt(findEmpty[0]));
 
             return Response.builder()
-                    .grade(subjectDto.getGrade().equals("9") ? "전체" : subjectDto.getGrade() + "학년")
+                    .grade(Grade.of(subjectDto.getGrade()).getDescription())
+                    .grade(subjectDto.getGrade().equals(9) ? "전체" : subjectDto.getGrade() + "학년")
                     .professor(subjectDto.getProfessor() != null ? subjectDto.getProfessor().trim() : subjectDto.getProfessor())
                     .subjectName(subjectDto.getName())
                     .numberOfPeople(subjectDto.getNumberOfPeople())

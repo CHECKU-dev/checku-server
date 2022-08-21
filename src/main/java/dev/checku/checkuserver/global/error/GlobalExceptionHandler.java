@@ -4,6 +4,8 @@ import dev.checku.checkuserver.domain.log.application.ErrorLogService;
 import dev.checku.checkuserver.domain.log.dto.ErrorLogDto;
 import dev.checku.checkuserver.global.error.exception.BusinessException;
 import dev.checku.checkuserver.global.error.exception.FeignClientException;
+import dev.checku.checkuserver.global.util.PortalUtils;
+import dev.checku.checkuserver.infra.portal.LoginService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -27,6 +29,7 @@ import static dev.checku.checkuserver.global.error.exception.ErrorCode.NETWORK_E
 public class GlobalExceptionHandler {
 
     private final ErrorLogService errorLogService;
+    private final LoginService loginService;
 
     /**
      * javax.validation.Valid 또는 @Validated binding error가 발생할 경우
@@ -59,7 +62,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
         log.error("handleMethodArgumentTypeMismatchException", e);
         saveErrorLog(HttpStatus.BAD_REQUEST.value(), e.getMessage());
-        List<String> errorMessages = List.of(e.getMessage());
+        List<String> errorMessages = List.of(e.getName());
         ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.BAD_REQUEST, errorMessages);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
@@ -111,6 +114,7 @@ public class GlobalExceptionHandler {
         log.error("Exception", e);
         saveErrorLog(HttpStatus.BAD_REQUEST.value(), NETWORK_ERROR.getMessage());
         List<String> errorMessages = List.of(NETWORK_ERROR.getMessage());
+        PortalUtils.updateJsessionid(loginService.login());
         ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.BAD_REQUEST, errorMessages);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }

@@ -1,4 +1,4 @@
-package dev.checku.checkuserver.domain.subject.dto;
+package dev.checku.checkuserver.infra.portal;
 
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -34,7 +34,7 @@ public class PortalRes {
 
         // 학년 *
         @JsonProperty(value = "OPEN_SHYR")
-        private String grade;
+        private Integer grade;
 
         // 교수명
         @JsonProperty(value = "KOR_NM")
@@ -67,19 +67,6 @@ public class PortalRes {
         // 과목번호 *
         @JsonProperty(value = "SBJT_ID")
         private String subjectNumber;
-
-//        public void isVacancy() {
-//            String[] nums = numberOfPeople.split("/");
-//
-//            Integer currentNumber = Integer.parseInt(nums[0]);
-//            Integer limitNumber = Integer.parseInt(nums[1]);
-//
-//            // 0 / 0 -> 고려해봐야됨
-//            if (currentNumber < limitNumber) {
-//                throw new HaveAVacancyException(ErrorCode.HAVA_A_VACANCY);
-//            }
-//
-//        }
 
     }
 

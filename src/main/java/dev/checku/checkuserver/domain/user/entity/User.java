@@ -7,8 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
@@ -28,7 +26,8 @@ public class User extends BaseTimeEntity {
         this.fcmToken = fcmToken;
     }
 
-    public void updateFCM(String fcmToken) {
+    public void updateFcmToken(String fcmToken) {
         this.fcmToken = fcmToken;
     }
+
 }

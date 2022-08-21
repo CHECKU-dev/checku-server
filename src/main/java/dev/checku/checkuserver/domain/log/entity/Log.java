@@ -30,4 +30,5 @@ public class Log extends BaseTimeEntity {
         this.params = params;
         this.executionTime = executionTime;
     }
+
 }
