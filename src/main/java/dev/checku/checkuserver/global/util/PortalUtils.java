@@ -1,7 +1,5 @@
 package dev.checku.checkuserver.global.util;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -12,14 +10,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PortalUtils {
 
-    @Value("${portal.id}")
     private static String ID;
-
-    @Value("${portal.pwd}")
     private static String PWD;
+
+    private PortalUtils(@Value("${portal.id}") String id, @Value("${portal.pwd}") String pwd) {
+        ID = id;
+        PWD = pwd;
+    }
 
     public static Map<String, String> header;
     public static MultiValueMap<String, String> body;
@@ -34,6 +33,8 @@ public class PortalUtils {
 
     @PostConstruct
     private static MultiValueMap<String, String> initBody() {
+        System.out.println(ID);
+        System.out.println(PWD);
         body = new LinkedMultiValueMap<>();
 
         body.add("Oe2Ue", "#9e4ki");
