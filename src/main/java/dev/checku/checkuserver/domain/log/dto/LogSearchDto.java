@@ -1,24 +1,20 @@
 package dev.checku.checkuserver.domain.log.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import dev.checku.checkuserver.domain.log.entity.ErrorLog;
 import dev.checku.checkuserver.domain.log.entity.Log;
 import dev.checku.checkuserver.domain.model.OrderBy;
 import dev.checku.checkuserver.global.advice.Enum;
 import lombok.*;
 
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
-public class GetLogDto {
+public class LogSearchDto {
 
     @Getter
     @Setter
     public static class Request {
-
         @Enum(enumClass = OrderBy.class, message = "잘못된 Enum 값 입니다.", ignoreCase = true)
         private String orderBy;
-
     }
 
     @Getter
@@ -27,7 +23,6 @@ public class GetLogDto {
     @AllArgsConstructor
     @Builder
     public static class Response {
-
         private String methodName;
 
         private String params;
@@ -45,6 +40,5 @@ public class GetLogDto {
                     .createTime(log.getCreateAt())
                     .build();
         }
-
     }
 }

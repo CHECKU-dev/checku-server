@@ -5,9 +5,9 @@ import dev.checku.checkuserver.global.error.exception.ErrorCode;
 import lombok.Getter;
 
 @Getter
-public class AlreadyAppliedNotificationException extends BusinessException {
+public class NotificationAlreadyRegisteredException extends BusinessException {
 
-    public AlreadyAppliedNotificationException(ErrorCode errorCode) {
+    public NotificationAlreadyRegisteredException(ErrorCode errorCode) {
         super(errorCode);
     }
 

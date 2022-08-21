@@ -7,21 +7,18 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
 
-public class GetNotificationDto {
+public class NotificationSearchDto {
 
     @Getter
     @Setter
     public static class Request {
-
         @NotNull
         private Long userId;
-
     }
 
     @Getter
     @Setter
     public static class Response {
-
         private String subjectNumber;
 
         private String subjectName;
@@ -36,7 +33,6 @@ public class GetNotificationDto {
         }
 
         public static Response of(Notification notification) {
-
             return Response.builder()
                     .subjectNumber(notification.getSubjectNumber())
                     .subjectName(notification.getSubjectName())
@@ -45,6 +41,5 @@ public class GetNotificationDto {
 
         }
     }
-
 
 }

@@ -33,32 +33,29 @@ public class FcmService {
         try {
             firebaseMessaging.subscribeToTopic(List.of(fcmToken), subjectNumber);
         } catch (FirebaseMessagingException e) {
-            throw new NotificationFailedException(ErrorCode.SUBSCRIBE_FAILED);
+            throw new NotificationFailedException(ErrorCode.TOPIC_SUBSCRIBE_FAILED);
         }
         return true;
     }
 
     public void unsubscribeToTopic(String fcmToken, String subjectNumber) {
-
         try {
             firebaseMessaging.unsubscribeFromTopic(List.of(fcmToken), subjectNumber);
         } catch (FirebaseMessagingException e) {
-            throw new NotificationFailedException(ErrorCode.UNSUBSCRIBE_FAILED);
+            throw new NotificationFailedException(ErrorCode.TOPIC_UNSUBSCRIBE_FAILED);
         }
     }
 
-    public void sendTopicMessage(String topic, String title, String body, List<String> tokens) {
+    public void sendMessageToSubscriber(String topic, String title, String body, List<String> tokens) {
         try {
             Notification notification = Notification.builder().setTitle(title).setBody(body).build();
-
             Message msg = Message.builder().setTopic(topic).putData("body", body).setNotification(notification).build();
 
             firebaseMessaging.send(msg);
             firebaseMessaging.unsubscribeFromTopic(tokens, topic);
-
         }
         catch (FirebaseMessagingException e) {
-            throw new NotificationFailedException(ErrorCode.NOTIFICATION_FAILED);
+            throw new NotificationFailedException(ErrorCode.NOTIFICATION_SEND_FAILED);
         }
     }
 

@@ -1,12 +1,13 @@
 package dev.checku.checkuserver.domain.model;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @SuppressWarnings("ALL")
 @Getter
+@RequiredArgsConstructor
 public enum Department {
 
-    //TODO 이게 최선..?
     KU융합과학기술원("126897"),
     KU융합과학기술원_미래에너지공학과("126913"),
     KU융합과학기술원_스마트운행체공학과("126914"),
@@ -204,11 +205,7 @@ public enum Department {
 
     교양("");
 
-    private String value;
-
-    Department(String value) {
-        this.value = value;
-    }
+    private final String value;
 
 
 }

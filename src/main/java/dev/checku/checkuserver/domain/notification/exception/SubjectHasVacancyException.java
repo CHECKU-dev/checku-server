@@ -5,9 +5,9 @@ import dev.checku.checkuserver.global.error.exception.ErrorCode;
 import lombok.Getter;
 
 @Getter
-public class HaveAVacancyException extends BusinessException {
+public class SubjectHasVacancyException extends BusinessException {
 
-    public HaveAVacancyException(ErrorCode errorCode) {
+    public SubjectHasVacancyException(ErrorCode errorCode) {
         super(errorCode);
     }
 

@@ -14,30 +14,24 @@ public class NotificationCancelDto {
     @Setter
     @ToString
     public static class Request {
-
         @NotNull
         private Long userId;
 
         @NotBlank
         private String subjectNumber;
-
     }
 
     @Getter
     @Setter
     @Builder
     public static class Response {
-
         private String message;
 
         public static Response of(String subjectNumber) {
             return Response.builder()
                     .message(subjectNumber + " 알림 취소되었습니다.")
                     .build();
-
         }
-
     }
-
 
 }

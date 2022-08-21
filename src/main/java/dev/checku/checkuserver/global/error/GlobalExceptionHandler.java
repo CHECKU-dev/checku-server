@@ -3,6 +3,7 @@ package dev.checku.checkuserver.global.error;
 import dev.checku.checkuserver.domain.log.application.ErrorLogService;
 import dev.checku.checkuserver.domain.log.dto.ErrorLogDto;
 import dev.checku.checkuserver.global.error.exception.BusinessException;
+import dev.checku.checkuserver.global.error.exception.ErrorCode;
 import dev.checku.checkuserver.global.error.exception.FeignClientException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -59,7 +60,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
         log.error("handleMethodArgumentTypeMismatchException", e);
         saveErrorLog(HttpStatus.BAD_REQUEST.value(), e.getMessage());
-        List<String> errorMessages = List.of(e.getMessage());
+        List<String> errorMessages = List.of(e.getName());
         ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.BAD_REQUEST, errorMessages);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }

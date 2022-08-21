@@ -20,11 +20,10 @@ public class UserService {
 
     @Transactional
     public UserLoginDto.Response login(UserLoginDto.Request loginRequestDto) {
-
         String fcmToken = loginRequestDto.getFcmToken();
         Optional<User> userOptional = userRepository.findByFcmToken(fcmToken);
-        User user;
 
+        User user;
         if (userOptional.isPresent()) {
             user = userOptional.get();
         } else {
@@ -60,12 +59,9 @@ public class UserService {
 //        return UserLoginDto.Response.of(user);
 //    }
 
-    public User getUser(Long userId) {
-
+    public User getUserById(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND));
-
     }
-
 
 }

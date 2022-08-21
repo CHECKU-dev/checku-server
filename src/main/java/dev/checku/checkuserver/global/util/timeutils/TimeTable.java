@@ -1,10 +1,12 @@
 package dev.checku.checkuserver.global.util.timeutils;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.Arrays;
 
 @Getter
+@AllArgsConstructor
 public enum TimeTable {
 
     T00("00", "08:00", "09:00"),
@@ -32,15 +34,9 @@ public enum TimeTable {
     T22("22", "19:30", "20:00"),
     T23("23", "20:00", "20:30");
 
-    final String period;
-    final String startHour;
-    final String endHour;
-
-    TimeTable(String period, String startHour, String endHour) {
-        this.period = period;
-        this.startHour = startHour;
-        this.endHour = endHour;
-    }
+    private final String period;
+    private final String startHour;
+    private final String endHour;
 
     public static TimeTable from(String period) {
         return Arrays.stream(TimeTable.values())
