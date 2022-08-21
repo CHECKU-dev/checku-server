@@ -34,9 +34,9 @@ public class SubjectService {
     private final SubjectRepository subjectRepository;
     private final PortalFeignClient portalFeignClient;
 
-    private PortalRes getAllSubjectsFromPortal(String session) {
+    private PortalRes getAllSubjectsFromPortal() {
         ResponseEntity<PortalRes> response = portalFeignClient.getSubjects(
-                session,
+                PortalUtils.JSESSIONID,
                 PortalUtils.header,
                 PortalUtils.createBody("2022", "B01012", "", "", "")
         );
@@ -45,8 +45,8 @@ public class SubjectService {
     }
 
     @Transactional
-    public void insertSubjects(String session) {
-        PortalRes subjectListDto = getAllSubjectsFromPortal(session);
+    public void insertSubjects() {
+        PortalRes subjectListDto = getAllSubjectsFromPortal();
         List<PortalRes.SubjectDto> subjects = subjectListDto.getSubjects();
         List<Subject> subjectList = new ArrayList<>();
 
@@ -71,7 +71,7 @@ public class SubjectService {
     }
 
 
-    public Slice<GetSearchSubjectDto.Response> getSubjectsByKeyword(GetSearchSubjectDto.Request dto, Pageable pageable, String session) {
+    public Slice<GetSearchSubjectDto.Response> getSubjectsByKeyword(GetSearchSubjectDto.Request dto, Pageable pageable) {
         User user = userService.getUserById(dto.getUserId());
 
         List<String> subjectList = mySubjectService.getAllSubjectsByUser(user).stream()
@@ -83,7 +83,7 @@ public class SubjectService {
         List<GetSearchSubjectDto.Response> results = subject.parallelStream()
                 .map(mySubject -> {
                     ResponseEntity<PortalRes> response = portalFeignClient.getSubject(
-                            session,
+                            PortalUtils.JSESSIONID,
                             PortalUtils.header,
                             PortalUtils.createBody("2022", "B01012", "", "", mySubject.getSubjectNumber()));
                     return GetSearchSubjectDto.Response.from(response.getBody().getSubjects().get(0), subjectList);
