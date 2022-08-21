@@ -40,7 +40,6 @@ public class SubjectApi {
     public ResponseEntity<List<GetMySubjectDto.Response>> mySubjectSearch(
             @Valid GetMySubjectDto.Request dto
     ) {
-
 //        String session = request.getAttribute("session").toString();
 //        mySubjectService.getMySubjects(dto, session);
 //        List<GetMySubjectDto.Response> response = mySubjectService.getMySubjects(dto, session);

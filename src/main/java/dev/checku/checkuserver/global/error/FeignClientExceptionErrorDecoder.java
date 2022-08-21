@@ -12,11 +12,7 @@ public class FeignClientExceptionErrorDecoder implements ErrorDecoder {
 
     @Override
     public FeignClientException decode(final String methodKey, Response response) {
-        System.out.println("====================================");
-        System.out.println(response.body().toString());
         log.error(response.toString());
-//        if (response.toString().contains(""))
-//        RetryableException
         String message = response.reason();
         return new FeignClientException(response.status(), message, response.headers());
     }
