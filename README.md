@@ -10,7 +10,6 @@
 .
 ├── domain
 │   ├── common
-│   ├── model
 │   ├── log
 │   ├── model
 │   ├── notification
