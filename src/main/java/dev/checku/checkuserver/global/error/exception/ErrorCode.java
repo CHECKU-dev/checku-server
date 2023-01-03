@@ -27,7 +27,10 @@ public enum ErrorCode {
     SUBJECT_NOT_FOUND(400, "해당 과목을 찾을 수 없습니다."),
     MY_SUBJECT_NOT_FOUND(400, "해당 과목을 찾을 수 없습니다."),
 
-    NETWORK_ERROR(400, "네트워크 연결이 원활하지 않습니다. 다시 시도해주세요.");
+    NETWORK_ERROR(400, "네트워크 연결이 원활하지 않습니다. 다시 시도해주세요."),
+
+    // 세션
+    SESSION_NOT_FOUND(400, "해당 세션을 찾을 수 없습니다.");
 
 
     private final int status;

@@ -1,9 +1,11 @@
 package dev.checku.checkuserver.global.util;
 
-import dev.checku.checkuserver.infra.portal.LoginService;
-import dev.checku.checkuserver.infra.portal.PortalFeignClient;
-import feign.Response;
+import dev.checku.checkuserver.domain.portal.LoginService;
+import dev.checku.checkuserver.domain.portal.PortalSession;
+import dev.checku.checkuserver.domain.portal.PortalSessionService;
+import dev.checku.checkuserver.domain.portal.SessionConst;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.annotation.Order;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -17,18 +19,21 @@ import java.util.Map;
 public class PortalUtils {
 
     private final LoginService loginService;
+    private final PortalSessionService portalSessionService;
 
     private static String ID;
     private static String PWD;
 
-    public static String JSESSIONID;
+//    public static String JSESSIONID;
 
     private PortalUtils(@Value("${portal.id}") String id,
                         @Value("${portal.pwd}") String pwd,
-                        LoginService loginService) {
+                        LoginService loginService,
+                        PortalSessionService portalSessionService) {
         ID = id;
         PWD = pwd;
         this.loginService = loginService;
+        this.portalSessionService = portalSessionService;
     }
 
     public static Map<String, String> header;
@@ -61,7 +66,11 @@ public class PortalUtils {
         body.add("@d1#tp", "dm");
 
         /* 세션 */
-        JSESSIONID = loginService.login();
+//        JSESSIONID = loginService.login();
+        portalSessionService.init();
+//        portalSessionService.savePortalSession(new PortalSession(SessionConst.SESSION, JSESSIONID));
+//        String value = portalSessionService.getPortalSession().getValue();
+
     }
 
     public static MultiValueMap<String, String> createBody(
@@ -99,15 +108,15 @@ public class PortalUtils {
         return body;
     }
 
-    public static void updateJsessionid(String jsessionid) {
-        JSESSIONID = jsessionid;
-    }
+//    public static void updateJsessionid(String jsessionid) {
+//        JSESSIONID = jsessionid;
+//    }
 
-    @Scheduled(cron = "0 0/59 * * * *")
-    public void refreshJsessionid() {
-        if (!loginService.login().isBlank()) {
-            JSESSIONID = loginService.login();
-        }
-    }
+//    @Scheduled(cron = "0 0/59 * * * *")
+//    public void refreshJsessionid() {
+//        if (!loginService.login().isBlank()) {
+//            JSESSIONID = loginService.login();
+//        }
+//    }
 
 }

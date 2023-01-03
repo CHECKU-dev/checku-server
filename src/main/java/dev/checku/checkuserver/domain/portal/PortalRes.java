@@ -1,4 +1,4 @@
-package dev.checku.checkuserver.infra.portal;
+package dev.checku.checkuserver.domain.portal;
 
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

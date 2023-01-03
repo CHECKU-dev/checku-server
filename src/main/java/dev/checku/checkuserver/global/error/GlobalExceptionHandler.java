@@ -2,10 +2,11 @@ package dev.checku.checkuserver.global.error;
 
 import dev.checku.checkuserver.domain.log.application.ErrorLogService;
 import dev.checku.checkuserver.domain.log.dto.ErrorLogDto;
+import dev.checku.checkuserver.domain.portal.PortalSessionService;
 import dev.checku.checkuserver.global.error.exception.BusinessException;
 import dev.checku.checkuserver.global.error.exception.FeignClientException;
 import dev.checku.checkuserver.global.util.PortalUtils;
-import dev.checku.checkuserver.infra.portal.LoginService;
+import dev.checku.checkuserver.domain.portal.LoginService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,7 @@ public class GlobalExceptionHandler {
 
     private final ErrorLogService errorLogService;
     private final LoginService loginService;
+    private final PortalSessionService portalSessionService;
 
     /**
      * javax.validation.Valid 또는 @Validated binding error가 발생할 경우
@@ -114,7 +116,8 @@ public class GlobalExceptionHandler {
         log.error("Exception", e);
         saveErrorLog(HttpStatus.BAD_REQUEST.value(), NETWORK_ERROR.getMessage());
         List<String> errorMessages = List.of(NETWORK_ERROR.getMessage());
-        PortalUtils.updateJsessionid(loginService.login());
+        portalSessionService.updatePortalSession(loginService.login());
+//        PortalUtils.updateJsessionid(loginService.login());
         ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.BAD_REQUEST, errorMessages);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }

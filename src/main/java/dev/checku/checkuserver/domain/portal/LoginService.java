@@ -1,11 +1,10 @@
-package dev.checku.checkuserver.infra.portal;
+package dev.checku.checkuserver.domain.portal;
 
 import dev.checku.checkuserver.global.util.PortalUtils;
 import feign.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 @Service
 @RequiredArgsConstructor

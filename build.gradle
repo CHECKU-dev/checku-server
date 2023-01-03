@@ -55,6 +55,9 @@ dependencies {
     // aop
     implementation 'org.springframework.boot:spring-boot-starter-aop'
 
+    // redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
 }
 
 dependencyManagement {

@@ -1,6 +1,7 @@
 package dev.checku.checkuserver.domain.subject.application;
 
 import dev.checku.checkuserver.domain.model.SubjectType;
+import dev.checku.checkuserver.domain.portal.PortalSessionService;
 import dev.checku.checkuserver.domain.subject.repository.SubjectRepository;
 import dev.checku.checkuserver.domain.subject.dto.GetSearchSubjectDto;
 import dev.checku.checkuserver.domain.subject.entity.MySubject;
@@ -9,8 +10,8 @@ import dev.checku.checkuserver.domain.user.application.UserService;
 import dev.checku.checkuserver.domain.user.entity.User;
 import dev.checku.checkuserver.global.error.exception.EntityNotFoundException;
 import dev.checku.checkuserver.global.error.exception.ErrorCode;
-import dev.checku.checkuserver.infra.portal.PortalFeignClient;
-import dev.checku.checkuserver.infra.portal.PortalRes;
+import dev.checku.checkuserver.domain.portal.PortalFeignClient;
+import dev.checku.checkuserver.domain.portal.PortalRes;
 import dev.checku.checkuserver.global.util.PortalUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -33,10 +34,12 @@ public class SubjectService {
     private final MySubjectService mySubjectService;
     private final SubjectRepository subjectRepository;
     private final PortalFeignClient portalFeignClient;
+    private final PortalSessionService portalSessionService;
 
     private PortalRes getAllSubjectsFromPortal() {
         ResponseEntity<PortalRes> response = portalFeignClient.getSubjects(
-                PortalUtils.JSESSIONID,
+                portalSessionService.getPortalSession().getSession(),
+//                PortalUtils.JSESSIONID,
                 PortalUtils.header,
                 PortalUtils.createBody("2022", "B01012", "", "", "")
         );
@@ -83,7 +86,8 @@ public class SubjectService {
         List<GetSearchSubjectDto.Response> results = subject.parallelStream()
                 .map(mySubject -> {
                     ResponseEntity<PortalRes> response = portalFeignClient.getSubject(
-                            PortalUtils.JSESSIONID,
+                            portalSessionService.getPortalSession().getSession(),
+//                            PortalUtils.JSESSIONID,
                             PortalUtils.header,
                             PortalUtils.createBody("2022", "B01012", "", "", mySubject.getSubjectNumber()));
                     return GetSearchSubjectDto.Response.from(response.getBody().getSubjects().get(0), subjectList);
