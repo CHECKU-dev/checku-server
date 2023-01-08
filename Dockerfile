@@ -1,8 +1,16 @@
 FROM openjdk:11-jre
 
-#ENV JASPYT_PASSWORD=$JASPYT_PASSWORD
+ARG JASYPT_PASSWORD=""
+ARG JAR_FILE=build/libs/checku-server-0.0.1-SNAPSHOT.jar
 
-COPY build/libs/checku-server-0.0.1-SNAPSHOT.jar app.jar
+ENV JASYPT_PASSWORD $JASYPT_PASSWORD
 
-ENTRYPOINT ["java", "-jar", "-Djasypt.encryptor.password=dudwls143", "app.jar"]
+COPY ${JAR_FILE} app.jar
 
+ENTRYPOINT [ \
+            "java", \
+            "-Dserver.port=8080", \
+            "-Djasypt.encryptor.password=${JASYPT_PASSWORD}", \
+            "-jar", \
+            "app.jar" \
+]
