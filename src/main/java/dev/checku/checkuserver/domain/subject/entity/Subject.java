@@ -1,6 +1,6 @@
 package dev.checku.checkuserver.domain.subject.entity;
 
-import dev.checku.checkuserver.domain.model.SubjectType;
+import dev.checku.checkuserver.domain.subject.enums.SubjectType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

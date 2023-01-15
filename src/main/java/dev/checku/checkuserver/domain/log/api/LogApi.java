@@ -2,7 +2,7 @@ package dev.checku.checkuserver.domain.log.api;
 
 import dev.checku.checkuserver.domain.log.application.LogService;
 import dev.checku.checkuserver.domain.log.dto.LogSearchDto;
-import dev.checku.checkuserver.domain.model.OrderBy;
+import dev.checku.checkuserver.domain.log.enums.OrderBy;
 import dev.checku.checkuserver.global.advice.NoLogging;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

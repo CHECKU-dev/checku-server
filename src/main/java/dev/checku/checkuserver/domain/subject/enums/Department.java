@@ -1,4 +1,4 @@
-package dev.checku.checkuserver.domain.model;
+package dev.checku.checkuserver.domain.subject.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

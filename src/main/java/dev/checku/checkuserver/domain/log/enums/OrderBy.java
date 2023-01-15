@@ -1,4 +1,4 @@
-package dev.checku.checkuserver.domain.model;
+package dev.checku.checkuserver.domain.log.enums;
 
 public enum OrderBy {
 

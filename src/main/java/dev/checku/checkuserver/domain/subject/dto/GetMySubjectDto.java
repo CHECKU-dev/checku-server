@@ -1,6 +1,6 @@
 package dev.checku.checkuserver.domain.subject.dto;
 
-import dev.checku.checkuserver.domain.model.Grade;
+import dev.checku.checkuserver.domain.subject.enums.Grade;
 import dev.checku.checkuserver.domain.portal.PortalRes;
 import dev.checku.checkuserver.global.util.timeutils.TimeUtils;
 import lombok.Builder;

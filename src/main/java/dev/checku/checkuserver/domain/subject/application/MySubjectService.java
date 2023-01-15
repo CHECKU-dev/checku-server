@@ -1,8 +1,8 @@
 package dev.checku.checkuserver.domain.subject.application;
 
-import dev.checku.checkuserver.domain.model.Department;
-import dev.checku.checkuserver.domain.model.Grade;
-import dev.checku.checkuserver.domain.model.Type;
+import dev.checku.checkuserver.domain.subject.enums.Department;
+import dev.checku.checkuserver.domain.subject.enums.Grade;
+import dev.checku.checkuserver.domain.subject.enums.Type;
 import dev.checku.checkuserver.domain.notification.exception.SubjcetNotFoundException;
 import dev.checku.checkuserver.domain.notification.exception.SubjectHasVacancyException;
 import dev.checku.checkuserver.domain.portal.PortalSessionService;

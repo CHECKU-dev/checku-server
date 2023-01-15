@@ -1,6 +1,6 @@
 package dev.checku.checkuserver.domain.subject.application;
 
-import dev.checku.checkuserver.domain.model.SubjectType;
+import dev.checku.checkuserver.domain.subject.enums.SubjectType;
 import dev.checku.checkuserver.domain.portal.PortalSessionService;
 import dev.checku.checkuserver.domain.subject.repository.SubjectRepository;
 import dev.checku.checkuserver.domain.subject.dto.GetSearchSubjectDto;

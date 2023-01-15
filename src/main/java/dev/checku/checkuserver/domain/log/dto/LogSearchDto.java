@@ -2,7 +2,7 @@ package dev.checku.checkuserver.domain.log.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import dev.checku.checkuserver.domain.log.entity.Log;
-import dev.checku.checkuserver.domain.model.OrderBy;
+import dev.checku.checkuserver.domain.log.enums.OrderBy;
 import dev.checku.checkuserver.global.advice.Enum;
 import lombok.*;
 
