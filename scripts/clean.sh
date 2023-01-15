@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# Crawl current connected port of WAS
 CURRENT_PORT=$(cat /home/ec2-user/service_url.inc  | grep -Po '[0-9]+' | tail -1)
 TARGET_PORT=0
 
@@ -19,3 +18,6 @@ fi
 echo "[checku] 이전 Container 종료 & 삭제"
 docker stop checku$TARGET_PORT
 docker rm checku$TARGET_PORT
+
+ehco "[checku] 이전 image 삭제"
+docker rmi $(docker images -f "dangling=true" -q)
