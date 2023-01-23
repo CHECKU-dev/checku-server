@@ -35,48 +35,6 @@ public class MySubjectService {
     private final PortalFeignClient portalFeignClient;
     private final PortalSessionService portalSessionService;
 
-//    public List<GetSubjectsDto.Response> getSubjectsByDepartment(
-//            GetSubjectsDto.Request dto
-//    ) {
-//        User user = userService.getUserById(dto.getUserId());
-//        List<String> subjectList = getAllSubjectsByUser(user)
-//                .stream().map(MySubject::getSubjectNumber).collect(Collectors.toList());
-//
-//        Department department = Department.valueOf(dto.getDepartment());
-//        Grade grade = Grade.ALL;
-//        Type type = Type.ALL;
-//        boolean isVacancy = false;
-//
-//        if (dto.getGrade() != null) {
-//            grade = Grade.valueOf(dto.getGrade().toUpperCase());
-//        }
-//        if (dto.getType() != null && !dto.getType().equals("OTHER")) {
-//            type = Type.valueOf(dto.getType());
-//        }
-//        if (dto.getVacancy() != null && dto.getVacancy()) {
-//            isVacancy = true;
-//        }
-//
-//
-//        ResponseEntity<PortalRes> response = portalFeignClient.getSubject(
-//                portalSessionService.getPortalSession().getSession(),
-////                PortalUtils.JSESSIONID,
-//                PortalUtils.header,
-//                PortalUtils.createBody("2022", "B01012", type.getValue(), department.getValue(), "")
-//        );
-//
-//        //TODO 정리
-//        Grade finalGrade = grade;
-//        boolean finalIsVacancy = isVacancy;
-//        return response.getBody().getSubjects()
-//                .stream()
-//                .filter(subjectDto -> finalGrade == Grade.ALL || subjectDto.getGrade().equals(finalGrade.getGrade()))
-//                .filter(subjectDto -> dto.getType() == null || !dto.getType().equals("OTHER") || !subjectDto.getSubjectType().equals("전필") && !subjectDto.getSubjectType().equals("전선"))
-//                .filter(subjectDto -> finalIsVacancy ? SubjectUtils.hasVacancy(subjectDto.getNumberOfPeople()) : true)
-//                .map(subject -> GetSubjectsDto.Response.from(subject, subjectList)).collect(Collectors.toList());
-//    }
-
-
     @Transactional
     public void saveOrRemoveSubject(SaveSubjectReq request) {
 
@@ -90,9 +48,7 @@ public class MySubjectService {
         else {
             MySubject mySubject = MySubject.createSubject(request.getSubjectNumber(), user);
             mySubjectRepository.save(mySubject);
-
         }
-
 
     }
 

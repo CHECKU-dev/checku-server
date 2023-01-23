@@ -211,13 +211,4 @@ public enum Department {
     private final String value;
 
 
-    public static Department of(String value) {
-        System.out.println(value);
-        System.out.println(Department.KU융합과학기술원.toString());
-
-        return Arrays.stream(Department.values())
-                .filter(v -> v.toString().equals(value))
-                .findFirst()
-                .orElseThrow(() -> new BusinessException("잘못된 Enum 값 입니다."));
-    }
 }

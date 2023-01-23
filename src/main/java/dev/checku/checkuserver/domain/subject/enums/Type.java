@@ -2,7 +2,6 @@ package dev.checku.checkuserver.domain.subject.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.util.StringUtils;
 
 @Getter
 @RequiredArgsConstructor
@@ -15,16 +14,5 @@ public enum Type {
 
     private final String value;
 
-//    public static Type of(String value) {
-//
-//
-//    }
-
-//    private Grade setGrade(String grade) {
-//        if (StringUtils.hasText(grade)) {
-//            return Grade.valueOf(grade.toUpperCase());
-//        }
-//        return Grade.ALL;
-//    }
 
 }

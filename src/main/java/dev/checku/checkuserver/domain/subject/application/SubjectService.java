@@ -27,7 +27,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,11 +43,10 @@ public class SubjectService {
     private final SubjectRepository subjectRepository;
 
     public List<GetSubjectsDto.Response> getSubjectsByDepartment(
-            @Valid GetSubjectsDto.Request dto
+            GetSubjectsDto.Request dto
     ) {
         User user = userService.getUserById(dto.getUserId());
-        List<String> subjectList = mySubjectService.getAllSubjectsByUser(user)
-                .stream().map(MySubject::getSubjectNumber).collect(Collectors.toList());
+        List<String> subjectList = getMySubjectsFromMySubject(user);
 
         Department department = Department.valueOf(dto.getDepartment());
         Grade grade = setGrade(dto.getGrade());
@@ -57,7 +55,6 @@ public class SubjectService {
         PortalRes response = getAllSubjectsFromPortalByDepartmentAndType(department, type); // 전필, 전선은 이미 필터링
 
         // OTHER은 따로 분류하지 않음 -> 따라서 애플리케이션에서 따로 구분해야함
-
         return response.getSubjects()
                 .stream()
                 .filter(subject -> filteringGrade(grade, subject)) // grade 필터링
@@ -66,6 +63,11 @@ public class SubjectService {
                 .map(subject -> GetSubjectsDto.Response.from(subject, subjectList)).collect(Collectors.toList());
     }
 
+    private List<String> getMySubjectsFromMySubject(User user) {
+        return mySubjectService.getAllSubjectsByUser(user)
+                .stream().map(MySubject::getSubjectNumber)
+                .collect(Collectors.toList());
+    }
 
 
     @Transactional
@@ -76,18 +78,23 @@ public class SubjectService {
 
         for (PortalRes.SubjectDto subjectDto : subjects) {
             if (subjectDto.getSubjectNumber() != null) {
-                Subject subject;
-                if (subjectDto.getSubjectType().equals("전선") || subjectDto.getSubjectType().equals("전필")) {
-                    subject = Subject.createSubject(subjectDto.getSubjectNumber(), subjectDto.getName(), SubjectType.MAJOR);
-                } else {
-                    subject = Subject.createSubject(subjectDto.getSubjectNumber(), subjectDto.getName(), SubjectType.LIBERAL_ARTS);
-                }
+                Subject subject = classifyMajorOrLiberalArts(subjectDto);;
                 subjectList.add(subject);
             }
         }
-
         subjectRepository.saveAll(subjectList);
     }
+
+    private static Subject classifyMajorOrLiberalArts(PortalRes.SubjectDto subjectDto) {
+        Subject subject;
+        if (isMajor(subjectDto)) {
+            subject = Subject.createSubject(subjectDto.getSubjectNumber(), subjectDto.getName(), SubjectType.MAJOR);
+        } else {
+            subject = Subject.createSubject(subjectDto.getSubjectNumber(), subjectDto.getName(), SubjectType.LIBERAL_ARTS);
+        }
+        return subject;
+    }
+
 
     public Subject getSubjectBySubjectNumber(String subjectNumber) {
         return subjectRepository.findBySubjectNumber(subjectNumber)
@@ -97,23 +104,18 @@ public class SubjectService {
     public Slice<GetSearchSubjectDto.Response> getSubjectsByKeyword(GetSearchSubjectDto.Request dto, Pageable pageable) {
         User user = userService.getUserById(dto.getUserId());
 
-        List<String> subjectList = mySubjectService.getAllSubjectsByUser(user).stream()
-                .map(MySubject::getSubjectNumber)
-                .collect(Collectors.toList());
-
+        List<String> subjectList = getMySubjectsFromMySubject(user);
         List<Subject> subject = subjectRepository.findSubjectByKeyword(dto.getSearchQuery(), pageable);
 
         List<GetSearchSubjectDto.Response> results = subject.parallelStream()
                 .map(mySubject -> {
-                    ResponseEntity<PortalRes> response = portalFeignClient.getSubjects(
-                            portalSessionService.getPortalSession().getSession(),
-                            PortalUtils.header,
-                            PortalUtils.createBody("2022", "B01012", "", "", mySubject.getSubjectNumber()));
-                    return GetSearchSubjectDto.Response.from(response.getBody().getSubjects().get(0), subjectList);
+                    PortalRes response = getAllSubjectsFromPortalBySubjectNumber(mySubject.getSubjectNumber());
+                    return GetSearchSubjectDto.Response.from(response.getSubjects().get(0), subjectList);
                 })
                 .collect(Collectors.toList());
 
         boolean hasNext = false;
+
         if (results.size() > pageable.getPageSize()) {
             results.remove(pageable.getPageSize());
             hasNext = true;
@@ -123,6 +125,7 @@ public class SubjectService {
     }
 
     private PortalRes getAllSubjectsFromPortal() {
+        
         ResponseEntity<PortalRes> response = portalFeignClient.getSubjects(
                 portalSessionService.getPortalSession().getSession(),
                 PortalUtils.header,
@@ -132,9 +135,17 @@ public class SubjectService {
         return response.getBody();
     }
 
+    private PortalRes getAllSubjectsFromPortalBySubjectNumber(String subjectNumber) {
+        ResponseEntity<PortalRes> response = portalFeignClient.getSubjects(
+                portalSessionService.getPortalSession().getSession(),
+                PortalUtils.header,
+                PortalUtils.createBody("2022", "B01012", "", "", subjectNumber)
+        );
+
+        return response.getBody();
+    }
+
     private PortalRes getAllSubjectsFromPortalByDepartmentAndType(Department department, Type type) {
-        System.out.println("SubjectService.getAllSubjectsFromPortalByDepartmentAndType");
-        System.out.println(portalSessionService.getPortalSession().getSession());
 
         ResponseEntity<PortalRes> response = portalFeignClient.getSubjects(
                 portalSessionService.getPortalSession().getSession(),
@@ -143,7 +154,6 @@ public class SubjectService {
         );
 
         return response.getBody();
-
     }
 
 
@@ -177,6 +187,10 @@ public class SubjectService {
     private static boolean filteringGrade(Grade grade, PortalRes.SubjectDto subject) {
         if (grade == Grade.ALL) return true;
         return grade.getGrade().equals(subject.getGrade());
+    }
+
+    private static boolean isMajor(PortalRes.SubjectDto subjectDto) {
+        return "전선".equals(subjectDto.getSubjectType()) || "전필".equals(subjectDto.getSubjectType());
     }
 
 
