@@ -1,13 +1,9 @@
 package dev.checku.checkuserver.domain.subject.application;
 
-import dev.checku.checkuserver.domain.subject.enums.Department;
-import dev.checku.checkuserver.domain.subject.enums.Grade;
-import dev.checku.checkuserver.domain.subject.enums.Type;
 import dev.checku.checkuserver.domain.notification.exception.SubjcetNotFoundException;
 import dev.checku.checkuserver.domain.notification.exception.SubjectHasVacancyException;
 import dev.checku.checkuserver.domain.portal.PortalSessionService;
 import dev.checku.checkuserver.domain.subject.dto.GetMySubjectDto;
-import dev.checku.checkuserver.domain.subject.dto.GetSubjectsDto;
 import dev.checku.checkuserver.domain.subject.dto.RemoveSubjectReq;
 import dev.checku.checkuserver.domain.subject.dto.SaveSubjectReq;
 import dev.checku.checkuserver.domain.subject.entity.MySubject;
@@ -39,46 +35,46 @@ public class MySubjectService {
     private final PortalFeignClient portalFeignClient;
     private final PortalSessionService portalSessionService;
 
-    public List<GetSubjectsDto.Response> getSubjectsByDepartment(
-            GetSubjectsDto.Request dto
-    ) {
-        User user = userService.getUserById(dto.getUserId());
-        List<String> subjectList = getAllSubjectsByUser(user)
-                .stream().map(MySubject::getSubjectNumber).collect(Collectors.toList());
-
-        Department department = Department.valueOf(dto.getDepartment());
-        Grade grade = Grade.ALL;
-        Type type = Type.ALL;
-        boolean isVacancy = false;
-
-        if (dto.getGrade() != null) {
-            grade = Grade.valueOf(dto.getGrade().toUpperCase());
-        }
-        if (dto.getType() != null && !dto.getType().equals("OTHER")) {
-            type = Type.valueOf(dto.getType());
-        }
-        if (dto.getVacancy() != null && dto.getVacancy()) {
-            isVacancy = true;
-        }
-
-
-        ResponseEntity<PortalRes> response = portalFeignClient.getSubject(
-                portalSessionService.getPortalSession().getSession(),
-//                PortalUtils.JSESSIONID,
-                PortalUtils.header,
-                PortalUtils.createBody("2022", "B01012", type.getValue(), department.getValue(), "")
-        );
-
-        //TODO 정리
-        Grade finalGrade = grade;
-        boolean finalIsVacancy = isVacancy;
-        return response.getBody().getSubjects()
-                .stream()
-                .filter(subjectDto -> finalGrade == Grade.ALL || subjectDto.getGrade().equals(finalGrade.getGrade()))
-                .filter(subjectDto -> dto.getType() == null || !dto.getType().equals("OTHER") || !subjectDto.getSubjectType().equals("전필") && !subjectDto.getSubjectType().equals("전선"))
-                .filter(subjectDto -> finalIsVacancy ? SubjectUtils.hasVacancy(subjectDto.getNumberOfPeople()) : true)
-                .map(subject -> GetSubjectsDto.Response.from(subject, subjectList)).collect(Collectors.toList());
-    }
+//    public List<GetSubjectsDto.Response> getSubjectsByDepartment(
+//            GetSubjectsDto.Request dto
+//    ) {
+//        User user = userService.getUserById(dto.getUserId());
+//        List<String> subjectList = getAllSubjectsByUser(user)
+//                .stream().map(MySubject::getSubjectNumber).collect(Collectors.toList());
+//
+//        Department department = Department.valueOf(dto.getDepartment());
+//        Grade grade = Grade.ALL;
+//        Type type = Type.ALL;
+//        boolean isVacancy = false;
+//
+//        if (dto.getGrade() != null) {
+//            grade = Grade.valueOf(dto.getGrade().toUpperCase());
+//        }
+//        if (dto.getType() != null && !dto.getType().equals("OTHER")) {
+//            type = Type.valueOf(dto.getType());
+//        }
+//        if (dto.getVacancy() != null && dto.getVacancy()) {
+//            isVacancy = true;
+//        }
+//
+//
+//        ResponseEntity<PortalRes> response = portalFeignClient.getSubject(
+//                portalSessionService.getPortalSession().getSession(),
+////                PortalUtils.JSESSIONID,
+//                PortalUtils.header,
+//                PortalUtils.createBody("2022", "B01012", type.getValue(), department.getValue(), "")
+//        );
+//
+//        //TODO 정리
+//        Grade finalGrade = grade;
+//        boolean finalIsVacancy = isVacancy;
+//        return response.getBody().getSubjects()
+//                .stream()
+//                .filter(subjectDto -> finalGrade == Grade.ALL || subjectDto.getGrade().equals(finalGrade.getGrade()))
+//                .filter(subjectDto -> dto.getType() == null || !dto.getType().equals("OTHER") || !subjectDto.getSubjectType().equals("전필") && !subjectDto.getSubjectType().equals("전선"))
+//                .filter(subjectDto -> finalIsVacancy ? SubjectUtils.hasVacancy(subjectDto.getNumberOfPeople()) : true)
+//                .map(subject -> GetSubjectsDto.Response.from(subject, subjectList)).collect(Collectors.toList());
+//    }
 
 
     @Transactional
@@ -107,36 +103,19 @@ public class MySubjectService {
 
     public List<GetMySubjectDto.Response> getMySubjects(GetMySubjectDto.Request dto) {
 
-        System.out.println("getMySubjects");
-
         User user = userService.getUserById(dto.getUserId());
         List<MySubject> myMySubjects = mySubjectRepository.findAllByUser(user);
 
         return myMySubjects.parallelStream()
                 .map(mySubject -> {
-                    ResponseEntity<PortalRes> response = portalFeignClient.getSubject(
+                    ResponseEntity<PortalRes> response = portalFeignClient.getSubjects(
                             portalSessionService.getPortalSession().getSession(),
-//                            PortalUtils.JSESSIONID,
                             PortalUtils.header,
                             PortalUtils.createBody("2022", "B01012", "", "", mySubject.getSubjectNumber()));
 
                     return GetMySubjectDto.Response.from(response.getBody().getSubjects().get(0));
                 }).collect(Collectors.toList());
 
-        /* 디버그용 */
-//        return myMySubjects.parallelStream()
-//                .map(mySubject -> {
-//                    ResponseEntity<String> response = portalFeignClient.getSubject2(
-//                            PortalUtils.JSESSIONID,
-//                            PortalUtils.header,
-//                            PortalUtils.createBody("2022", "B01012", "", "", mySubject.getSubjectNumber()));
-//
-//                    System.out.println(response.getBody());
-//
-////                    return GetMySubjectDto.Response.from(response.getBody().getSubjects().get(0));
-//
-//                    return null;
-//                }).collect(Collectors.toList());
     }
 
     @Transactional
@@ -150,9 +129,8 @@ public class MySubjectService {
     }
 
     public void checkValidSubject(String subjectNumber) {
-        ResponseEntity<PortalRes> response = portalFeignClient.getSubject(
+        ResponseEntity<PortalRes> response = portalFeignClient.getSubjects(
                 portalSessionService.getPortalSession().getSession(),
-//                PortalUtils.JSESSIONID,
                 PortalUtils.header,
                 PortalUtils.createBody("2022", "B01012", "", "", subjectNumber)
         );

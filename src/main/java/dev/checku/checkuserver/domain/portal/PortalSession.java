@@ -18,5 +18,8 @@ public class PortalSession {
 
     public void updateSession(String session) {
         this.session = session;
+        System.out.println("PortalSession.updateSession");
+        System.out.println(this.session);
+        System.out.println(session);
     }
 }

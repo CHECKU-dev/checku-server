@@ -9,6 +9,7 @@ import dev.checku.checkuserver.global.util.PortalUtils;
 import dev.checku.checkuserver.domain.portal.LoginService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.ExceptionUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
@@ -47,7 +48,6 @@ public class GlobalExceptionHandler {
             List<FieldError> fieldErrors = bindingResult.getFieldErrors();
             for (FieldError fieldError : fieldErrors) {
                 errorMessages.add(fieldError.getDefaultMessage());
-//                , ExceptionUtils.getStackTrace(e)
                 saveErrorLog(HttpStatus.BAD_REQUEST.value(), fieldError.getDefaultMessage());
             }
         }

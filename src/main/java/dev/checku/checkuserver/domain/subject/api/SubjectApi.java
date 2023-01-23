@@ -27,12 +27,11 @@ public class SubjectApi {
     private final SubjectService subjectService;
 
     @GetMapping("/subjects")
-    public ResponseEntity<List<GetSubjectsDto.Response>> subjectSearchByDepartment(
+    public ResponseEntity<List<GetSubjectsDto.Response>> getSubjectByDepartment(
             @Valid GetSubjectsDto.Request dto
     ) {
-        List<GetSubjectsDto.Response> response = mySubjectService.getSubjectsByDepartment(dto);
+        List<GetSubjectsDto.Response> response = subjectService.getSubjectsByDepartment(dto);
         return ResponseEntity.ok(response);
-
     }
 
     //TODO DTO 나누기

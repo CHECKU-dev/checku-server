@@ -5,9 +5,13 @@ import dev.checku.checkuserver.global.error.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityManager;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class PortalSessionService {
 
     private final SessionRedisRepository sessionRedisRepository;
@@ -28,9 +32,7 @@ public class PortalSessionService {
     }
 
     public void updatePortalSession(String value) {
-        PortalSession portalSession = sessionRedisRepository.findById(SessionConst.SESSION)
-                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.SESSION_NOT_FOUND));
-        portalSession.updateSession(value);
+        savePortalSession(new PortalSession(SessionConst.SESSION, value));
     }
 
     @Scheduled(cron = "0 0/59 * * * *")
