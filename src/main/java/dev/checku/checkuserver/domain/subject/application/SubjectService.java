@@ -1,5 +1,7 @@
 package dev.checku.checkuserver.domain.subject.application;
 
+import dev.checku.checkuserver.domain.notification.exception.SubjcetNotFoundException;
+import dev.checku.checkuserver.domain.notification.exception.SubjectHasVacancyException;
 import dev.checku.checkuserver.domain.subject.dto.GetSubjectsDto;
 import dev.checku.checkuserver.domain.subject.enums.Department;
 import dev.checku.checkuserver.domain.subject.enums.Grade;
@@ -29,6 +31,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -69,6 +72,19 @@ public class SubjectService {
                 .collect(Collectors.toList());
     }
 
+    public void checkValidSubject(String subjectNumber) {
+        PortalRes response = getAllSubjectsFromPortalBySubjectNumber(subjectNumber);
+        try {
+            PortalRes.SubjectDto subjectDto = response.getSubjects().get(0);
+            // 빈 자리 존재하는 과목인 경우 알림 제공 안됨
+            if (SubjectUtils.hasVacancy(subjectDto.getNumberOfPeople())) {
+                throw new SubjectHasVacancyException(ErrorCode.SUBJECT_HAS_VACANCY);
+            }
+        } catch (IndexOutOfBoundsException e) {
+            throw new SubjcetNotFoundException(ErrorCode.SUBJECT_NOT_FOUND);
+        }
+    }
+
 
     @Transactional
     public void insertSubjects() {
@@ -78,7 +94,8 @@ public class SubjectService {
 
         for (PortalRes.SubjectDto subjectDto : subjects) {
             if (subjectDto.getSubjectNumber() != null) {
-                Subject subject = classifyMajorOrLiberalArts(subjectDto);;
+                Subject subject = classifyMajorOrLiberalArts(subjectDto);
+                ;
                 subjectList.add(subject);
             }
         }
@@ -125,7 +142,7 @@ public class SubjectService {
     }
 
     private PortalRes getAllSubjectsFromPortal() {
-        
+
         ResponseEntity<PortalRes> response = portalFeignClient.getSubjects(
                 portalSessionService.getPortalSession().getSession(),
                 PortalUtils.header,

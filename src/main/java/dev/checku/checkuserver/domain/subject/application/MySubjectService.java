@@ -10,6 +10,7 @@ import dev.checku.checkuserver.domain.subject.entity.MySubject;
 import dev.checku.checkuserver.domain.subject.repository.MySubjectRepository;
 import dev.checku.checkuserver.domain.user.application.UserService;
 import dev.checku.checkuserver.domain.user.entity.User;
+import dev.checku.checkuserver.global.error.exception.BusinessException;
 import dev.checku.checkuserver.global.error.exception.EntityNotFoundException;
 import dev.checku.checkuserver.global.error.exception.ErrorCode;
 import dev.checku.checkuserver.domain.portal.PortalFeignClient;
@@ -35,6 +36,8 @@ public class MySubjectService {
     private final PortalFeignClient portalFeignClient;
     private final PortalSessionService portalSessionService;
 
+    // TODO -> 변경하기 save, remove 나눠야함
+    @Deprecated
     @Transactional
     public void saveOrRemoveSubject(SaveSubjectReq request) {
 
@@ -52,10 +55,28 @@ public class MySubjectService {
 
     }
 
-    public MySubject getMySubject(String subjectNumber, User user) {
-        return mySubjectRepository.findBySubjectNumberAndUser(subjectNumber, user)
-                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.MY_SUBJECT_NOT_FOUND));
+    @Transactional
+    public void saveMySubject(SaveSubjectReq request) {
+        User user = userService.getUserById(request.getUserId());
+
+        if (mySubjectRepository.existsBySubjectNumberAndUser(request.getSubjectNumber(), user)) {
+            throw new BusinessException(ErrorCode.MY_SUBJECT_ALREADY_EXISTS);
+        }
+
+        MySubject mySubject = MySubject.createSubject(request.getSubjectNumber(), user);
+        mySubjectRepository.save(mySubject);
+
     }
+
+    @Transactional
+    public void removeMySubject(RemoveSubjectReq request) {
+
+        User user = userService.getUserById(request.getUserId());
+        MySubject mySubject = getMySubject(request.getSubjectNumber(), user);
+
+        mySubjectRepository.delete(mySubject);
+    }
+
 
     public List<GetMySubjectDto.Response> getMySubjects(GetMySubjectDto.Request dto) {
 
@@ -64,46 +85,29 @@ public class MySubjectService {
 
         return myMySubjects.parallelStream()
                 .map(mySubject -> {
-                    ResponseEntity<PortalRes> response = portalFeignClient.getSubjects(
-                            portalSessionService.getPortalSession().getSession(),
-                            PortalUtils.header,
-                            PortalUtils.createBody("2022", "B01012", "", "", mySubject.getSubjectNumber()));
-
-                    return GetMySubjectDto.Response.from(response.getBody().getSubjects().get(0));
+                    PortalRes response = getAllSubjectsFromPortalBySubjectNumber(mySubject.getSubjectNumber());
+                    return GetMySubjectDto.Response.from(response.getSubjects().get(0));
                 }).collect(Collectors.toList());
 
     }
 
-    @Transactional
-    public void removeSubject(RemoveSubjectReq request) {
-
-        User user = userService.getUserById(request.getUserId());
-        MySubject mySubject = getMySubject(request.getSubjectNumber(), user);
-
-        mySubjectRepository.delete(mySubject);
-
+    public MySubject getMySubject(String subjectNumber, User user) {
+        return mySubjectRepository.findBySubjectNumberAndUser(subjectNumber, user)
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.MY_SUBJECT_NOT_FOUND));
     }
 
-    public void checkValidSubject(String subjectNumber) {
+    public List<MySubject> getAllSubjectsByUser(User user) {
+        return mySubjectRepository.findAllByUser(user);
+    }
+
+    private PortalRes getAllSubjectsFromPortalBySubjectNumber(String subjectNumber) {
         ResponseEntity<PortalRes> response = portalFeignClient.getSubjects(
                 portalSessionService.getPortalSession().getSession(),
                 PortalUtils.header,
                 PortalUtils.createBody("2022", "B01012", "", "", subjectNumber)
         );
 
-        try {
-            PortalRes.SubjectDto subjectDto = Objects.requireNonNull(response.getBody()).getSubjects().get(0);
-            // 빈 자리 존재하는 과목인 경우 알림 제공 안됨
-            if (SubjectUtils.hasVacancy(subjectDto.getNumberOfPeople())) {
-                throw new SubjectHasVacancyException(ErrorCode.SUBJECT_HAS_VACANCY);
-            }
-        } catch (IndexOutOfBoundsException e) {
-            throw new SubjcetNotFoundException(ErrorCode.SUBJECT_NOT_FOUND);
-        }
-    }
-
-    public List<MySubject> getAllSubjectsByUser(User user) {
-        return mySubjectRepository.findAllByUser(user);
+        return response.getBody();
     }
 
 }

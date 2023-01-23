@@ -26,6 +26,7 @@ public enum ErrorCode {
     // 과목
     SUBJECT_NOT_FOUND(400, "해당 과목을 찾을 수 없습니다."),
     MY_SUBJECT_NOT_FOUND(400, "해당 과목을 찾을 수 없습니다."),
+    MY_SUBJECT_ALREADY_EXISTS(400, "이미 저장한 과목입니다."),
 
     NETWORK_ERROR(400, "네트워크 연결이 원활하지 않습니다. 다시 시도해주세요."),
 

@@ -39,7 +39,7 @@ public class NotificationService {
 
     @Transactional
     public NotificationRegisterDto.Response applyNotification(NotificationRegisterDto.Request request) {
-        mySubjectService.checkValidSubject(request.getSubjectNumber());
+        subjectService.checkValidSubject(request.getSubjectNumber());
 
         User user = userService.getUserById(request.getUserId());
         Notification notification = request.toEntity();

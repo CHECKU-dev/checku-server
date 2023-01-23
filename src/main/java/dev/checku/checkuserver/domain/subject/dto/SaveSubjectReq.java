@@ -15,5 +15,4 @@ public class SaveSubjectReq {
     @NotBlank
     private String subjectNumber;
 
-
 }

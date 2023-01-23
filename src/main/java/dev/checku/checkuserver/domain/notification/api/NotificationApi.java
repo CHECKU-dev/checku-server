@@ -30,8 +30,7 @@ public class NotificationApi {
 
     @PostMapping
     public ResponseEntity<NotificationRegisterDto.Response> notificationRegister(
-            @RequestBody NotificationRegisterDto.Request dto,
-            HttpServletRequest request
+            @RequestBody NotificationRegisterDto.Request dto
     ) {
         NotificationRegisterDto.Response response = notificationService.applyNotification(dto);
         return ResponseEntity.ok(response);
@@ -39,7 +38,6 @@ public class NotificationApi {
 
     @DeleteMapping
     public ResponseEntity<NotificationCancelDto.Response> notificationCancel(NotificationCancelDto.Request request) {
-
         NotificationCancelDto.Response response = notificationService.cancelNotification(request);
         return ResponseEntity.ok(response);
     }

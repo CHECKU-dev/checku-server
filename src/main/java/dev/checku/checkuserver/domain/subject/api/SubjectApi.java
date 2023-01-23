@@ -27,24 +27,23 @@ public class SubjectApi {
     private final SubjectService subjectService;
 
     @GetMapping("/subjects")
-    public ResponseEntity<List<GetSubjectsDto.Response>> getSubjectByDepartment(
+    public ResponseEntity<List<GetSubjectsDto.Response>> getSubjectsByDepartment(
             @Valid GetSubjectsDto.Request dto
     ) {
         List<GetSubjectsDto.Response> response = subjectService.getSubjectsByDepartment(dto);
         return ResponseEntity.ok(response);
     }
 
-    //TODO DTO 나누기
     @GetMapping("/my-subjects")
-    public ResponseEntity<List<GetMySubjectDto.Response>> mySubjectSearch(
+    public ResponseEntity<List<GetMySubjectDto.Response>> getMySubjects(
             @Valid GetMySubjectDto.Request dto
     ) {
-
         List<GetMySubjectDto.Response> response = mySubjectService.getMySubjects(dto);
         return ResponseEntity.ok(response);
     }
 
-    // TODO SAVE SUBJECT DELETE SUBJECT 구분
+    //TODO SAVE SUBJECT DELETE SUBJECT 구분 -> 안드로이드 업데이트를 위해 V1으로 남겨야함
+    @Deprecated
     @PostMapping("/my-subjects")
     public void mySubjectRegisterOfRemove(
             @RequestBody @Valid SaveSubjectReq request
@@ -52,20 +51,22 @@ public class SubjectApi {
         mySubjectService.saveOrRemoveSubject(request);
     }
 
-    @DeleteMapping("/my-subjects")
-    public void mySubjectRemove(
-            @Valid RemoveSubjectReq request
+    @PostMapping("/my-subjects-V2")
+    public void saveMySubject(
+            @RequestBody @Valid SaveSubjectReq request
     ) {
-        mySubjectService.removeSubject(request);
+        mySubjectService.saveMySubject(request);
     }
 
-    @PostMapping("/subjects")
-    public void subjectInsert() {
-        subjectService.insertSubjects();
+    @DeleteMapping("/my-subjects-V2")
+    public void removeMySubject(
+            @RequestBody @Valid RemoveSubjectReq request
+    ) {
+        mySubjectService.removeMySubject(request);
     }
 
     @GetMapping("/subjects/search")
-    public ResponseEntity<Slice<GetSearchSubjectDto.Response>> subjectSearchByKeyword(
+    public ResponseEntity<Slice<GetSearchSubjectDto.Response>> searchSubjectsByKeyword(
             @Valid GetSearchSubjectDto.Request dto,
             Optional<Integer> page
     ) {
@@ -75,8 +76,13 @@ public class SubjectApi {
         );
 
         Slice<GetSearchSubjectDto.Response> response = subjectService.getSubjectsByKeyword(dto, pageable);
-
         return ResponseEntity.ok(response);
+    }
+
+    // 유틸성 API
+    @PostMapping("/subjects")
+    public void insertSubjects() {
+        subjectService.insertSubjects();
     }
 
 
