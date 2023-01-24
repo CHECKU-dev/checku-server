@@ -82,6 +82,7 @@ public class GetSubjectsDto {
         }
 
 
+        //TODO 이게 최선인가
         public static Response from(PortalRes.SubjectDto subjectDto, List<String> subjectList) {
             // 교시를 시간으로 변경
             //TODO 정리

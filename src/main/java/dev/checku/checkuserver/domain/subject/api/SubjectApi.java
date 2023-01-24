@@ -60,10 +60,12 @@ public class SubjectApi {
 
     @DeleteMapping("/my-subjects-V2")
     public void removeMySubject(
-            @RequestBody @Valid RemoveSubjectReq request
+            @Valid RemoveSubjectReq request
     ) {
         mySubjectService.removeMySubject(request);
     }
+
+
 
     @GetMapping("/subjects/search")
     public ResponseEntity<Slice<GetSearchSubjectDto.Response>> searchSubjectsByKeyword(

@@ -32,7 +32,7 @@ public class NotificationApi {
     }
 
     @DeleteMapping
-    public void cancelNotification(@RequestBody @Valid NotificationCancelReq request) {
+    public void cancelNotification(@Valid NotificationCancelReq request) {
         notificationService.cancelNotification(request);
     }
 
