@@ -20,7 +20,7 @@ public class Topic {
     private String subjectNumber;
 
     @Builder
-    public Topic(Long topicId, String subjectNumber) {
+    public Topic(String subjectNumber) {
         this.subjectNumber = subjectNumber;
     }
 

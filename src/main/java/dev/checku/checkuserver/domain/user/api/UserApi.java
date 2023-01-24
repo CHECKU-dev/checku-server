@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/users")
@@ -18,7 +20,7 @@ public class UserApi {
 
     @PostMapping
     public ResponseEntity<UserLoginDto.Response> userLogin(
-            @RequestBody UserLoginDto.Request loginRequestDto
+            @RequestBody @Valid UserLoginDto.Request loginRequestDto
     ) {
         UserLoginDto.Response loginResponseDto = userService.login(loginRequestDto);
         return ResponseEntity.ok(loginResponseDto);
