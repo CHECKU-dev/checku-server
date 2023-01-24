@@ -2,7 +2,7 @@ package dev.checku.checkuserver.domain.subject.application;
 
 import dev.checku.checkuserver.domain.portal.application.PortalSessionService;
 import dev.checku.checkuserver.domain.subject.dto.GetMySubjectDto;
-import dev.checku.checkuserver.domain.subject.dto.RemoveSubjectReq;
+import dev.checku.checkuserver.domain.subject.dto.RemoveMySubjectReq;
 import dev.checku.checkuserver.domain.subject.dto.SaveSubjectReq;
 import dev.checku.checkuserver.domain.subject.entity.MySubject;
 import dev.checku.checkuserver.domain.subject.repository.MySubjectRepository;
@@ -65,7 +65,7 @@ public class MySubjectService {
     }
 
     @Transactional
-    public void removeMySubject(RemoveSubjectReq request) {
+    public void removeMySubjectV1(RemoveMySubjectReq request) {
 
         User user = userService.getUserById(request.getUserId());
         MySubject mySubject = getMySubject(request.getSubjectNumber(), user);
@@ -73,6 +73,14 @@ public class MySubjectService {
         mySubjectRepository.delete(mySubject);
     }
 
+    @Transactional
+    public void removeMySubjectV2(String subjectNumber, Long userId) {
+
+        User user = userService.getUserById(userId);
+        MySubject mySubject = getMySubject(subjectNumber, user);
+
+        mySubjectRepository.delete(mySubject);
+    }
 
 
     public List<GetMySubjectDto.Response> getMySubjects(GetMySubjectDto.Request dto) {
@@ -97,6 +105,11 @@ public class MySubjectService {
         return mySubjectRepository.findAllByUser(user);
     }
 
+    @Transactional
+    public void removeAllMySubjectsByUserId(Long userId) {
+        mySubjectRepository.deleteAllByUserId(userId);
+    }
+
     private PortalRes getAllSubjectsFromPortalBySubjectNumber(String subjectNumber) {
         ResponseEntity<PortalRes> response = portalFeignClient.getSubjects(
                 portalSessionService.getPortalSession().getSession(),
@@ -106,5 +119,6 @@ public class MySubjectService {
 
         return response.getBody();
     }
+
 
 }

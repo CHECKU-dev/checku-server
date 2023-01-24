@@ -14,4 +14,6 @@ public interface MySubjectRepository extends JpaRepository<MySubject, Long> {
     Optional<MySubject> findBySubjectNumberAndUser(String subjectNumber, User user);
 
     Boolean existsBySubjectNumberAndUser(String subjectNumber, User user);
+
+    void deleteAllByUserId(Long userId);
 }

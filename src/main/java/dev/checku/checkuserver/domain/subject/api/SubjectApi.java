@@ -45,27 +45,42 @@ public class SubjectApi {
     //TODO SAVE SUBJECT DELETE SUBJECT 구분 -> 안드로이드 업데이트를 위해 V1으로 남겨야함
     @Deprecated
     @PostMapping("/my-subjects")
-    public void mySubjectRegisterOfRemove(
+    public void mySubjectRegisterOrRemoveV1(
             @RequestBody @Valid SaveSubjectReq request
     ) {
         mySubjectService.saveOrRemoveSubject(request);
     }
 
-    @PostMapping("/my-subjects-V2")
-    public void saveMySubject(
+    @Deprecated
+    @DeleteMapping("/my-subjects")
+    public void removeMySubjectV1(
+            @Valid RemoveMySubjectReq request
+    ) {
+        mySubjectService.removeMySubjectV1(request);
+    }
+
+    @PostMapping("/my-subjects-V2") // 이후에 V2 삭제
+    public void saveMySubjectV2(
             @RequestBody @Valid SaveSubjectReq request
     ) {
         mySubjectService.saveMySubject(request);
     }
 
-    @DeleteMapping("/my-subjects-V2")
-    public void removeMySubject(
-            @Valid RemoveSubjectReq request
+    @DeleteMapping("/my-subjects/{subjectNumber}")
+    public void removeMySubjectV2(
+            @PathVariable("subjectNumber") String subjectNumber,
+            @Valid RemoveMySubjectReq request
     ) {
-        mySubjectService.removeMySubject(request);
+        mySubjectService.removeMySubjectV2(subjectNumber, request.getUserId());
     }
 
-
+    //TODO Mapping 오류로 주석 처리 이후에 해제
+//    @DeleteMapping("/my-subjects")
+//    public void removeAllMySubject(
+//            @Valid RemoveAllMySubjectReq request
+//    ) {
+//        mySubjectService.removeAllMySubjectsByUserId(request.getUserId());
+//    }
 
     @GetMapping("/subjects/search")
     public ResponseEntity<Slice<GetSearchSubjectDto.Response>> searchSubjectsByKeyword(
