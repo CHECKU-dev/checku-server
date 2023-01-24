@@ -2,14 +2,12 @@ package dev.checku.checkuserver.global.error;
 
 import dev.checku.checkuserver.domain.log.application.ErrorLogService;
 import dev.checku.checkuserver.domain.log.dto.ErrorLogDto;
-import dev.checku.checkuserver.domain.portal.PortalSessionService;
+import dev.checku.checkuserver.domain.portal.application.PortalSessionService;
 import dev.checku.checkuserver.global.error.exception.BusinessException;
 import dev.checku.checkuserver.global.error.exception.FeignClientException;
-import dev.checku.checkuserver.global.util.PortalUtils;
-import dev.checku.checkuserver.domain.portal.LoginService;
+import dev.checku.checkuserver.domain.portal.application.PortalLoginService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.ExceptionUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
@@ -31,7 +29,7 @@ import static dev.checku.checkuserver.global.error.exception.ErrorCode.NETWORK_E
 public class GlobalExceptionHandler {
 
     private final ErrorLogService errorLogService;
-    private final LoginService loginService;
+    private final PortalLoginService portalLoginService;
     private final PortalSessionService portalSessionService;
 
     /**
@@ -117,7 +115,7 @@ public class GlobalExceptionHandler {
         log.error("Exception", e);
         saveErrorLog(HttpStatus.BAD_REQUEST.value(), NETWORK_ERROR.getMessage());
         List<String> errorMessages = List.of(NETWORK_ERROR.getMessage());
-        portalSessionService.updatePortalSession(loginService.login());
+        portalSessionService.updatePortalSession(portalLoginService.login());
 //        PortalUtils.updateJsessionid(loginService.login());
         ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.BAD_REQUEST, errorMessages);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);

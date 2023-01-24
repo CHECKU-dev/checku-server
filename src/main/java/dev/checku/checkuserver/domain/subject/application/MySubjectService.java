@@ -1,8 +1,6 @@
 package dev.checku.checkuserver.domain.subject.application;
 
-import dev.checku.checkuserver.domain.notification.exception.SubjcetNotFoundException;
-import dev.checku.checkuserver.domain.notification.exception.SubjectHasVacancyException;
-import dev.checku.checkuserver.domain.portal.PortalSessionService;
+import dev.checku.checkuserver.domain.portal.application.PortalSessionService;
 import dev.checku.checkuserver.domain.subject.dto.GetMySubjectDto;
 import dev.checku.checkuserver.domain.subject.dto.RemoveSubjectReq;
 import dev.checku.checkuserver.domain.subject.dto.SaveSubjectReq;
@@ -13,9 +11,8 @@ import dev.checku.checkuserver.domain.user.entity.User;
 import dev.checku.checkuserver.global.error.exception.BusinessException;
 import dev.checku.checkuserver.global.error.exception.EntityNotFoundException;
 import dev.checku.checkuserver.global.error.exception.ErrorCode;
-import dev.checku.checkuserver.domain.portal.PortalFeignClient;
-import dev.checku.checkuserver.domain.portal.PortalRes;
-import dev.checku.checkuserver.global.util.SubjectUtils;
+import dev.checku.checkuserver.domain.portal.application.PortalFeignClient;
+import dev.checku.checkuserver.domain.portal.dto.PortalRes;
 import dev.checku.checkuserver.global.util.PortalUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service

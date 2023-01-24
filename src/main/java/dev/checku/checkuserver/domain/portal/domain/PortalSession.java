@@ -1,4 +1,4 @@
-package dev.checku.checkuserver.domain.portal;
+package dev.checku.checkuserver.domain.portal.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

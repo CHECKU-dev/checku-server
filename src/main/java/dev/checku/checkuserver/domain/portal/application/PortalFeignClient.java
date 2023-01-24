@@ -1,5 +1,6 @@
-package dev.checku.checkuserver.domain.portal;
+package dev.checku.checkuserver.domain.portal.application;
 
+import dev.checku.checkuserver.domain.portal.dto.PortalRes;
 import feign.Response;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;

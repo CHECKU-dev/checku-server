@@ -1,12 +1,8 @@
 package dev.checku.checkuserver.global.util;
 
-import dev.checku.checkuserver.domain.portal.LoginService;
-import dev.checku.checkuserver.domain.portal.PortalSession;
-import dev.checku.checkuserver.domain.portal.PortalSessionService;
-import dev.checku.checkuserver.domain.portal.SessionConst;
+import dev.checku.checkuserver.domain.portal.application.PortalLoginService;
+import dev.checku.checkuserver.domain.portal.application.PortalSessionService;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.annotation.Order;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -18,7 +14,8 @@ import java.util.Map;
 @Component
 public class PortalUtils {
 
-    private final LoginService loginService;
+
+    private final PortalLoginService portalLoginService;
     private final PortalSessionService portalSessionService;
 
     private static String ID;
@@ -28,11 +25,11 @@ public class PortalUtils {
 
     private PortalUtils(@Value("${portal.id}") String id,
                         @Value("${portal.pwd}") String pwd,
-                        LoginService loginService,
+                        PortalLoginService portalLoginService,
                         PortalSessionService portalSessionService) {
         ID = id;
         PWD = pwd;
-        this.loginService = loginService;
+        this.portalLoginService = portalLoginService;
         this.portalSessionService = portalSessionService;
     }
 
@@ -66,10 +63,7 @@ public class PortalUtils {
         body.add("@d1#tp", "dm");
 
         /* 세션 */
-//        JSESSIONID = loginService.login();
         portalSessionService.init();
-//        portalSessionService.savePortalSession(new PortalSession(SessionConst.SESSION, JSESSIONID));
-//        String value = portalSessionService.getPortalSession().getValue();
 
     }
 

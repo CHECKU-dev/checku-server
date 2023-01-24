@@ -1,9 +1,8 @@
 package dev.checku.checkuserver.domain.subject.dto;
 
-import dev.checku.checkuserver.domain.log.enums.OrderBy;
 import dev.checku.checkuserver.domain.subject.enums.Department;
 import dev.checku.checkuserver.domain.subject.enums.Grade;
-import dev.checku.checkuserver.domain.portal.PortalRes;
+import dev.checku.checkuserver.domain.portal.dto.PortalRes;
 import dev.checku.checkuserver.domain.subject.enums.Type;
 import dev.checku.checkuserver.global.advice.Enum;
 import dev.checku.checkuserver.global.util.timeutils.TimeUtils;
