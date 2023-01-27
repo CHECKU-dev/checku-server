@@ -15,7 +15,6 @@ public class ErrorLogDto {
 
     private String errorMessage;
 
-
     public ErrorLog toEntity() {
         return ErrorLog.builder()
                 .status(status)

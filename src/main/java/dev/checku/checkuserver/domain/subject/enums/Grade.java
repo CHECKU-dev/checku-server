@@ -2,6 +2,7 @@ package dev.checku.checkuserver.domain.subject.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.util.StringUtils;
 
 import java.util.Arrays;
 
@@ -26,4 +27,15 @@ public enum Grade {
                 .orElse(UNKNOWN);
     }
 
+    public static Grade setGrade(String grade) {
+        if (StringUtils.hasText(grade)) {
+            return Grade.valueOf(grade.toUpperCase());
+        }
+        return Grade.ALL;
+    }
+
+    public boolean matchGrade(Integer grade) {
+        if (this == Grade.ALL) return true;
+        return this.getGrade().equals(grade);
+    }
 }

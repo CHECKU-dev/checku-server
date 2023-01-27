@@ -22,8 +22,8 @@ public class LogService {
     private final LogRepository logRepository;
 
     @Transactional
-    public void saveLog(LogSaveDto logdto) {
-        logRepository.save(logdto.toEntity());
+    public void saveLog(LogSaveDto logDto) {
+        logRepository.save(logDto.toEntity());
     }
 
     public Page<LogSearchDto.Response> getLogList(Pageable pageable) {

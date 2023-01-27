@@ -51,17 +51,18 @@ public class SubjectService {
         List<String> subjectList = getMySubjectsFromMySubject(user);
 
         Department department = Department.valueOf(dto.getDepartment());
-        Grade grade = setGrade(dto.getGrade());
-        Type type = setType(dto.getType());
+        Grade grade = Grade.setGrade(dto.getGrade());
+        Type type = Type.setType(dto.getType());
+        Boolean inVacancy = dto.getVacancy();
 
         PortalRes response = getAllSubjectsFromPortalByDepartmentAndType(department, type); // 전필, 전선은 이미 필터링
 
         // OTHER은 따로 분류하지 않음 -> 따라서 애플리케이션에서 따로 구분해야함
         return response.getSubjects()
                 .stream()
-                .filter(subject -> filteringGrade(grade, subject)) // grade 필터링
-                .filter(subject -> filteringType(type, subject)) // type 필터링 -> 전체, 기타만 분류
-                .filter(subject -> isVacancy(dto.getVacancy(), subject)) // vacancy 필터링
+                .filter(subject -> grade.matchGrade(subject.getGrade()))
+                .filter(subject -> type.matchType(subject.getSubjectType()))
+                .filter(subject -> isVacancy(inVacancy, subject)) // vacancy 필터링
                 .map(subject -> GetSubjectsDto.Response.from(subject, subjectList)).collect(Collectors.toList());
     }
 
@@ -172,38 +173,10 @@ public class SubjectService {
         return response.getBody();
     }
 
-
-    private Type setType(String type) {
-        if (!StringUtils.hasText(type)) {
-            return Type.ALL;
-        }
-
-        return Type.valueOf(type);
-
-    }
-
-    private Grade setGrade(String grade) {
-        if (StringUtils.hasText(grade)) {
-            return Grade.valueOf(grade.toUpperCase());
-        }
-        return Grade.ALL;
-    }
-
     private static boolean isVacancy(boolean isVacancy, PortalRes.SubjectDto subject) {
         return !isVacancy ? true : SubjectUtils.hasVacancy(subject.getNumberOfPeople());
     }
 
-    private static boolean filteringType(Type type, PortalRes.SubjectDto subject) {
-        if (type == Type.ALL) return true; // 전체는 필터링 X
-        else if (type == Type.ESSENTIAL || type == Type.OPTIONAL) return true; // 이미 정렬
-
-        return !subject.getSubjectType().equals("전필") && !subject.getSubjectType().equals("전선");
-    }
-
-    private static boolean filteringGrade(Grade grade, PortalRes.SubjectDto subject) {
-        if (grade == Grade.ALL) return true;
-        return grade.getGrade().equals(subject.getGrade());
-    }
 
     private static boolean isMajor(PortalRes.SubjectDto subjectDto) {
         return "전선".equals(subjectDto.getSubjectType()) || "전필".equals(subjectDto.getSubjectType());
