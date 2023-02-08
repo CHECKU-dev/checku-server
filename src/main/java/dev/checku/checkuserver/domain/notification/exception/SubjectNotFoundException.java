@@ -5,9 +5,9 @@ import dev.checku.checkuserver.global.error.exception.ErrorCode;
 import lombok.Getter;
 
 @Getter
-public class SubjcetNotFoundException extends BusinessException {
+public class SubjectNotFoundException extends BusinessException {
 
-    public SubjcetNotFoundException(ErrorCode errorCode) {
+    public SubjectNotFoundException(ErrorCode errorCode) {
         super(errorCode);
     }
 

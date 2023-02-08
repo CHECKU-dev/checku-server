@@ -1,5 +1,6 @@
 package dev.checku.checkuserver.domain.subject.entity;
 
+import dev.checku.checkuserver.domain.portal.dto.PortalRes;
 import dev.checku.checkuserver.domain.subject.enums.SubjectType;
 import lombok.Builder;
 import lombok.Getter;
@@ -43,8 +44,19 @@ public class Subject {
     }
 
 
+    public static Subject classifyMajorOrLiberalArts(String subjectNumber, String subjectName, String subjectType) {
+        Subject subject;
+        if (isMajor(subjectType)) {
+            subject = Subject.createSubject(subjectNumber, subjectName, SubjectType.MAJOR);
+        } else {
+            subject = Subject.createSubject(subjectNumber, subjectName, SubjectType.LIBERAL_ARTS);
+        }
+        return subject;
 
+    }
 
-
+    private static boolean isMajor(String subjectType) {
+        return "전선".equals(subjectType) || "전필".equals(subjectType);
+    }
 
 }

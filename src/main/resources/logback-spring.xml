@@ -3,12 +3,12 @@
     <!--    Constants     -->
     <timestamp key="DATE_FORMAT" datePattern="yyyy-MM-dd"/>
     <property name="CONSOLE_LOG_PATTERN"
-              value="%highlight([%-5level]) %d{yyyy-MM-dd HH:mm:ss} %cyan([%thread]) %magenta([%logger{0}:%line]) - %message %n"/>
+              value="%highlight([%-5level]) [%X{traceId}]  %d{yyyy-MM-dd HH:mm:ss} %magenta([%logger{0}:%line]) - %message %n"/>
 
     <property name="FILE_LOG_PATTERN"
-              value="[%-5level] %d{yyyy-MM-dd HH:mm:ss} [%thread] [%logger{0}:%line] - %message %n"/>
+              value="[%-5level] [%X{traceId}] %d{yyyy-MM-dd HH:mm:ss} [%logger{0}:%line] - %message %n"/>
 
-    <!-- Console   -->
+    <!--    Console   -->
     <include resource="appenders/async-console-appender.xml"/>
 
     <!--    Profiles    -->

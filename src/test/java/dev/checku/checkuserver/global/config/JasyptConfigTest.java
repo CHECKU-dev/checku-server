@@ -22,7 +22,6 @@ class JasyptConfigTest {
         config.setStringOutputType("base64"); //인코딩 방식
         encryptor.setConfig(config);
 
-
     }
 
 

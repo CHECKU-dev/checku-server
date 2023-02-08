@@ -14,22 +14,16 @@ import java.util.Map;
 @Component
 public class PortalUtils {
 
-
-    private final PortalLoginService portalLoginService;
     private final PortalSessionService portalSessionService;
 
     private static String ID;
     private static String PWD;
 
-//    public static String JSESSIONID;
-
     private PortalUtils(@Value("${portal.id}") String id,
                         @Value("${portal.pwd}") String pwd,
-                        PortalLoginService portalLoginService,
                         PortalSessionService portalSessionService) {
         ID = id;
         PWD = pwd;
-        this.portalLoginService = portalLoginService;
         this.portalSessionService = portalSessionService;
     }
 
@@ -63,8 +57,7 @@ public class PortalUtils {
         body.add("@d1#tp", "dm");
 
         /* 세션 */
-        portalSessionService.init();
-
+        portalSessionService.updatePortalSession();
     }
 
     public static MultiValueMap<String, String> createBody(
@@ -102,15 +95,5 @@ public class PortalUtils {
         return body;
     }
 
-//    public static void updateJsessionid(String jsessionid) {
-//        JSESSIONID = jsessionid;
-//    }
-
-//    @Scheduled(cron = "0 0/59 * * * *")
-//    public void refreshJsessionid() {
-//        if (!loginService.login().isBlank()) {
-//            JSESSIONID = loginService.login();
-//        }
-//    }
 
 }

@@ -5,6 +5,7 @@ import dev.checku.checkuserver.domain.subject.dto.GetMySubjectDto;
 import dev.checku.checkuserver.domain.subject.dto.RemoveMySubjectReq;
 import dev.checku.checkuserver.domain.subject.dto.SaveSubjectReq;
 import dev.checku.checkuserver.domain.subject.entity.MySubject;
+import dev.checku.checkuserver.domain.subject.exception.SubjectRetryException;
 import dev.checku.checkuserver.domain.subject.repository.MySubjectRepository;
 import dev.checku.checkuserver.domain.user.application.UserService;
 import dev.checku.checkuserver.domain.user.entity.User;
@@ -16,6 +17,8 @@ import dev.checku.checkuserver.domain.portal.dto.PortalRes;
 import dev.checku.checkuserver.global.util.PortalUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -83,6 +86,7 @@ public class MySubjectService {
     }
 
 
+    @Retryable(value = Exception.class, maxAttempts = 2, backoff = @Backoff(delay = 500))
     public List<GetMySubjectDto.Response> getMySubjects(GetMySubjectDto.Request dto) {
 
         User user = userService.getUserById(dto.getUserId());
@@ -117,8 +121,12 @@ public class MySubjectService {
                 PortalUtils.createBody("2022", "B01012", "", "", subjectNumber)
         );
 
+        if (response.getBody().getSubjects() == null) {
+            portalSessionService.updatePortalSession();
+            throw new SubjectRetryException();
+        }
+
         return response.getBody();
     }
-
 
 }

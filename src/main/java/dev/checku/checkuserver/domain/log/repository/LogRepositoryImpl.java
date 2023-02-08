@@ -4,6 +4,7 @@ import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import dev.checku.checkuserver.domain.log.entity.Log;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Repository;
 
@@ -14,13 +15,14 @@ import static dev.checku.checkuserver.domain.log.entity.QLog.log;
 
 
 @Repository
+@RequiredArgsConstructor
 public class LogRepositoryImpl implements LogRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 
-    public LogRepositoryImpl(EntityManager em) {
-        this.queryFactory = new JPAQueryFactory(em);
-    }
+//    public LogRepositoryImpl(EntityManager em) {
+//        this.queryFactory = new JPAQueryFactory(em);
+//    }
 
     @Override
     public Page<Log> findLog(Pageable pageable) {

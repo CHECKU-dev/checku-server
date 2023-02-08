@@ -1,13 +1,13 @@
 package dev.checku.checkuserver.domain.subject.application;
 
-import dev.checku.checkuserver.domain.notification.exception.SubjcetNotFoundException;
+import dev.checku.checkuserver.domain.notification.exception.SubjectNotFoundException;
 import dev.checku.checkuserver.domain.notification.exception.SubjectHasVacancyException;
 import dev.checku.checkuserver.domain.subject.dto.GetSubjectsDto;
 import dev.checku.checkuserver.domain.subject.enums.Department;
 import dev.checku.checkuserver.domain.subject.enums.Grade;
-import dev.checku.checkuserver.domain.subject.enums.SubjectType;
 import dev.checku.checkuserver.domain.portal.application.PortalSessionService;
 import dev.checku.checkuserver.domain.subject.enums.Type;
+import dev.checku.checkuserver.domain.subject.exception.SubjectRetryException;
 import dev.checku.checkuserver.domain.subject.repository.SubjectRepository;
 import dev.checku.checkuserver.domain.subject.dto.GetSearchSubjectDto;
 import dev.checku.checkuserver.domain.subject.entity.MySubject;
@@ -25,9 +25,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.http.ResponseEntity;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,9 +45,8 @@ public class SubjectService {
     private final PortalSessionService portalSessionService;
     private final SubjectRepository subjectRepository;
 
-    public List<GetSubjectsDto.Response> getSubjectsByDepartment(
-            GetSubjectsDto.Request dto
-    ) {
+    @Retryable(value = SubjectRetryException.class, maxAttempts = 2, backoff = @Backoff(delay = 300))
+    public List<GetSubjectsDto.Response> getSubjectsByDepartment(GetSubjectsDto.Request dto) {
         User user = userService.getUserById(dto.getUserId());
         List<String> subjectList = getMySubjectsFromMySubject(user);
 
@@ -66,12 +66,19 @@ public class SubjectService {
                 .map(subject -> GetSubjectsDto.Response.from(subject, subjectList)).collect(Collectors.toList());
     }
 
+//    @Recover
+//    public List<GetSubjectsDto.Response> recover(SubjectRetryException e, GetSubjectsDto.Request dto) {
+//        return null;
+//    }
+
     private List<String> getMySubjectsFromMySubject(User user) {
         return mySubjectService.getAllSubjectsByUser(user)
                 .stream().map(MySubject::getSubjectNumber)
                 .collect(Collectors.toList());
     }
 
+
+    @Retryable(value = SubjectRetryException.class, maxAttempts = 2, backoff = @Backoff(delay = 300))
     public void checkValidSubject(String subjectNumber) {
         PortalRes response = getAllSubjectsFromPortalBySubjectNumber(subjectNumber);
         try {
@@ -81,7 +88,7 @@ public class SubjectService {
                 throw new SubjectHasVacancyException(ErrorCode.SUBJECT_HAS_VACANCY);
             }
         } catch (IndexOutOfBoundsException e) {
-            throw new SubjcetNotFoundException(ErrorCode.SUBJECT_NOT_FOUND);
+            throw new SubjectNotFoundException(ErrorCode.SUBJECT_NOT_FOUND);
         }
     }
 
@@ -94,24 +101,12 @@ public class SubjectService {
 
         for (PortalRes.SubjectDto subjectDto : subjects) {
             if (subjectDto.getSubjectNumber() != null) {
-                Subject subject = classifyMajorOrLiberalArts(subjectDto);
-                ;
+                Subject subject = Subject.classifyMajorOrLiberalArts(subjectDto.getSubjectNumber(), subjectDto.getName(), subjectDto.getSubjectType());
                 subjectList.add(subject);
             }
         }
         subjectRepository.saveAll(subjectList);
     }
-
-    private static Subject classifyMajorOrLiberalArts(PortalRes.SubjectDto subjectDto) {
-        Subject subject;
-        if (isMajor(subjectDto)) {
-            subject = Subject.createSubject(subjectDto.getSubjectNumber(), subjectDto.getName(), SubjectType.MAJOR);
-        } else {
-            subject = Subject.createSubject(subjectDto.getSubjectNumber(), subjectDto.getName(), SubjectType.LIBERAL_ARTS);
-        }
-        return subject;
-    }
-
 
     public Subject getSubjectBySubjectNumber(String subjectNumber) {
         return subjectRepository.findBySubjectNumber(subjectNumber)
@@ -159,10 +154,15 @@ public class SubjectService {
                 PortalUtils.createBody("2022", "B01012", "", "", subjectNumber)
         );
 
+        if (response.getBody().getSubjects() == null) {
+            updatePortalSessionAndRetry();
+        }
+
+
         return response.getBody();
     }
 
-    private PortalRes getAllSubjectsFromPortalByDepartmentAndType(Department department, Type type) {
+    public PortalRes getAllSubjectsFromPortalByDepartmentAndType(Department department, Type type) {
 
         ResponseEntity<PortalRes> response = portalFeignClient.getSubjects(
                 portalSessionService.getPortalSession().getSession(),
@@ -170,16 +170,21 @@ public class SubjectService {
                 PortalUtils.createBody("2022", "B01012", type.getValue(), department.getValue(), "")
         );
 
+        if (response.getBody().getSubjects() == null) {
+            updatePortalSessionAndRetry();
+        }
+
         return response.getBody();
     }
 
-    private static boolean isVacancy(boolean isVacancy, PortalRes.SubjectDto subject) {
-        return !isVacancy ? true : SubjectUtils.hasVacancy(subject.getNumberOfPeople());
+
+    private void updatePortalSessionAndRetry() {
+        portalSessionService.updatePortalSession();
+        throw new SubjectRetryException();
     }
 
-
-    private static boolean isMajor(PortalRes.SubjectDto subjectDto) {
-        return "전선".equals(subjectDto.getSubjectType()) || "전필".equals(subjectDto.getSubjectType());
+    private static boolean isVacancy(boolean isVacancy, PortalRes.SubjectDto subject) {
+        return !isVacancy || SubjectUtils.hasVacancy(subject.getNumberOfPeople());
     }
 
 
