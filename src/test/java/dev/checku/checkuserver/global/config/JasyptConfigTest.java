@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class JasyptConfigTest {
 
     @Test
-    public void jasyt_test() {
+    public void jasypt_test() {
 
         PooledPBEStringEncryptor encryptor = new PooledPBEStringEncryptor();
         SimpleStringPBEConfig config = new SimpleStringPBEConfig();
@@ -21,12 +21,6 @@ class JasyptConfigTest {
         config.setSaltGeneratorClassName("org.jasypt.salt.RandomSaltGenerator"); // salt 생성 클래스
         config.setStringOutputType("base64"); //인코딩 방식
         encryptor.setConfig(config);
-
-//        String encyrptText = encryptor.encrypt(plainText);
-//        System.out.println(encyrptText);
-//        String decyrptText = encryptor.decrypt(encyrptText);
-//        System.out.println(decyrptText);
-//        assertEquals(plainText, decyrptText);
 
     }
 

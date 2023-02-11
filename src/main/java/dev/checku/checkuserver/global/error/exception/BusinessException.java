@@ -7,6 +7,10 @@ public class BusinessException extends RuntimeException {
 
     private int status;
 
+    public BusinessException() {
+        super();
+    }
+
     public BusinessException(String message) {
         super(message);
     }

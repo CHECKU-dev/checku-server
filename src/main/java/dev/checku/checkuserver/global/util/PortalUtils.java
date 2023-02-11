@@ -1,12 +1,7 @@
 package dev.checku.checkuserver.global.util;
 
-import dev.checku.checkuserver.domain.portal.LoginService;
-import dev.checku.checkuserver.domain.portal.PortalSession;
-import dev.checku.checkuserver.domain.portal.PortalSessionService;
-import dev.checku.checkuserver.domain.portal.SessionConst;
+import dev.checku.checkuserver.domain.portal.application.PortalSessionService;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.annotation.Order;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -18,21 +13,19 @@ import java.util.Map;
 @Component
 public class PortalUtils {
 
-    private final LoginService loginService;
     private final PortalSessionService portalSessionService;
 
     private static String ID;
     private static String PWD;
 
-//    public static String JSESSIONID;
+    private static final String YEAR = "2023"; // 연도
+    private static final String SHTM = "B01011"; // 학기 구분
 
     private PortalUtils(@Value("${portal.id}") String id,
                         @Value("${portal.pwd}") String pwd,
-                        LoginService loginService,
                         PortalSessionService portalSessionService) {
         ID = id;
         PWD = pwd;
-        this.loginService = loginService;
         this.portalSessionService = portalSessionService;
     }
 
@@ -66,15 +59,11 @@ public class PortalUtils {
         body.add("@d1#tp", "dm");
 
         /* 세션 */
-//        JSESSIONID = loginService.login();
-        portalSessionService.init();
-//        portalSessionService.savePortalSession(new PortalSession(SessionConst.SESSION, JSESSIONID));
-//        String value = portalSessionService.getPortalSession().getValue();
-
+        portalSessionService.updatePortalSession();
     }
 
     public static MultiValueMap<String, String> createBody(
-            String year, String shtm, String subjectType,
+            String subjectType,
             String department, String subjectNumber
     ) {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
@@ -95,9 +84,9 @@ public class PortalUtils {
         body.add("@d1#", "dsParam");
         body.add("@d1#tp", "dm");
         // 연도
-        body.add("@d1#ltYy", year);
+        body.add("@d1#ltYy", YEAR);
         // 학기 구분
-        body.add("@d1#ltShtm", shtm);
+        body.add("@d1#ltShtm", SHTM);
         // 이수 구분
         body.add("@d1#pobtDiv", subjectType);
         // 학과 번호
@@ -108,15 +97,5 @@ public class PortalUtils {
         return body;
     }
 
-//    public static void updateJsessionid(String jsessionid) {
-//        JSESSIONID = jsessionid;
-//    }
-
-//    @Scheduled(cron = "0 0/59 * * * *")
-//    public void refreshJsessionid() {
-//        if (!loginService.login().isBlank()) {
-//            JSESSIONID = loginService.login();
-//        }
-//    }
 
 }

@@ -1,12 +1,7 @@
 package dev.checku.checkuserver.global.error;
 
-import dev.checku.checkuserver.domain.log.application.ErrorLogService;
-import dev.checku.checkuserver.domain.log.dto.ErrorLogDto;
-import dev.checku.checkuserver.domain.portal.PortalSessionService;
 import dev.checku.checkuserver.global.error.exception.BusinessException;
 import dev.checku.checkuserver.global.error.exception.FeignClientException;
-import dev.checku.checkuserver.global.util.PortalUtils;
-import dev.checku.checkuserver.domain.portal.LoginService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,41 +14,33 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
-
-import static dev.checku.checkuserver.global.error.exception.ErrorCode.NETWORK_ERROR;
 
 @Slf4j
 @RestControllerAdvice
 @RequiredArgsConstructor
 public class GlobalExceptionHandler {
 
-    private final ErrorLogService errorLogService;
-    private final LoginService loginService;
-    private final PortalSessionService portalSessionService;
-
     /**
      * javax.validation.Valid 또는 @Validated binding error가 발생할 경우
      */
     @ExceptionHandler(BindException.class)
     protected ResponseEntity<ErrorResponse> handleBindException(BindException e) {
-        log.error("handleBindException", e);
-
         List<String> errorMessages = new ArrayList<>();
-
         BindingResult bindingResult = e.getBindingResult();
         if (bindingResult.hasErrors()) {
             List<FieldError> fieldErrors = bindingResult.getFieldErrors();
             for (FieldError fieldError : fieldErrors) {
                 errorMessages.add(fieldError.getDefaultMessage());
-//                , ExceptionUtils.getStackTrace(e)
-                saveErrorLog(HttpStatus.BAD_REQUEST.value(), fieldError.getDefaultMessage());
             }
         }
 
-        ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.BAD_REQUEST, errorMessages);
+        logWarn(errorMessages);
 
+        ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.BAD_REQUEST, errorMessages);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
@@ -62,10 +49,8 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     protected ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
-        log.error("handleMethodArgumentTypeMismatchException", e);
-        
-        saveErrorLog(HttpStatus.BAD_REQUEST.value(), e.getMessage());
-        List<String> errorMessages = List.of(e.getName());
+        List<String> errorMessages = List.of(e.getMessage());
+        logWarn(errorMessages);
         ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.BAD_REQUEST, errorMessages);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
@@ -75,9 +60,9 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     protected ResponseEntity<ErrorResponse> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
-        log.error("handleHttpRequestMethodNotSupportedException", e);
-        saveErrorLog(HttpStatus.METHOD_NOT_ALLOWED.value(), e.getMessage());
         List<String> errorMessages = List.of(e.getMessage());
+        logWarn(errorMessages);
+
         ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.METHOD_NOT_ALLOWED, errorMessages);
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(errorResponse);
     }
@@ -87,9 +72,9 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(value = {BusinessException.class})
     protected ResponseEntity<ErrorResponse> handleConflict(BusinessException e) {
-        log.error("BusinessException", e);
-        saveErrorLog(e.getStatus(), e.getMessage());
         List<String> errorMessages = List.of(e.getMessage());
+        logWarn(errorMessages);
+
         HttpStatus httpStatus = HttpStatus.valueOf(e.getStatus());
         ErrorResponse errorResponse = ErrorResponse.of(httpStatus, errorMessages);
         return ResponseEntity.status(httpStatus).body(errorResponse);
@@ -99,12 +84,11 @@ public class GlobalExceptionHandler {
      * FeignClient 예외 발생
      */
     @ExceptionHandler(FeignClientException.class)
-    protected ResponseEntity<ErrorResponse> handleFeignClientException(FeignClientException e) {
-        log.error("FeignClientException", e);
-        saveErrorLog(e.getStatus(), e.getMessage());
-        List<String> errorMessages = List.of(e.getMessage());
+    protected ResponseEntity<ErrorResponse> unHandledFeignClientException(FeignClientException e) {
+        logError(e);
+
         HttpStatus httpStatus = HttpStatus.valueOf(e.getStatus());
-        ErrorResponse errorResponse = ErrorResponse.of(httpStatus, errorMessages);
+        ErrorResponse errorResponse = ErrorResponse.of(httpStatus, List.of("예기치 못한 오류가 발생하였습니다. 잠시 후에 다시 시도해주세요."));
 
         return ResponseEntity.status(httpStatus).body(errorResponse);
     }
@@ -113,18 +97,31 @@ public class GlobalExceptionHandler {
      * 나머지 예외 발생
      */
     @ExceptionHandler(Exception.class)
-    protected ResponseEntity<ErrorResponse> handleException(Exception e) {
-        log.error("Exception", e);
-        saveErrorLog(HttpStatus.BAD_REQUEST.value(), NETWORK_ERROR.getMessage());
-        List<String> errorMessages = List.of(NETWORK_ERROR.getMessage());
-        portalSessionService.updatePortalSession(loginService.login());
-//        PortalUtils.updateJsessionid(loginService.login());
-        ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.BAD_REQUEST, errorMessages);
+    protected ResponseEntity<ErrorResponse> unHandledException(final Exception e) {
+        logError(e);
+        ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.BAD_REQUEST, List.of("예기치 못한 오류가 발생하였습니다. 잠시 후에 다시 시도해주세요."));
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
-    private void saveErrorLog(int statusCode, String errorMessage) {
-        errorLogService.saveErrorLog(ErrorLogDto.of(statusCode, errorMessage));
+    private void logError(Exception exception) {
+
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter printWriter = new PrintWriter(stringWriter);
+
+        exception.printStackTrace(printWriter);
+        String stackTrace = stringWriter.toString();
+
+        log.error("stack_trace = {}", stackTrace);
+    }
+
+    private void logWarn(List<String> errorMessages) {
+        StringBuffer sb = new StringBuffer();
+
+        for (String message : errorMessages) {
+            sb.append(message).append(" ");
+        }
+
+        log.warn(sb.toString());
     }
 
 }

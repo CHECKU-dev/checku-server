@@ -1,7 +1,10 @@
 package dev.checku.checkuserver.domain.subject.dto;
 
+import dev.checku.checkuserver.domain.subject.enums.Department;
 import dev.checku.checkuserver.domain.subject.enums.Grade;
-import dev.checku.checkuserver.domain.portal.PortalRes;
+import dev.checku.checkuserver.domain.portal.dto.PortalRes;
+import dev.checku.checkuserver.domain.subject.enums.Type;
+import dev.checku.checkuserver.global.advice.Enum;
 import dev.checku.checkuserver.global.util.timeutils.TimeUtils;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,25 +16,21 @@ import java.util.regex.Pattern;
 
 public class GetSubjectsDto {
 
-    @Getter
-    @Setter
+    @Getter @Setter
     public static class Request {
 
         private Long userId;
-
+        @Enum(enumClass = Department.class, message = "잘못된 Enum 값 입니다.")
         private String department;
-
+        @Enum(enumClass = Grade.class, message = "잘못된 Enum 값 입니다.", isNullable = true)
         private String grade;
-
+        @Enum(enumClass = Type.class, message = "잘못된 Enum 값 입니다.", isNullable = true)
         private String type;
-
-        private Boolean vacancy;
-
+        private Boolean vacancy = Boolean.FALSE;
     }
 
     //TODO 분리
-    @Getter
-    @Setter
+    @Getter @Setter
     public static class Response {
 
         // 학년 *
@@ -83,6 +82,7 @@ public class GetSubjectsDto {
         }
 
 
+        //TODO 이게 최선인가
         public static Response from(PortalRes.SubjectDto subjectDto, List<String> subjectList) {
             // 교시를 시간으로 변경
             //TODO 정리

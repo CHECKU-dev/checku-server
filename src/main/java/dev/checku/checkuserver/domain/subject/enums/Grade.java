@@ -2,20 +2,13 @@ package dev.checku.checkuserver.domain.subject.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.util.StringUtils;
 
 import java.util.Arrays;
 
 @Getter
 @RequiredArgsConstructor
 public enum Grade {
-
-//    ALL(""), FIRST("1"), SECOND("2"), THIRD("3"), FOURTH("4");
-//
-//    private String value;
-//
-//    Grade(String value) {
-//        this.value = value;
-//    }
 
     FIRST(1, "1학년"),
     SECOND(2, "2학년"),
@@ -34,4 +27,15 @@ public enum Grade {
                 .orElse(UNKNOWN);
     }
 
+    public static Grade setGrade(String grade) {
+        if (StringUtils.hasText(grade)) {
+            return Grade.valueOf(grade.toUpperCase());
+        }
+        return Grade.ALL;
+    }
+
+    public boolean matchGrade(Integer grade) {
+        if (this == Grade.ALL) return true;
+        return this.getGrade().equals(grade);
+    }
 }

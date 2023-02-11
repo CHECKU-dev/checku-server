@@ -27,46 +27,63 @@ public class SubjectApi {
     private final SubjectService subjectService;
 
     @GetMapping("/subjects")
-    public ResponseEntity<List<GetSubjectsDto.Response>> subjectSearchByDepartment(
+    public ResponseEntity<List<GetSubjectsDto.Response>> getSubjectsByDepartment(
             @Valid GetSubjectsDto.Request dto
     ) {
-        List<GetSubjectsDto.Response> response = mySubjectService.getSubjectsByDepartment(dto);
+        List<GetSubjectsDto.Response> response = subjectService.getSubjectsByDepartment(dto);
         return ResponseEntity.ok(response);
-
     }
 
-    //TODO DTO 나누기
     @GetMapping("/my-subjects")
-    public ResponseEntity<List<GetMySubjectDto.Response>> mySubjectSearch(
+    public ResponseEntity<List<GetMySubjectDto.Response>> getMySubjects(
             @Valid GetMySubjectDto.Request dto
     ) {
-
         List<GetMySubjectDto.Response> response = mySubjectService.getMySubjects(dto);
         return ResponseEntity.ok(response);
     }
 
-    // TODO SAVE SUBJECT DELETE SUBJECT 구분
+    //TODO SAVE SUBJECT DELETE SUBJECT 구분 -> 안드로이드 업데이트를 위해 V1으로 남겨야함
+    @Deprecated
     @PostMapping("/my-subjects")
-    public void mySubjectRegisterOfRemove(
+    public void mySubjectRegisterOrRemoveV1(
             @RequestBody @Valid SaveSubjectReq request
     ) {
         mySubjectService.saveOrRemoveSubject(request);
     }
 
+    @Deprecated
     @DeleteMapping("/my-subjects")
-    public void mySubjectRemove(
-            @Valid RemoveSubjectReq request
+    public void removeMySubjectV1(
+            @Valid RemoveMySubjectReq request
     ) {
-        mySubjectService.removeSubject(request);
+        mySubjectService.removeMySubjectV1(request);
     }
 
-    @PostMapping("/subjects")
-    public void subjectInsert() {
-        subjectService.insertSubjects();
+    @PostMapping("/my-subjects-V2") // 이후에 V2 삭제
+    public void saveMySubjectV2(
+            @RequestBody @Valid SaveSubjectReq request
+    ) {
+        mySubjectService.saveMySubject(request);
     }
+
+    @DeleteMapping("/my-subjects/{subjectNumber}")
+    public void removeMySubjectV2(
+            @PathVariable("subjectNumber") String subjectNumber,
+            @Valid RemoveMySubjectReq request
+    ) {
+        mySubjectService.removeMySubjectV2(subjectNumber, request.getUserId());
+    }
+
+    //TODO Mapping 오류로 주석 처리 이후에 해제
+//    @DeleteMapping("/my-subjects")
+//    public void removeAllMySubject(
+//            @Valid RemoveAllMySubjectReq request
+//    ) {
+//        mySubjectService.removeAllMySubjectsByUserId(request.getUserId());
+//    }
 
     @GetMapping("/subjects/search")
-    public ResponseEntity<Slice<GetSearchSubjectDto.Response>> subjectSearchByKeyword(
+    public ResponseEntity<Slice<GetSearchSubjectDto.Response>> searchSubjectsByKeyword(
             @Valid GetSearchSubjectDto.Request dto,
             Optional<Integer> page
     ) {
@@ -76,8 +93,13 @@ public class SubjectApi {
         );
 
         Slice<GetSearchSubjectDto.Response> response = subjectService.getSubjectsByKeyword(dto, pageable);
-
         return ResponseEntity.ok(response);
+    }
+
+    // 유틸성 API
+    @PostMapping("/subjects")
+    public void insertSubjects() {
+        subjectService.insertSubjects();
     }
 
 

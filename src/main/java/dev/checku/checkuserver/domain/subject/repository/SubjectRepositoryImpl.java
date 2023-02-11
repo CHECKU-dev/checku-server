@@ -3,6 +3,7 @@ package dev.checku.checkuserver.domain.subject.repository;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import dev.checku.checkuserver.domain.subject.entity.Subject;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
@@ -13,13 +14,14 @@ import static dev.checku.checkuserver.domain.subject.entity.QSubject.subject;
 
 
 @Repository
+@RequiredArgsConstructor
 public class SubjectRepositoryImpl implements SubjectRepositoryCustom {
 
-    private JPAQueryFactory queryFactory;
+    private final JPAQueryFactory queryFactory;
 
-    public SubjectRepositoryImpl(EntityManager em) {
-        this.queryFactory = new JPAQueryFactory(em);
-    }
+//    public SubjectRepositoryImpl(EntityManager em) {
+//        this.queryFactory = new JPAQueryFactory(em);
+//    }
 
     @Override
     public List<Subject> findSubjectByKeyword(String searchQuery, Pageable pageable) {

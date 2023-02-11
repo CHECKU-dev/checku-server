@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!--    Constants     -->
+    <timestamp key="DATE_FORMAT" datePattern="yyyy-MM-dd"/>
+    <property name="CONSOLE_LOG_PATTERN"
+              value="%highlight([%-5level]) [%X{traceId}]  %d{yyyy-MM-dd HH:mm:ss} %magenta([%logger{0}:%line]) - %message %n"/>
+
+    <property name="FILE_LOG_PATTERN"
+              value="[%-5level] [%X{traceId}] %d{yyyy-MM-dd HH:mm:ss} [%logger{0}:%line] - %message %n"/>
+
+    <!--    Console   -->
+    <include resource="appenders/async-console-appender.xml"/>
+
+    <!--    Profiles    -->
+    <springProfile name="dev">
+        <property name="FILE_PATH"
+                  value="${user.home}/logs/dev"/>
+
+        <include resource="appenders/async-file-appender-info.xml"/>
+        <include resource="appenders/async-file-appender-error.xml"/>
+        <include resource="appenders/async-file-appender-warn.xml"/>
+
+        <root level="INFO">
+            <appender-ref ref="ASYNC_CONSOLE_APPENDER"/>
+
+            <appender-ref ref="ASYNC_FILE_APPENDER_ERROR"/>
+            <appender-ref ref="ASYNC_FILE_APPENDER_WARN"/>
+        </root>
+    </springProfile>
+
+
+    <springProfile name="prod">
+        <property name="FILE_PATH"
+                  value="/home/ec2-user/logs/prod"/>
+
+        <include resource="appenders/async-file-appender-info.xml"/>
+        <include resource="appenders/async-file-appender-error.xml"/>
+        <include resource="appenders/async-file-appender-warn.xml"/>
+
+        <root level="INFO">
+            <appender-ref ref="ASYNC_CONSOLE_APPENDER"/>
+
+            <appender-ref ref="ASYNC_FILE_APPENDER_INFO"/>
+
+            <appender-ref ref="ASYNC_FILE_APPENDER_ERROR"/>
+            <appender-ref ref="ASYNC_FILE_APPENDER_WARN"/>
+        </root>
+    </springProfile>
+
+</configuration>

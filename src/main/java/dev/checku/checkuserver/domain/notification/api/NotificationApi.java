@@ -1,57 +1,53 @@
 package dev.checku.checkuserver.domain.notification.api;
 
 import dev.checku.checkuserver.domain.notification.application.NotificationService;
-import dev.checku.checkuserver.domain.notification.dto.NotificationCancelDto;
-import dev.checku.checkuserver.domain.notification.dto.NotificationRegisterDto;
+import dev.checku.checkuserver.domain.notification.dto.NotificationCancelReq;
+import dev.checku.checkuserver.domain.notification.dto.NotificationRegisterReq;
 import dev.checku.checkuserver.domain.notification.dto.NotificationSearchDto;
-import dev.checku.checkuserver.domain.notification.dto.NotificationSendDto;
+import dev.checku.checkuserver.domain.notification.dto.NotificationSendReq;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.List;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/notification")
+@RequestMapping("/api/notification") // notification -> notifications
 public class NotificationApi {
 
     private final NotificationService notificationService;
 
     @PostMapping("/topic")
-    public ResponseEntity<NotificationSendDto.Response> notificationSend(@RequestBody NotificationSendDto.Request request) {
+    public void sendNotification(@RequestBody NotificationSendReq request) {
         notificationService.sendMessageByTopic(request);
-        log.info("메세지 전송(Topic: {})", request.getTopic());
-        return ResponseEntity.ok(NotificationSendDto.Response.of());
     }
 
     @PostMapping
-    public ResponseEntity<NotificationRegisterDto.Response> notificationRegister(
-            @RequestBody NotificationRegisterDto.Request dto,
-            HttpServletRequest request
-    ) {
-        NotificationRegisterDto.Response response = notificationService.applyNotification(dto);
-        return ResponseEntity.ok(response);
+    public void registerNotification(@RequestBody @Valid NotificationRegisterReq request) {
+        notificationService.applyNotification(request);
     }
 
     @DeleteMapping
-    public ResponseEntity<NotificationCancelDto.Response> notificationCancel(NotificationCancelDto.Request request) {
-
-        NotificationCancelDto.Response response = notificationService.cancelNotification(request);
-        return ResponseEntity.ok(response);
+    public void cancelNotification(@Valid NotificationCancelReq request) {
+        notificationService.cancelNotification(request);
     }
 
     @GetMapping
-    public ResponseEntity<List<NotificationSearchDto.Response>> notificationSearch(NotificationSearchDto.Request request) {
-        List<NotificationSearchDto.Response> response = notificationService.getNotification(request);
+    public ResponseEntity<List<NotificationSearchDto.Response>> getNotifications(
+            @Valid NotificationSearchDto.Request request
+    ) {
+        List<NotificationSearchDto.Response> response = notificationService.getNotifications(request);
         return ResponseEntity.ok(response);
     }
 
+
+    // 테스팅용 API
     @GetMapping("/test/{fcmToken}")
-    public ResponseEntity<Void> notificationTest(
+    public ResponseEntity<Void> testNotification(
             @PathVariable("fcmToken") String fcmToken
     ) {
         notificationService.sendTestMessageByToken(fcmToken);

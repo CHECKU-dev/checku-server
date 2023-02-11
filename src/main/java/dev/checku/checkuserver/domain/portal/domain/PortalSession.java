@@ -1,4 +1,4 @@
-package dev.checku.checkuserver.domain.portal;
+package dev.checku.checkuserver.domain.portal.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,7 +16,4 @@ public class PortalSession {
 
     private String session;
 
-    public void updateSession(String session) {
-        this.session = session;
-    }
 }

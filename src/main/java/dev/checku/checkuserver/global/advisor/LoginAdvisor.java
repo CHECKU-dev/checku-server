@@ -1,6 +1,6 @@
 package dev.checku.checkuserver.global.advisor;
 
-import dev.checku.checkuserver.domain.portal.LoginService;
+import dev.checku.checkuserver.domain.portal.application.PortalLoginService;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
@@ -16,11 +16,11 @@ import javax.servlet.http.HttpServletRequest;
 @RequiredArgsConstructor
 public class LoginAdvisor {
 
-    private final LoginService loginService;
+    private final PortalLoginService portalLoginService;
 
     @Before("@annotation(dev.checku.checkuserver.global.advice.Login)")
     public void portalLogin(JoinPoint joinPoint) {
-        String session = loginService.login();
+        String session = portalLoginService.login();
         HttpServletRequest servletRequest = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         servletRequest.setAttribute("session", session);
     }

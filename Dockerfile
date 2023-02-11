@@ -14,3 +14,4 @@ ENTRYPOINT [ \
             "-jar", \
             "app.jar" \
 ]
+#            "-Dspring.profiles.active=prod", \

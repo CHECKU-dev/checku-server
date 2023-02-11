@@ -1,11 +1,10 @@
 package dev.checku.checkuserver.domain.notification.application;
 
-import dev.checku.checkuserver.domain.subject.application.MySubjectService;
 import dev.checku.checkuserver.domain.notification.repository.NotificationRepository;
 import dev.checku.checkuserver.domain.notification.dto.NotificationSearchDto;
-import dev.checku.checkuserver.domain.notification.dto.NotificationRegisterDto;
-import dev.checku.checkuserver.domain.notification.dto.NotificationCancelDto;
-import dev.checku.checkuserver.domain.notification.dto.NotificationSendDto;
+import dev.checku.checkuserver.domain.notification.dto.NotificationRegisterReq;
+import dev.checku.checkuserver.domain.notification.dto.NotificationCancelReq;
+import dev.checku.checkuserver.domain.notification.dto.NotificationSendReq;
 import dev.checku.checkuserver.domain.notification.entity.Notification;
 import dev.checku.checkuserver.domain.notification.exception.NotificationAlreadyRegisteredException;
 import dev.checku.checkuserver.domain.subject.application.SubjectService;
@@ -30,7 +29,6 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class NotificationService {
 
-    private final MySubjectService mySubjectService;
     private final SubjectService subjectService;
     private final UserService userService;
     private final NotificationRepository notificationRepository;
@@ -38,8 +36,8 @@ public class NotificationService {
     private final TopicService topicService;
 
     @Transactional
-    public NotificationRegisterDto.Response applyNotification(NotificationRegisterDto.Request request) {
-        mySubjectService.checkValidSubject(request.getSubjectNumber());
+    public void applyNotification(NotificationRegisterReq request) {
+        subjectService.checkValidSubject(request.getSubjectNumber());
 
         User user = userService.getUserById(request.getUserId());
         Notification notification = request.toEntity();
@@ -48,21 +46,20 @@ public class NotificationService {
             throw new NotificationAlreadyRegisteredException(ErrorCode.NOTIFICATION_ALREADY_REGISTERED);
         }
 
+        // topic 존재하지 않으면 topic 생성
         if (!topicService.existsBySubjectNumber(notification.getSubjectNumber())) {
             Topic topic = Topic.createTopic(notification.getSubjectNumber());
             topicService.saveTopic(topic);
         }
 
         Notification saveNotification = Notification.createNotification(notification, user);
-
         saveNotification = notificationRepository.save(saveNotification);
         fcmService.subscribeToTopic(user.getFcmToken(), saveNotification.getSubjectNumber());
 
-        return NotificationRegisterDto.Response.of(saveNotification);
     }
 
     @Transactional
-    public NotificationCancelDto.Response cancelNotification(NotificationCancelDto.Request request) {
+    public void cancelNotification(NotificationCancelReq request) {
         String subjectNumber = request.getSubjectNumber();
         User user = userService.getUserById(request.getUserId());
 
@@ -72,14 +69,13 @@ public class NotificationService {
         fcmService.unsubscribeToTopic(user.getFcmToken(), subjectNumber);
         notificationRepository.delete(notification);
 
+        // 더이상 notification 존재하지 않으면 topic 삭제
         if (!notificationRepository.existsBySubjectNumber(subjectNumber)) {
             topicService.deleteTopicBySubjectNumber(subjectNumber);
         }
-
-        return NotificationCancelDto.Response.of(subjectNumber);
     }
 
-    public List<NotificationSearchDto.Response> getNotification(NotificationSearchDto.Request request) {
+    public List<NotificationSearchDto.Response> getNotifications(NotificationSearchDto.Request request) {
         User user = userService.getUserById(request.getUserId());
         List<Notification> notificationList = notificationRepository.findAllByUser(user);
 
@@ -90,7 +86,7 @@ public class NotificationService {
 
     @Async
     @Transactional
-    public void sendMessageByTopic(NotificationSendDto.Request request) {
+    public void sendMessageByTopic(NotificationSendReq request) {
         String subjectNumber = request.getTopic();
 
         Subject subject = subjectService.getSubjectBySubjectNumber(subjectNumber);
@@ -100,7 +96,8 @@ public class NotificationService {
         List<String> fcmTokens = notificationList.stream()
                 .map(notification -> notification.getUser().getFcmToken())
                 .collect(Collectors.toList());
-        fcmService.sendMessageToSubscriber(subjectNumber, "체쿠", subject.getSubjectName() + "(" + subject.getSubjectNumber() + ")" + " 빈 자리가 있습니다.", fcmTokens);
+
+        fcmService.sendMessageToSubscriber(subjectNumber, "체쿠", String.format("%s ( %s ) 빈 자리가 있습니다.", subject.getSubjectName(), subject.getSubjectNumber()), fcmTokens);
 
         // notification 삭제
         notificationRepository.deleteAllInBatch(notificationList);

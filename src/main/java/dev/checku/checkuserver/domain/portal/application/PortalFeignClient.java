@@ -1,5 +1,6 @@
-package dev.checku.checkuserver.domain.portal;
+package dev.checku.checkuserver.domain.portal.application;
 
+import dev.checku.checkuserver.domain.portal.dto.PortalRes;
 import feign.Response;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
@@ -26,17 +27,17 @@ public interface PortalFeignClient {
     );
 
     @PostMapping(value = "/CourTotalTimetableInq/find.do", produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    ResponseEntity<PortalRes> getSubject(
-            @RequestHeader("Cookie") String cookie,
-            @RequestHeader Map<String, String> header,
-            MultiValueMap<String, String> subjectBody);
-
-
-    @PostMapping(value = "/CourTotalTimetableInq/find.do", produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     ResponseEntity<PortalRes> getSubjects(
             @RequestHeader("Cookie") String cookie,
             @RequestHeader Map<String, String> header,
             MultiValueMap<String, String> subjectBody);
+
+
+//    @PostMapping(value = "/CourTotalTimetableInq/find.do", produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+//    ResponseEntity<PortalRes> getSubjects(
+//            @RequestHeader("Cookie") String cookie,
+//            @RequestHeader Map<String, String> header,
+//            MultiValueMap<String, String> subjectBody);
 
 
 

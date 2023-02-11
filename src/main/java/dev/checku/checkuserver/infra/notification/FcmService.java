@@ -22,10 +22,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FcmService {
 
-    private final FcmClient fcmClient;
-
-    private final String CONTENT_TYPE = "application/json; UTF-8";
-
     private FirebaseMessaging firebaseMessaging;
 
     public boolean subscribeToTopic(String fcmToken, String subjectNumber) {
@@ -85,22 +81,6 @@ public class FcmService {
             e.printStackTrace();
         }
 
-    }
-
-    private FcmMessage makeMessage(String targetToken, String title, String body, String type) {
-        FcmMessage message = FcmMessage.of(targetToken, title, body, type);
-        return message;
-    }
-
-    private String getAccessToken() throws IOException {
-        String firebaseConfigPath = "firebase/firebase_service_key.json";
-
-        GoogleCredentials googleCredentials = GoogleCredentials
-                .fromStream(new ClassPathResource(firebaseConfigPath).getInputStream())
-                .createScoped(List.of("https://www.googleapis.com/auth/cloud-platform"));
-
-        googleCredentials.refreshIfExpired();
-        return googleCredentials.getAccessToken().getTokenValue();
     }
 
 }

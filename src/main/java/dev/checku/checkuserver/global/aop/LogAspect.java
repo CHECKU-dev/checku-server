@@ -2,7 +2,6 @@ package dev.checku.checkuserver.global.aop;
 
 import com.google.common.base.Joiner;
 import dev.checku.checkuserver.domain.log.application.LogService;
-import dev.checku.checkuserver.domain.log.dto.LogSaveDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -17,26 +16,29 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static net.logstash.logback.argument.StructuredArguments.value;
+
 @Aspect
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class LogAspect {
 
-    private final LogService logService;
-
-    @Around("within(dev.checku.checkuserver.domain..api..*) && !@annotation(dev.checku.checkuserver.global.advice.NoLogging)")
+//    @Around("within(dev.checku.checkuserver.domain..api..*) && !@annotation(dev.checku.checkuserver.global.advice.NoLogging)")
+    @Around("within(dev.checku.checkuserver.domain..*) && !@annotation(dev.checku.checkuserver.global.advice.NoLogging)")
     public Object logging(ProceedingJoinPoint pjp) throws Throwable {
         String params = getRequestParams();
         long startAt = System.currentTimeMillis();
         Object result = pjp.proceed();
         long endAt = System.currentTimeMillis();
 
-        LogSaveDto logSaveDto = LogSaveDto.of(pjp.getSignature().getName(), params, endAt - startAt);
-        logService.saveLog(logSaveDto);
+        log.info("{} took {} ms. (params: '{}')",
+                value("method", pjp.getSignature().getName()), endAt - startAt, params);
 
         return result;
     }
+
+
 
     private String getRequestParams() {
         String params = "";

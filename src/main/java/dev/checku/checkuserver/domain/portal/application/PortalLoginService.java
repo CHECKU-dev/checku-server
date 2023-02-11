@@ -1,4 +1,4 @@
-package dev.checku.checkuserver.domain.portal;
+package dev.checku.checkuserver.domain.portal.application;
 
 import dev.checku.checkuserver.global.util.PortalUtils;
 import feign.Response;
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class LoginService {
+public class PortalLoginService {
 
     private final PortalFeignClient portalFeignClient;
 
