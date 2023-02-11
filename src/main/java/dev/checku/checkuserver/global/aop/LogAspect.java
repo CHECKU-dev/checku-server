@@ -1,7 +1,6 @@
 package dev.checku.checkuserver.global.aop;
 
 import com.google.common.base.Joiner;
-import dev.checku.checkuserver.domain.log.application.LogService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
