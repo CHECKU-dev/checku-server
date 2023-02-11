@@ -72,7 +72,10 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(value = {BusinessException.class})
     protected ResponseEntity<ErrorResponse> handleConflict(BusinessException e) {
-        List<String> errorMessages = List.of(e.getMessage());
+        List<String> errorMessages = new ArrayList<>();
+        if (e.getMessage() != null) {
+            errorMessages = List.of(e.getMessage());
+        }
         logWarn(errorMessages);
 
         HttpStatus httpStatus = HttpStatus.valueOf(e.getStatus());
