@@ -107,7 +107,7 @@ public class MySubjectService {
 
     public List<MySubject> getAllSubjectsByUser(User user) {
         return mySubjectRepository.findAllByUser(user);
-    } 
+    }
 
     @Transactional
     public void removeAllMySubjectsByUserId(Long userId) {

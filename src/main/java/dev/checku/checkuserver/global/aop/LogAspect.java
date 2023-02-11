@@ -23,8 +23,8 @@ import static net.logstash.logback.argument.StructuredArguments.value;
 @Slf4j
 public class LogAspect {
 
-//    @Around("within(dev.checku.checkuserver.domain..api..*) && !@annotation(dev.checku.checkuserver.global.advice.NoLogging)")
-    @Around("within(dev.checku.checkuserver.domain..*) && !@annotation(dev.checku.checkuserver.global.advice.NoLogging)")
+    @Around("within(dev.checku.checkuserver.domain..api..*) && !@annotation(dev.checku.checkuserver.global.advice.NoLogging)")
+//    @Around("within(dev.checku.checkuserver.domain..*) && !@annotation(dev.checku.checkuserver.global.advice.NoLogging)")
     public Object logging(ProceedingJoinPoint pjp) throws Throwable {
         String params = getRequestParams();
         long startAt = System.currentTimeMillis();
