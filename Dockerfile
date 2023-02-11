@@ -10,8 +10,8 @@ COPY ${JAR_FILE} app.jar
 ENTRYPOINT [ \
             "java", \
             "-Dserver.port=8080", \
-            "-Dspring.profiles.active=prod", \
             "-Djasypt.encryptor.password=${JASYPT_PASSWORD}", \
             "-jar", \
             "app.jar" \
 ]
+#            "-Dspring.profiles.active=prod", \
