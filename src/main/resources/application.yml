@@ -25,7 +25,7 @@ spring:
     show-sql: true
     generate-ddl: true
   redis:
-    host: localhost
+    host: 172.20.0.1
     port: 6379
 
 jasypt:
