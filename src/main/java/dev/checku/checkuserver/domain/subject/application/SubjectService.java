@@ -141,7 +141,7 @@ public class SubjectService {
         ResponseEntity<PortalRes> response = portalFeignClient.getSubjects(
                 portalSessionService.getPortalSession().getSession(),
                 PortalUtils.header,
-                PortalUtils.createBody("2022", "B01012", "", "", "")
+                PortalUtils.createBody("", "", "")
         );
 
         return response.getBody();
@@ -151,7 +151,7 @@ public class SubjectService {
         ResponseEntity<PortalRes> response = portalFeignClient.getSubjects(
                 portalSessionService.getPortalSession().getSession(),
                 PortalUtils.header,
-                PortalUtils.createBody("2022", "B01012", "", "", subjectNumber)
+                PortalUtils.createBody("", "", subjectNumber)
         );
 
         if (response.getBody().getSubjects() == null) {
@@ -167,7 +167,7 @@ public class SubjectService {
         ResponseEntity<PortalRes> response = portalFeignClient.getSubjects(
                 portalSessionService.getPortalSession().getSession(),
                 PortalUtils.header,
-                PortalUtils.createBody("2022", "B01012", type.getValue(), department.getValue(), "")
+                PortalUtils.createBody(type.getValue(), department.getValue(), "")
         );
 
         if (response.getBody().getSubjects() == null) {

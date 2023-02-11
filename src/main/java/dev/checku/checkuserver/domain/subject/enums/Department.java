@@ -1,10 +1,7 @@
 package dev.checku.checkuserver.domain.subject.enums;
 
-import dev.checku.checkuserver.global.error.exception.BusinessException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
-import java.util.Arrays;
 
 @SuppressWarnings("ALL")
 @Getter

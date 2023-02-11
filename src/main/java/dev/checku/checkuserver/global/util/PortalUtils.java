@@ -1,6 +1,5 @@
 package dev.checku.checkuserver.global.util;
 
-import dev.checku.checkuserver.domain.portal.application.PortalLoginService;
 import dev.checku.checkuserver.domain.portal.application.PortalSessionService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -18,6 +17,9 @@ public class PortalUtils {
 
     private static String ID;
     private static String PWD;
+
+    private static final String YEAR = "2023"; // 연도
+    private static final String SHTM = "B01011"; // 학기 구분
 
     private PortalUtils(@Value("${portal.id}") String id,
                         @Value("${portal.pwd}") String pwd,
@@ -61,7 +63,7 @@ public class PortalUtils {
     }
 
     public static MultiValueMap<String, String> createBody(
-            String year, String shtm, String subjectType,
+            String subjectType,
             String department, String subjectNumber
     ) {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
@@ -82,9 +84,9 @@ public class PortalUtils {
         body.add("@d1#", "dsParam");
         body.add("@d1#tp", "dm");
         // 연도
-        body.add("@d1#ltYy", year);
+        body.add("@d1#ltYy", YEAR);
         // 학기 구분
-        body.add("@d1#ltShtm", shtm);
+        body.add("@d1#ltShtm", SHTM);
         // 이수 구분
         body.add("@d1#pobtDiv", subjectType);
         // 학과 번호
