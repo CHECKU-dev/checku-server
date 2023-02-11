@@ -22,7 +22,7 @@ spring:
       hibernate:
         default_batch_fetch_size: 1000
   redis:
-    host: localhost
+    host: 172.20.0.2
     port: 6379
 
 jasypt:
