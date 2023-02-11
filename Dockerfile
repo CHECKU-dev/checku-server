@@ -11,7 +11,7 @@ ENTRYPOINT [ \
             "java", \
             "-Dserver.port=8080", \
             "-Djasypt.encryptor.password=${JASYPT_PASSWORD}", \
-#            "-Dspring.profiles.active=prod", \
+            "-Dspring.profiles.active=prod", \
             "-jar", \
             "app.jar" \
 ]
