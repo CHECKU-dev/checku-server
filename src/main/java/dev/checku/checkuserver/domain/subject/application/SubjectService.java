@@ -45,7 +45,7 @@ public class SubjectService {
     private final PortalSessionService portalSessionService;
     private final SubjectRepository subjectRepository;
 
-    @Retryable(value = SubjectRetryException.class, maxAttempts = 2, backoff = @Backoff(delay = 300))
+    @Retryable(value = SubjectRetryException.class, maxAttempts = 2, backoff = @Backoff(delay = 0))
     public List<GetSubjectsDto.Response> getSubjectsByDepartment(GetSubjectsDto.Request dto) {
         User user = userService.getUserById(dto.getUserId());
         List<String> subjectList = getMySubjectsFromMySubject(user);
