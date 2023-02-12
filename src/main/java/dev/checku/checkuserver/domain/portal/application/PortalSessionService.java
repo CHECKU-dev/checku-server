@@ -46,9 +46,10 @@ public class PortalSessionService {
             if (!lock.tryLock(1, 3, TimeUnit.SECONDS))
                 return;
 
-            if (portalFeignClient.test(getPortalSession().getSession(), PortalUtils.header, PortalUtils.createBody("", "", "1214")).getBody().getSubjects() != null){
+            if (portalFeignClient.test(getPortalSession().getSession(), PortalUtils.header, PortalUtils.createBody("", "", "0001")).getBody().getSubjects() != null){
                 return;
             }
+
             String jSession = portalLoginService.login();
             savePortalSession(new PortalSession(SESSION, jSession));
 
