@@ -113,6 +113,7 @@ public class SubjectService {
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.SUBJECT_NOT_FOUND));
     }
 
+    @Retryable(value = SubjectRetryException.class, maxAttempts = 2, backoff = @Backoff(delay = 0))
     public Slice<GetSearchSubjectDto.Response> getSubjectsByKeyword(GetSearchSubjectDto.Request dto, Pageable pageable) {
         User user = userService.getUserById(dto.getUserId());
 
@@ -153,7 +154,6 @@ public class SubjectService {
                 PortalUtils.header,
                 PortalUtils.createBody("", "", subjectNumber)
         );
-
 
         if (response.getBody().getSubjects() == null) {
             updatePortalSessionAndRetry();
