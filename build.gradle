@@ -61,6 +61,9 @@ dependencies {
     // Logstash
     implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
 
+    // redisson
+    implementation 'org.redisson:redisson-spring-boot-starter:3.16.3'
+
     implementation 'org.springframework:spring-aspects'
     implementation 'org.springframework.retry:spring-retry'
 

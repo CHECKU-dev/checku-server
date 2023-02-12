@@ -12,11 +12,17 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/health")
 public class HealthController {
 
+    private final PortalLoginService portalLoginService;
+
     @GetMapping
     public String healthCheck() {
+        String login = portalLoginService.login();
+        System.out.println(login);
+
         return "I'm OK...";
     }
 

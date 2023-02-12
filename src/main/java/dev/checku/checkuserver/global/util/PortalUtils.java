@@ -61,7 +61,7 @@ public class PortalUtils {
         body.add("@d1#tp", "dm");
 
         /* 세션 */
-        portalSessionService.updatePortalSession();
+        portalSessionService.init();
     }
 
     public static MultiValueMap<String, String> createBody(

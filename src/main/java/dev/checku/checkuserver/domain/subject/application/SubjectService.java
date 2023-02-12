@@ -32,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,7 +46,7 @@ public class SubjectService {
     private final PortalSessionService portalSessionService;
     private final SubjectRepository subjectRepository;
 
-    @Retryable(value = SubjectRetryException.class, maxAttempts = 2, backoff = @Backoff(delay = 0))
+    @Retryable(value = SubjectRetryException.class, maxAttempts = 3, backoff = @Backoff(delay = 0))
     public List<GetSubjectsDto.Response> getSubjectsByDepartment(GetSubjectsDto.Request dto) {
         User user = userService.getUserById(dto.getUserId());
         List<String> subjectList = getMySubjectsFromMySubject(user);
@@ -78,7 +79,7 @@ public class SubjectService {
     }
 
 
-    @Retryable(value = SubjectRetryException.class, maxAttempts = 2, backoff = @Backoff(delay = 0))
+    @Retryable(value = SubjectRetryException.class, maxAttempts = 3, backoff = @Backoff(delay = 0))
     public void checkValidSubject(String subjectNumber) {
         PortalRes response = getAllSubjectsFromPortalBySubjectNumber(subjectNumber);
         try {
@@ -113,7 +114,7 @@ public class SubjectService {
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.SUBJECT_NOT_FOUND));
     }
 
-    @Retryable(value = SubjectRetryException.class, maxAttempts = 2, backoff = @Backoff(delay = 0))
+    @Retryable(value = SubjectRetryException.class, maxAttempts = 3, backoff = @Backoff(delay = 0))
     public Slice<GetSearchSubjectDto.Response> getSubjectsByKeyword(GetSearchSubjectDto.Request dto, Pageable pageable) {
         User user = userService.getUserById(dto.getUserId());
 
@@ -170,6 +171,7 @@ public class SubjectService {
                 PortalUtils.header,
                 PortalUtils.createBody(type.getValue(), department.getValue(), "")
         );
+
         if (response.getBody().getSubjects() == null) {
             updatePortalSessionAndRetry();
         }
@@ -180,6 +182,7 @@ public class SubjectService {
 
     private void updatePortalSessionAndRetry() {
         portalSessionService.updatePortalSession();
+
         throw new SubjectRetryException();
     }
 
