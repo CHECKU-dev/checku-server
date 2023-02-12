@@ -17,7 +17,7 @@ spring:
       hibernate:
         default_batch_fetch_size: 1000
   redis:
-    host: 13.209.191.134
+    host: 172.20.0.2
     port: 8888
 
 jasypt:
