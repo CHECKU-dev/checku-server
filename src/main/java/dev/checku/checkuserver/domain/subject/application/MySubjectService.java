@@ -86,7 +86,7 @@ public class MySubjectService {
     }
 
 
-    @Retryable(value = Exception.class, maxAttempts = 2, backoff = @Backoff(delay = 300))
+    @Retryable(value = Exception.class, maxAttempts = 2, backoff = @Backoff(delay = 0))
     public List<GetMySubjectDto.Response> getMySubjects(GetMySubjectDto.Request dto) {
 
         User user = userService.getUserById(dto.getUserId());

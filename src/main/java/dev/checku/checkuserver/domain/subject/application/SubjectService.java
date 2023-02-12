@@ -78,7 +78,7 @@ public class SubjectService {
     }
 
 
-    @Retryable(value = SubjectRetryException.class, maxAttempts = 2, backoff = @Backoff(delay = 300))
+    @Retryable(value = SubjectRetryException.class, maxAttempts = 2, backoff = @Backoff(delay = 0))
     public void checkValidSubject(String subjectNumber) {
         PortalRes response = getAllSubjectsFromPortalBySubjectNumber(subjectNumber);
         try {
