@@ -18,8 +18,8 @@ public class PortalRes {
 
     @Getter
     @Setter
-    @ToString
     @JsonIncludeProperties(value = {
+
             "OPEN_SHYR",
             "KOR_NM",
             "TYPL_KOR_NM",

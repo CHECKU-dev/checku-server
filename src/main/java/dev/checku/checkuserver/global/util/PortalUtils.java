@@ -1,5 +1,6 @@
 package dev.checku.checkuserver.global.util;
 
+import dev.checku.checkuserver.domain.portal.application.PortalLoginService;
 import dev.checku.checkuserver.domain.portal.application.PortalSessionService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -23,7 +24,8 @@ public class PortalUtils {
 
     private PortalUtils(@Value("${portal.id}") String id,
                         @Value("${portal.pwd}") String pwd,
-                        PortalSessionService portalSessionService) {
+                        PortalSessionService portalSessionService
+                        ) {
         ID = id;
         PWD = pwd;
         this.portalSessionService = portalSessionService;

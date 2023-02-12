@@ -154,6 +154,7 @@ public class SubjectService {
                 PortalUtils.createBody("", "", subjectNumber)
         );
 
+
         if (response.getBody().getSubjects() == null) {
             updatePortalSessionAndRetry();
         }
@@ -169,7 +170,6 @@ public class SubjectService {
                 PortalUtils.header,
                 PortalUtils.createBody(type.getValue(), department.getValue(), "")
         );
-
         if (response.getBody().getSubjects() == null) {
             updatePortalSessionAndRetry();
         }

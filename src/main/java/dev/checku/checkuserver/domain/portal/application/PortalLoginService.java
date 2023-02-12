@@ -26,10 +26,12 @@ public class PortalLoginService {
                 PortalUtils.header,
                 PortalUtils.body
         );
+        String cookie = response.getHeaders().get("set-cookie").toString();
+        String jSessionId = cookie.substring(cookie.indexOf('=') + 1, cookie.indexOf(';'));
 
         // 로그인 성공 시
         if ("{\"_METADATA_\":{\"success\":true}}".equals(response.getBody())) {
-            return session;
+            return "JSESSIONID=" + jSessionId;
         } else {
             return "";
         }
