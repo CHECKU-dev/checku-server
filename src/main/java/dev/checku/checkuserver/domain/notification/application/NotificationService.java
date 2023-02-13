@@ -84,7 +84,7 @@ public class NotificationService {
                 .collect(Collectors.toList());
     }
 
-    @Async
+    //    @Async
     @Transactional
     public void sendMessageByTopic(NotificationSendReq request) {
         String subjectNumber = request.getTopic();
