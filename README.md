@@ -49,6 +49,10 @@
 * MySQL
 * H2
 
+## Structure
+
+![Untitled (1)](https://user-images.githubusercontent.com/83503188/218639426-b0aa1b00-627d-4d3f-b34a-6e564f62f1e4.png)
+
 ## ERD
 <img width="729" alt="image" src="https://user-images.githubusercontent.com/46523628/187127815-2c2cc5fe-dd74-44ef-b088-399197e3f4b4.png">
 
