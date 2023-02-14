@@ -10,9 +10,8 @@
 .
 ├── domain
 │   ├── common
-│   ├── log
-│   ├── model
 │   ├── notification
+│   ├── portal
 │   ├── schedule
 │   ├── subject
 │   ├── topic
@@ -24,10 +23,10 @@
 │   ├── config
 │   ├── error
 │   ├── util
+│   ├── interceptor
 │   └── validator
 └── infra
-    ├── notification
-    └── portal
+    └── notification
 ```
 
 <br>
@@ -46,6 +45,7 @@
 * Firebase Cloud Messaging
 * AOP
 * Jasypt
+* Redis
 * MySQL
 * H2
 
@@ -54,7 +54,8 @@
 ![Untitled (1)](https://user-images.githubusercontent.com/83503188/218639426-b0aa1b00-627d-4d3f-b34a-6e564f62f1e4.png)
 
 ## ERD
-<img width="729" alt="image" src="https://user-images.githubusercontent.com/46523628/187127815-2c2cc5fe-dd74-44ef-b088-399197e3f4b4.png">
+
+<img width="729" alt="image" src="https://user-images.githubusercontent.com/83503188/218758830-e2101990-cc7f-4f07-9f13-6cbe8af54534.png">
 
 ## Member
 <table align="center" >
