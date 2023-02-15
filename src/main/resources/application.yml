@@ -3,31 +3,6 @@ server:
   servlet:
     context-path: /
 
-spring:
-
-  datasource:
-    url: ENC(EJ1jFIX2q4UiZTSWRu0ZTPZzKGlmijV2kk6p65cJNrvW3Y3krF4khvDoifFYSKD6X8U1JH+WGMvlJafTyt1RV1g7IO/ZHt3tnYgcyYOiIveWNcuqXBQoJLK7Ma+/X97bSlrSQcQOc52z/vxVk/Ur7Q==)
-    username: ENC(aGHYR63qef6rzq/iQjziTA==)
-    password: ENC(FWKWzF73KODPLiwC0l36gq48cIgaitQA)
-    driver-class-name: com.mysql.cj.jdbc.Driver
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
-  jpa:
-    open-in-view: false
-    hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        format_sql: true
-        default_batch_fetch_size: 1000
-#    show-sql: true
-#    generate-ddl: true
-  redis:
-    host: localhost
-    port: 6379
-
 jasypt:
   encryptor:
     bean: jasyptStringEncryptor
