@@ -1,7 +1,7 @@
 <included>
     <appender name="FILE_APPENDER_WARN" class="ch.qos.logback.core.rolling.RollingFileAppender">
 
-        <file>${FILE_PATH}/${DATE_FORMAT}/warn/warn.log</file>
+<!--        <file>${FILE_PATH}/${DATE_FORMAT}/warn/warn.log</file>-->
 
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>WARN</level>
