@@ -18,16 +18,18 @@ public class PortalUtils {
 
     private static String ID;
     private static String PWD;
-
-    private static final String YEAR = "2023"; // 연도
-    private static final String SHTM = "B01011"; // 학기 구분
+    private static String YEAR;
+    private static String SHTM;
 
     private PortalUtils(@Value("${portal.id}") String id,
                         @Value("${portal.pwd}") String pwd,
-                        PortalSessionService portalSessionService
-                        ) {
+                        @Value("${portal.year}") String year,
+                        @Value("${portal.shtm}") String shtm,
+                        PortalSessionService portalSessionService) {
         ID = id;
         PWD = pwd;
+        YEAR = year;
+        SHTM = shtm;
         this.portalSessionService = portalSessionService;
     }
 
