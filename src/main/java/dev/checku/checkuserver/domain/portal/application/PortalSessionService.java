@@ -11,9 +11,6 @@ import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 
@@ -70,6 +67,5 @@ public class PortalSessionService {
         ).getBody();
         return result.getSubjects() != null;
     }
-
 
 }

@@ -28,12 +28,4 @@ public class Schedule{
     @Column(nullable = false)
     private LocalDateTime deadline;
 
-
-//    @Builder
-//    public Schedule(String title, String date, LocalDate deadline) {
-//        this.title = title;
-//        this.date =date;
-//        this.deadline = deadline;
-//    }
-
 }
