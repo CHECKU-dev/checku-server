@@ -1,6 +1,7 @@
 package dev.checku.checkuserver.domain.portal.application;
 
 import dev.checku.checkuserver.domain.portal.domain.PortalSession;
+import dev.checku.checkuserver.domain.portal.dto.PortalRes;
 import dev.checku.checkuserver.domain.portal.repository.SessionRedisRepository;
 import dev.checku.checkuserver.global.error.exception.EntityNotFoundException;
 import dev.checku.checkuserver.global.error.exception.ErrorCode;
@@ -11,6 +12,8 @@ import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 
@@ -46,7 +49,7 @@ public class PortalSessionService {
             if (!lock.tryLock(1, 3, TimeUnit.SECONDS))
                 return;
 
-            if (portalFeignClient.test(getPortalSession().getSession(), PortalUtils.header, PortalUtils.createBody("", "", "0001")).getBody().getSubjects() != null){
+            if (testFromPortal()) {
                 return;
             }
 
@@ -58,6 +61,14 @@ public class PortalSessionService {
         } finally {
             lock.unlock();
         }
+    }
+
+    private boolean testFromPortal() {
+        PortalRes result = portalFeignClient.test(
+                getPortalSession().getSession(),
+                PortalUtils.header, PortalUtils.createBody("", "", "0001")
+        ).getBody();
+        return result.getSubjects() != null;
     }
 
 
