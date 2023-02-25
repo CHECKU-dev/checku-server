@@ -19,7 +19,6 @@ public class AsyncConfig {
         executor.setMaxPoolSize(10); // 최대 스레드 개수
         executor.setQueueCapacity(15);
         executor.initialize();
-//        executor.setRejectedExecutionHandler(new ThreadPoolExecutor.AbortPolicy());
         return executor;
     }
 
