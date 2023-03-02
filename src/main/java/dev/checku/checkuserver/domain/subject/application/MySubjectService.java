@@ -95,9 +95,10 @@ public class MySubjectService {
         return myMySubjects.parallelStream()
                 .map(mySubject -> {
                     PortalRes response = getAllSubjectsFromPortalBySubjectNumber(mySubject.getSubjectNumber());
-                    return GetMySubjectDto.Response.from(response.getSubjects().get(0));
+                    if (response.getSubjects().get(0) == null)
+                        return null;
+                    else return GetMySubjectDto.Response.from(response.getSubjects().get(0));
                 }).collect(Collectors.toList());
-
     }
 
     public MySubject getMySubject(String subjectNumber, User user) {
