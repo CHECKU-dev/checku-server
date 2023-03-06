@@ -48,7 +48,7 @@
 * Redis
 * Jenkins
 * Nginx
-* Doocker
+* Docker
 * MySQL
 * H2
 
