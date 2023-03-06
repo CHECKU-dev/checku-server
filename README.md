@@ -46,8 +46,12 @@
 * AOP
 * Jasypt
 * Redis
+* Jenkins
+* Nginx
+* Doocker
 * MySQL
 * H2
+
 
 ## Structure
 
