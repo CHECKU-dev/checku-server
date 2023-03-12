@@ -1,6 +1,5 @@
 package dev.checku.checkuserver.domain.subject.entity;
 
-import dev.checku.checkuserver.domain.portal.dto.PortalRes;
 import dev.checku.checkuserver.domain.subject.enums.SubjectType;
 import lombok.Builder;
 import lombok.Getter;

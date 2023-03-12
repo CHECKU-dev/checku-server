@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 
 import static dev.checku.checkuserver.domain.subject.entity.QSubject.subject;
@@ -18,10 +17,6 @@ import static dev.checku.checkuserver.domain.subject.entity.QSubject.subject;
 public class SubjectRepositoryImpl implements SubjectRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
-
-//    public SubjectRepositoryImpl(EntityManager em) {
-//        this.queryFactory = new JPAQueryFactory(em);
-//    }
 
     @Override
     public List<Subject> findSubjectByKeyword(String searchQuery, Pageable pageable) {
