@@ -17,4 +17,4 @@ echo "[checku] 이미지 가져오기"
 docker image pull yoon11/checku
 
 echo "[checku] 이미지를 통해 Container Run "
-docker run --name checku${TARGET_PORT} -d -p ${TARGET_PORT}:8080 --network redis-net yoon11/checku
+docker run -e "TZ=Asia/Seoul" --name checku${TARGET_PORT} -d -p ${TARGET_PORT}:8080 -v $HOME/logs/prod:/logs/prod --network redis-net yoon11/checku
