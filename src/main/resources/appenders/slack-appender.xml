@@ -1,0 +1,14 @@
+<included>
+    <springProperty name="SLACK_WEBHOOK_URI" source="logging.slack.webhook-uri"/>
+
+    <appender name="SLACK_PROD" class="com.github.maricn.logback.SlackAppender">
+        <webhookUri>${SLACK_WEBHOOK_URI}</webhookUri>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>[PROD] [%-5level] [%thread] [%X{traceId}] [%logger{0}:%line] - %message %n</pattern>
+        </layout>
+        <username>test bot</username>
+        <iconEmoji>:stuck_out_tongue_winking_eye:</iconEmoji>
+        <colorCoding>true</colorCoding>
+    </appender>
+
+</included>

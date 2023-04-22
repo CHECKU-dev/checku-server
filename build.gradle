@@ -67,6 +67,9 @@ dependencies {
     implementation 'org.springframework:spring-aspects'
     implementation 'org.springframework.retry:spring-retry'
 
+    // slack
+    implementation 'com.github.maricn:logback-slack-appender:1.4.0'
+
 }
 
 dependencyManagement {

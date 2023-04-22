@@ -19,13 +19,16 @@
         <include resource="appenders/async-file-appender-info.xml"/>
         <include resource="appenders/async-file-appender-error.xml"/>
         <include resource="appenders/async-file-appender-warn.xml"/>
+        <include resource="appenders/slack-appender.xml"/>
 
         <root level="INFO">
             <appender-ref ref="ASYNC_CONSOLE_APPENDER"/>
-
+            <appender-ref ref="ASYNC_FILE_APPENDER_INFO"/>
             <appender-ref ref="ASYNC_FILE_APPENDER_ERROR"/>
             <appender-ref ref="ASYNC_FILE_APPENDER_WARN"/>
         </root>
+
+
     </springProfile>
 
 
@@ -36,14 +39,13 @@
         <include resource="appenders/async-file-appender-info.xml"/>
         <include resource="appenders/async-file-appender-error.xml"/>
         <include resource="appenders/async-file-appender-warn.xml"/>
+        <include resource="appenders/slack-appender.xml"/>
 
         <root level="INFO">
-            <appender-ref ref="ASYNC_CONSOLE_APPENDER"/>
-
             <appender-ref ref="ASYNC_FILE_APPENDER_INFO"/>
-
             <appender-ref ref="ASYNC_FILE_APPENDER_ERROR"/>
             <appender-ref ref="ASYNC_FILE_APPENDER_WARN"/>
+            <appender-ref ref="SLACK_PROD"/>
         </root>
     </springProfile>
 

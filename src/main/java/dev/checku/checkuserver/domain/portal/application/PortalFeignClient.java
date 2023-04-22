@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import java.util.Map;
 
 
-@FeignClient(url = "https://kuis.konkuk.ac.kr")
+@FeignClient(url = "https://kuis.konkuk.ac.kr", name = "checku")
 public interface PortalFeignClient {
 
     @GetMapping("/index.do")
