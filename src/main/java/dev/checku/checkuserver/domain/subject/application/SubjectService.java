@@ -2,6 +2,7 @@ package dev.checku.checkuserver.domain.subject.application;
 
 import dev.checku.checkuserver.domain.notification.exception.SubjectNotFoundException;
 import dev.checku.checkuserver.domain.notification.exception.SubjectHasVacancyException;
+import dev.checku.checkuserver.domain.subject.dto.GetMySubjectDto;
 import dev.checku.checkuserver.domain.subject.dto.GetSubjectsDto;
 import dev.checku.checkuserver.domain.subject.enums.Department;
 import dev.checku.checkuserver.domain.subject.enums.Grade;
@@ -32,6 +33,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,6 +47,8 @@ public class SubjectService {
     private final PortalFeignClient portalFeignClient;
     private final PortalSessionService portalSessionService;
     private final SubjectRepository subjectRepository;
+    private final int THREAD_COUNT = 3;
+
 
     @Retryable(value = SubjectRetryException.class, maxAttempts = 3, backoff = @Backoff(delay = 0))
     public List<GetSubjectsDto.Response> getSubjectsByDepartment(GetSubjectsDto.Request dto) {
@@ -120,12 +125,25 @@ public class SubjectService {
         List<String> subjectList = getMySubjectsFromMySubject(user);
         List<Subject> subject = subjectRepository.findSubjectByKeyword(dto.getSearchQuery(), pageable);
 
-        List<GetSearchSubjectDto.Response> results = subject.parallelStream()
-                .map(mySubject -> {
-                    PortalRes response = getAllSubjectsFromPortalBySubjectNumber(mySubject.getSubjectNumber());
-                    return GetSearchSubjectDto.Response.from(response.getSubjects().get(0), subjectList);
-                })
-                .collect(Collectors.toList());
+        ForkJoinPool pool = new ForkJoinPool(THREAD_COUNT);
+        List<GetSearchSubjectDto.Response> results = new ArrayList<>();
+
+        try {
+            pool.submit(() -> {
+                List<GetSearchSubjectDto.Response> responses = subject.parallelStream()
+                        .map(mySubject -> {
+                            PortalRes response = getAllSubjectsFromPortalBySubjectNumber(mySubject.getSubjectNumber());
+                            if (response.getSubjects().isEmpty()) return null;
+                            else return GetSearchSubjectDto.Response.from(response.getSubjects().get(0), subjectList);
+                        })
+                        .collect(Collectors.toList());
+                results.addAll(responses);
+            }).get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        } finally {
+            pool.shutdown(); // Make sure to shutdown the custom thread pool
+        }
 
         boolean hasNext = false;
 

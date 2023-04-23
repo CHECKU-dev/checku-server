@@ -28,7 +28,6 @@
             <appender-ref ref="ASYNC_FILE_APPENDER_WARN"/>
         </root>
 
-
     </springProfile>
 
 
@@ -41,12 +40,16 @@
         <include resource="appenders/async-file-appender-warn.xml"/>
         <include resource="appenders/slack-appender.xml"/>
 
+        <root level="ERROR">
+            <appender-ref ref="ASYNC_SLACK"/>
+        </root>
+
         <root level="INFO">
             <appender-ref ref="ASYNC_FILE_APPENDER_INFO"/>
             <appender-ref ref="ASYNC_FILE_APPENDER_ERROR"/>
             <appender-ref ref="ASYNC_FILE_APPENDER_WARN"/>
-            <appender-ref ref="SLACK_PROD"/>
         </root>
+
     </springProfile>
 
 </configuration>

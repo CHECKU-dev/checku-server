@@ -22,7 +22,10 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,6 +37,7 @@ public class MySubjectService {
     private final MySubjectRepository mySubjectRepository;
     private final PortalFeignClient portalFeignClient;
     private final PortalSessionService portalSessionService;
+    private final int THREAD_COUNT = 3;
 
     // TODO -> 변경하기 save, remove 나눠야함
     @Deprecated
@@ -90,15 +94,28 @@ public class MySubjectService {
     public List<GetMySubjectDto.Response> getMySubjects(GetMySubjectDto.Request dto) {
 
         User user = userService.getUserById(dto.getUserId());
-        List<MySubject> myMySubjects = mySubjectRepository.findAllByUser(user);
+        List<MySubject> mySubjects = mySubjectRepository.findAllByUser(user);
 
-        return myMySubjects.parallelStream()
-                .map(mySubject -> {
-                    PortalRes response = getAllSubjectsFromPortalBySubjectNumber(mySubject.getSubjectNumber());
-                    if (response.getSubjects().get(0) == null)
-                        return null;
-                    else return GetMySubjectDto.Response.from(response.getSubjects().get(0));
-                }).collect(Collectors.toList());
+        ForkJoinPool pool = new ForkJoinPool(THREAD_COUNT);
+        List<GetMySubjectDto.Response> result = new ArrayList<>();
+
+        try {
+            pool.submit(() -> {
+                List<GetMySubjectDto.Response> responses = mySubjects.parallelStream()
+                        .map(mySubject -> {
+                            PortalRes response = getAllSubjectsFromPortalBySubjectNumber(mySubject.getSubjectNumber());
+                            //TODO 다시 확인
+                            if (response.getSubjects().isEmpty()) return null;
+                            else return GetMySubjectDto.Response.from(response.getSubjects().get(0));
+                        }).collect(Collectors.toList());
+                result.addAll(responses);
+            }).get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        } finally {
+            pool.shutdown();
+        }
+        return result;
     }
 
     public MySubject getMySubject(String subjectNumber, User user) {
