@@ -22,6 +22,7 @@ import dev.checku.checkuserver.domain.portal.dto.PortalRes;
 import dev.checku.checkuserver.global.util.PortalUtils;
 import dev.checku.checkuserver.global.util.SubjectUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
@@ -47,7 +48,8 @@ public class SubjectService {
     private final PortalFeignClient portalFeignClient;
     private final PortalSessionService portalSessionService;
     private final SubjectRepository subjectRepository;
-    private final int THREAD_COUNT = 3;
+    @Value("${thread.poolSize:3}")
+    private int poolSize;
 
 
     @Retryable(value = SubjectRetryException.class, maxAttempts = 3, backoff = @Backoff(delay = 0))
@@ -125,7 +127,7 @@ public class SubjectService {
         List<String> subjectList = getMySubjectsFromMySubject(user);
         List<Subject> subject = subjectRepository.findSubjectByKeyword(dto.getSearchQuery(), pageable);
 
-        ForkJoinPool pool = new ForkJoinPool(THREAD_COUNT);
+        ForkJoinPool pool = new ForkJoinPool(poolSize);
         List<GetSearchSubjectDto.Response> results = new ArrayList<>();
 
         try {

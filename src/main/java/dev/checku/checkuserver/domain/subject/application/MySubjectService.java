@@ -16,6 +16,7 @@ import dev.checku.checkuserver.domain.portal.application.PortalFeignClient;
 import dev.checku.checkuserver.domain.portal.dto.PortalRes;
 import dev.checku.checkuserver.global.util.PortalUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
@@ -37,7 +38,8 @@ public class MySubjectService {
     private final MySubjectRepository mySubjectRepository;
     private final PortalFeignClient portalFeignClient;
     private final PortalSessionService portalSessionService;
-    private final int THREAD_COUNT = 3;
+    @Value("${thread.poolSize:3}")
+    private int poolSize;
 
     // TODO -> 변경하기 save, remove 나눠야함
     @Deprecated
@@ -96,7 +98,7 @@ public class MySubjectService {
         User user = userService.getUserById(dto.getUserId());
         List<MySubject> mySubjects = mySubjectRepository.findAllByUser(user);
 
-        ForkJoinPool pool = new ForkJoinPool(THREAD_COUNT);
+        ForkJoinPool pool = new ForkJoinPool(poolSize);
         List<GetMySubjectDto.Response> result = new ArrayList<>();
 
         try {
