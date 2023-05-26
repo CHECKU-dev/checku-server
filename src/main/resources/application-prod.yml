@@ -14,3 +14,11 @@ spring:
   redis:
     host: localhost
     port: 6379
+
+logging:
+  slack:
+    webhook-uri: ENC(CtbSVJuptbIgQI0NtpSDlZsTmSNMy2YzUMTAOs417LdtlpwtAD2gCAkY4PozR44Xc0Q3vL1SOX3ZN68vvxNFNdU2rG5F0XqMLxOTHIP82GTRUjnyfXGnpO4h/lBmKHAt)
+  config: classpath:logback-spring.xml
+
+thread:
+  poolSize: ${POOL_SIZE}

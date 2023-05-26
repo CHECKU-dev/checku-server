@@ -3,21 +3,13 @@ server:
   servlet:
     context-path: /
 
-jasypt:
-  encryptor:
-    bean: jasyptStringEncryptor
-    password: ${JASYPT_PASSWORD}
-
 portal:
   id: ENC(Z6HpAscjxxVoGxEdwr1P3w==)
   pwd: ENC(Lzc6O4kHIQDx5IfHFjhYsJlhXKuxPaJJ)
   year: ENC(utnocw5+PhD7OaXVgGjhYA==) # 연도
   shtm: ENC(A+tf8XBFmW2pQn7SOpjgOQ==) # 학기 구분
 
-logging:
-  slack:
-    webhook-uri: ENC(CtbSVJuptbIgQI0NtpSDlZsTmSNMy2YzUMTAOs417LdtlpwtAD2gCAkY4PozR44Xc0Q3vL1SOX3ZN68vvxNFNdU2rG5F0XqMLxOTHIP82GTRUjnyfXGnpO4h/lBmKHAt)
-  config: classpath:logback-spring.xml
-
-thread:
-  poolSize: ${POOL_SIZE}
+jasypt:
+  encryptor:
+    bean: jasyptStringEncryptor
+    password: ${JASYPT_PASSWORD}

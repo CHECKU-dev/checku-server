@@ -70,6 +70,10 @@ dependencies {
     // slack
     implementation 'com.github.maricn:logback-slack-appender:1.4.0'
 
+    // test
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+
 }
 
 dependencyManagement {

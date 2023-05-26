@@ -29,10 +29,15 @@ public class UserService {
         } else {
             // FCM 토큰이 DB에 없다면 유저 신규 등록
             User saveUser = loginRequestDto.toEntity();
-            user = userRepository.save(saveUser);
+            user = saveUser(saveUser);
         }
 
         return UserLoginDto.Response.of(user);
+    }
+
+    @Transactional
+    public User saveUser(User user) {
+        return userRepository.save(user);
     }
 
     // TODO 다음 업데이트 반영

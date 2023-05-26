@@ -21,16 +21,14 @@ public class NotificationApi {
 
     private final NotificationService notificationService;
 
-    @PostMapping("/topic")
-    public void sendNotification(@RequestBody NotificationSendReq request) {
-        notificationService.sendMessageByTopic(request);
-    }
-
     @PostMapping
-    public void registerNotification(@RequestBody @Valid NotificationRegisterReq request) {
+    public void registerNotification(@Valid @RequestBody NotificationRegisterReq request) {
         notificationService.applyNotification(request);
     }
-
+    @PostMapping("/topic")
+    public void sendNotification(@Valid @RequestBody NotificationSendReq request) {
+        notificationService.sendMessageByTopic(request);
+    }
     @DeleteMapping
     public void cancelNotification(@Valid NotificationCancelReq request) {
         notificationService.cancelNotification(request);
@@ -40,7 +38,7 @@ public class NotificationApi {
     public ResponseEntity<List<NotificationSearchDto.Response>> getNotifications(
             @Valid NotificationSearchDto.Request request
     ) {
-        List<NotificationSearchDto.Response> response = notificationService.getNotifications(request);
+        List<NotificationSearchDto.Response> response = notificationService.getNotificationsByUserId(request);
         return ResponseEntity.ok(response);
     }
 

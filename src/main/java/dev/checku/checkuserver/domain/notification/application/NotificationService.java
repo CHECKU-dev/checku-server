@@ -35,26 +35,26 @@ public class NotificationService {
     private final TopicService topicService;
 
     @Transactional
-    public void applyNotification(NotificationRegisterReq request) {
+    public boolean applyNotification(NotificationRegisterReq request) {
         subjectService.checkValidSubject(request.getSubjectNumber());
 
         User user = userService.getUserById(request.getUserId());
-        Notification notification = request.toEntity();
+        Notification notification = request.toEntity(user);
 
-        if (notificationRepository.existsBySubjectNumberAndUser(notification.getSubjectNumber(), user)) {
+        if (notificationRepository.existsBySubjectNumberAndUserId(notification.getSubjectNumber(), user.getId())) {
             throw new NotificationAlreadyRegisteredException(ErrorCode.NOTIFICATION_ALREADY_REGISTERED);
         }
 
-        // topic 존재하지 않으면 topic 생성
+        // topic 존재하지 않으면 topic 생성 -> 메서드 분리
         if (!topicService.existsBySubjectNumber(notification.getSubjectNumber())) {
             Topic topic = Topic.createTopic(notification.getSubjectNumber());
             topicService.saveTopic(topic);
         }
 
-        Notification saveNotification = Notification.createNotification(notification, user);
-        saveNotification = notificationRepository.save(saveNotification);
+        Notification saveNotification = notificationRepository.save(notification);
         fcmService.subscribeToTopic(user.getFcmToken(), saveNotification.getSubjectNumber());
 
+        return true;
     }
 
     @Transactional
@@ -62,7 +62,7 @@ public class NotificationService {
         String subjectNumber = request.getSubjectNumber();
         User user = userService.getUserById(request.getUserId());
 
-        Notification notification = notificationRepository.findBySubjectNumberAndUser(subjectNumber, user)
+        Notification notification = notificationRepository.findBySubjectNumberAndUserId(subjectNumber, user.getId())
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOTIFICATION_NOT_FOUND));
 
         fcmService.unsubscribeToTopic(user.getFcmToken(), subjectNumber);
@@ -74,9 +74,8 @@ public class NotificationService {
         }
     }
 
-    public List<NotificationSearchDto.Response> getNotifications(NotificationSearchDto.Request request) {
-        User user = userService.getUserById(request.getUserId());
-        List<Notification> notificationList = notificationRepository.findAllByUser(user);
+    public List<NotificationSearchDto.Response> getNotificationsByUserId(NotificationSearchDto.Request request) {
+        List<Notification> notificationList = notificationRepository.findAllByUserId(request.getUserId());
 
         return notificationList.stream()
                 .map(NotificationSearchDto.Response::of)
@@ -102,6 +101,7 @@ public class NotificationService {
         notificationRepository.deleteAllInBatch(notificationList);
         // topic 삭제
         topicService.deleteTopicBySubjectNumber(subjectNumber);
+
     }
 
     public void sendTestMessageByToken(String fcmToken) {

@@ -3,6 +3,7 @@ package dev.checku.checkuserver.domain.notification.dto;
 import dev.checku.checkuserver.domain.notification.entity.Notification;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
@@ -10,14 +11,19 @@ import javax.validation.constraints.NotNull;
 public class NotificationSearchDto {
 
     @Getter
-    @Setter
+    @NoArgsConstructor
     public static class Request {
         @NotNull
         private Long userId;
+
+        @Builder
+        public Request(Long userId) {
+            this.userId = userId;
+        }
     }
 
     @Getter
-    @Setter
+    @NoArgsConstructor
     public static class Response {
         private String subjectNumber;
 

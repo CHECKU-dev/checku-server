@@ -1,9 +1,9 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:mydb
-    username: sa
-    password: password
-    driver-class-name: org.h2.Driver
+    url: ENC(EJ1jFIX2q4UiZTSWRu0ZTPZzKGlmijV2kk6p65cJNrvW3Y3krF4khvDoifFYSKD6X8U1JH+WGMvlJafTyt1RV1g7IO/ZHt3tnYgcyYOiIveWNcuqXBQoJLK7Ma+/X97bSlrSQcQOc52z/vxVk/Ur7Q==)
+    username: ENC(aGHYR63qef6rzq/iQjziTA==)
+    password: ENC(FWKWzF73KODPLiwC0l36gq48cIgaitQA)
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     open-in-view: false
     hibernate:
@@ -21,3 +21,6 @@ spring:
   redis:
     host: localhost
     port: 6379
+
+thread:
+  poolSize: ${POOL_SIZE}

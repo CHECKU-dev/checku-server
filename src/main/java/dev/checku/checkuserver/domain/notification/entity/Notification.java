@@ -42,12 +42,12 @@ public class Notification extends BaseTimeEntity {
         this.user = user;
     }
 
-    public static Notification createNotification(Notification notification, User user) {
+    public static Notification createNotification(String subjectNumber,String subjectName, String professor, User user) {
 
         return Notification.builder()
-                .subjectName(notification.getSubjectName())
-                .subjectNumber(notification.getSubjectNumber())
-                .professor(notification.getProfessor())
+                .subjectName(subjectName)
+                .subjectNumber(subjectNumber)
+                .professor(professor)
                 .user(user)
                 .build();
     }

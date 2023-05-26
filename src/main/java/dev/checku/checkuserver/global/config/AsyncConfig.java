@@ -1,7 +1,8 @@
 package dev.checku.checkuserver.global.config;
 
-import org.springframework.context.annotation.Bean;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.AsyncConfigurerSupport;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
@@ -9,17 +10,17 @@ import java.util.concurrent.Executor;
 
 @Configuration
 @EnableAsync
-public class AsyncConfig {
+public class AsyncConfig  extends AsyncConfigurerSupport {
+    @Value("${thread.poolSize:3}")
+    private int poolSize;
 
-    @Bean("asyncTask")
-    public Executor threadPoolExecutor() {
+    @Override
+    public Executor getAsyncExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setThreadNamePrefix("asyncTask-"); // thread 이름 설정
-        executor.setCorePoolSize(5);
-        executor.setMaxPoolSize(10); // 최대 스레드 개수
-        executor.setQueueCapacity(15);
+        executor.setCorePoolSize(poolSize);
+        executor.setMaxPoolSize(poolSize);
+        executor.setQueueCapacity(10);
         executor.initialize();
         return executor;
     }
-
 }

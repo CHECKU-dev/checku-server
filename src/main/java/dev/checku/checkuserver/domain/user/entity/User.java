@@ -22,11 +22,8 @@ public class User extends BaseTimeEntity {
 
 
     @Builder
-    public User(String fcmToken) {
-        this.fcmToken = fcmToken;
-    }
-
-    public void updateFcmToken(String fcmToken) {
+    public User(Long id, String fcmToken) {
+        this.id = id;
         this.fcmToken = fcmToken;
     }
 

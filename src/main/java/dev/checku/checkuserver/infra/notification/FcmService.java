@@ -42,7 +42,7 @@ public class FcmService {
         }
     }
 
-    public void sendMessageToSubscriber(String topic, String title, String body, List<String> tokens) {
+    public boolean sendMessageToSubscriber(String topic, String title, String body, List<String> tokens) {
         try {
             Notification notification = Notification.builder().setTitle(title).setBody(body).build();
             Message msg = Message.builder().setTopic(topic).putData("body", body).setNotification(notification).build();
@@ -53,6 +53,7 @@ public class FcmService {
         catch (FirebaseMessagingException e) {
             throw new NotificationFailedException(ErrorCode.NOTIFICATION_SEND_FAILED);
         }
+        return true;
     }
 
     @PostConstruct
