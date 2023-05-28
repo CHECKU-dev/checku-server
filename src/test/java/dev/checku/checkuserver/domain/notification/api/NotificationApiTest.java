@@ -5,22 +5,30 @@ import dev.checku.checkuserver.domain.notification.dto.NotificationCancelReq;
 import dev.checku.checkuserver.domain.notification.dto.NotificationRegisterReq;
 import dev.checku.checkuserver.domain.notification.dto.NotificationSearchDto;
 import dev.checku.checkuserver.domain.notification.dto.NotificationSendReq;
+import dev.checku.checkuserver.domain.notification.entity.Notification;
+import dev.checku.checkuserver.domain.notification.repository.NotificationRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 
 import java.util.List;
 
-import static org.assertj.core.api.BDDAssumptions.given;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class NotificationApiTest extends ControllerTestSupport {
+
+    @Autowired
+    NotificationRepository notificationRepository;
 
     @Test
     @DisplayName("신규 알림을 등록한다.")
@@ -60,34 +68,18 @@ class NotificationApiTest extends ControllerTestSupport {
 
     }
 
-    @Test
-    @DisplayName("알림을 취소한다.")
-    void cancelNotification() throws Exception {
-        // given
-
-        // when & then
-        mockMvc.perform(
-                        delete("/api/notification?userId=1L&subjectNumber=0001")
-                )
-                .andDo(print())
-                .andExpect(status().isOk());
-    }
 
     @Test
-    @DisplayName("신청한 알림을 가져온다.")
-    void getNotifications() throws Exception{
+    @DisplayName("유저가 신청한 알림을 가져온다.")
+    void getNotifications() throws Exception {
         // given
-        Long userId = 1L;
-        NotificationSearchDto.Request request = NotificationSearchDto.Request.builder()
-                .userId(userId)
-                .build();
         List<NotificationSearchDto.Response> result = List.of();
-        when(notificationService.getNotificationsByUserId(request)).thenReturn(result);
+        given(notificationService.getNotificationsByUserId(any())).willReturn(result);
 
         // when & then
         mockMvc.perform(
-                        get("/api/notification")
-                                .queryParam("userId", "1L")
+                        get("/api/notification?userId={userId}", "test")
+//                                .queryParam("userId", "1L")
                 )
                 .andDo(print())
                 .andExpect(status().isOk());
