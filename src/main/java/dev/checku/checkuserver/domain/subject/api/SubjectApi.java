@@ -1,6 +1,8 @@
 package dev.checku.checkuserver.domain.subject.api;
 
 import dev.checku.checkuserver.domain.subject.application.SubjectService;
+import dev.checku.checkuserver.domain.subject.dto.GetAllSubjectsRequest;
+import dev.checku.checkuserver.domain.subject.dto.GetAllSubjectsResponse;
 import dev.checku.checkuserver.domain.subject.dto.SearchSubjectRequest;
 import dev.checku.checkuserver.domain.subject.dto.SearchSubjectResponse;
 import dev.checku.checkuserver.global.advice.InternalApi;
@@ -28,10 +30,10 @@ public class SubjectApi {
     private final SubjectService subjectService;
 
     @GetMapping
-    public ResponseEntity<List<GetSubjectsDto.Response>> getAll(
-            @Valid GetSubjectsDto.Request dto
+    public ResponseEntity<List<GetAllSubjectsResponse>> getAll(
+            @Valid GetAllSubjectsRequest request
     ) {
-        List<GetSubjectsDto.Response> response = subjectService.getSubjectsByDepartment(dto);
+        List<GetAllSubjectsResponse> response = subjectService.getSubjectsByDepartment(request);
         return ResponseEntity.ok(response);
     }
 

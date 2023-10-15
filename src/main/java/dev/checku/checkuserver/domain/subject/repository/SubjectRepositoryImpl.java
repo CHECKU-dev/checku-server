@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static dev.checku.checkuserver.domain.subject.entity.QSubject.subject;
-
+r
 @Repository
 @RequiredArgsConstructor
 public class SubjectRepositoryImpl implements SubjectRepositoryCustom {
