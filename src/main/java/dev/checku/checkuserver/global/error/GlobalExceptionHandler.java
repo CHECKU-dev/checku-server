@@ -78,9 +78,8 @@ public class GlobalExceptionHandler {
         }
         logWarn(errorMessages);
 
-        HttpStatus httpStatus = HttpStatus.valueOf(e.getStatus());
-        ErrorResponse errorResponse = ErrorResponse.of(httpStatus, errorMessages);
-        return ResponseEntity.status(httpStatus).body(errorResponse);
+        ErrorResponse errorResponse = ErrorResponse.of(e.getStatus(), errorMessages);
+        return ResponseEntity.status(e.getStatus()).body(errorResponse);
     }
 
     /**
@@ -102,8 +101,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<ErrorResponse> unHandledException(final Exception e) {
         logError(e);
-        ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.BAD_REQUEST, List.of("예기치 못한 오류가 발생하였습니다. 잠시 후에 다시 시도해주세요."));
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, List.of("예기치 못한 오류가 발생하였습니다. 잠시 후에 다시 시도해주세요."));
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
 
     private void logError(Exception exception) {
@@ -118,7 +117,7 @@ public class GlobalExceptionHandler {
     }
 
     private void logWarn(List<String> errorMessages) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         for (String message : errorMessages) {
             sb.append(message).append(" ");
@@ -126,5 +125,4 @@ public class GlobalExceptionHandler {
 
         log.warn(sb.toString());
     }
-
 }

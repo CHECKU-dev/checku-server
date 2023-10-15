@@ -2,7 +2,6 @@ package dev.checku.checkuserver.domain.user.entity;
 
 import dev.checku.checkuserver.domain.common.BaseTimeEntity;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -18,13 +17,9 @@ public class User extends BaseTimeEntity {
     private Long id;
 
     @Column(nullable = false)
-    private String fcmToken;
+    private String pushToken;
 
-
-    @Builder
-    public User(Long id, String fcmToken) {
-        this.id = id;
-        this.fcmToken = fcmToken;
+    public User(String pushToken) {
+        this.pushToken = pushToken;
     }
-
 }

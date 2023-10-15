@@ -7,8 +7,7 @@ import lombok.Getter;
 @Getter
 public class SubjectHasVacancyException extends BusinessException {
 
-    public SubjectHasVacancyException(ErrorCode errorCode) {
-        super(errorCode);
+    public SubjectHasVacancyException() {
+        super(ErrorCode.SUBJECT_HAS_VACANCY);
     }
-
 }

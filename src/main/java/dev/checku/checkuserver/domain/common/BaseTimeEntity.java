@@ -10,8 +10,8 @@ import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
 
-@MappedSuperclass
 @Getter
+@MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseTimeEntity {
 
@@ -22,5 +22,4 @@ public abstract class BaseTimeEntity {
     @LastModifiedDate
     @Column(nullable = false)
     private LocalDateTime updatedAt;
-
 }

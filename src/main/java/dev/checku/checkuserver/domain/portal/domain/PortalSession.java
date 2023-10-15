@@ -1,19 +1,24 @@
 package dev.checku.checkuserver.domain.portal.domain;
 
-import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.data.redis.core.RedisHash;
 
 import javax.persistence.Id;
 
-@RedisHash("portalSession")
 @Getter
-@AllArgsConstructor
+@RedisHash("portal:session")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PortalSession {
 
     @Id
     private String id;
 
-    private String session;
+    private String sessionId;
 
+    public PortalSession(String id, String sessionId) {
+        this.id = id;
+        this.sessionId = sessionId;
+    }
 }

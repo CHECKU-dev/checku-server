@@ -14,11 +14,10 @@ public class HealthController {
 
     @GetMapping
     public String healthCheck() {
-        log.info("this log is info");
-        log.warn("this log is warn");
-        log.error("this log is error");
+        log.info("log info level");
+        log.warn("log warn level");
+        log.error("log error level");
+
         return "I'm OK...";
     }
-
-
 }

@@ -7,14 +7,13 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "schedule")
 @Getter
 @NoArgsConstructor
-public class Schedule{
+public class Schedule {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long scheduleId;
+    private Long id;
 
     @Column(nullable = false, unique = true)
     private String title;
@@ -27,5 +26,4 @@ public class Schedule{
 
     @Column(nullable = false)
     private LocalDateTime deadline;
-
 }

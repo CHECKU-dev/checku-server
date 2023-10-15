@@ -1,8 +1,6 @@
 package dev.checku.checkuserver.domain.portal.application;
 
-import dev.checku.checkuserver.domain.portal.domain.PortalSession;
-import dev.checku.checkuserver.domain.portal.dto.PortalRes;
-import feign.Response;
+import dev.checku.checkuserver.domain.portal.dto.PortalResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,28 +16,18 @@ import java.util.Map;
 public interface PortalFeignClient {
 
     @GetMapping("/index.do")
-    Response getSession();
+    ResponseEntity<String> index();
 
     @PostMapping(value = "/Login/login.do", produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     ResponseEntity<String> login(
-            @RequestHeader("Cookie") String cookie,
             @RequestHeader Map<String, String> header,
-            MultiValueMap<String, String> request
+            MultiValueMap<String, String> body
     );
 
     @PostMapping(value = "/CourTotalTimetableInq/find.do", produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    ResponseEntity<PortalRes> getSubjects(
-            @RequestHeader("Cookie") String cookie,
+    PortalResponse getSubjects(
             @RequestHeader Map<String, String> header,
-            MultiValueMap<String, String> subjectBody);
-
-    @PostMapping(value = "/CourTotalTimetableInq/find.do", produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    ResponseEntity<PortalRes> test(
-            @RequestHeader("Cookie") String cookie,
-            @RequestHeader Map<String, String> header,
-            MultiValueMap<String, String> subjectBody);
-
-
+            MultiValueMap<String, String> body);
 }
 
 

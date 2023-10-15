@@ -5,6 +5,6 @@ import dev.checku.checkuserver.global.error.exception.BusinessException;
 public class SubjectRetryException extends BusinessException {
 
     public SubjectRetryException() {
+        // do nothing
     }
-
 }

@@ -19,5 +19,4 @@ public class ErrorResponse {
                 .errorMessages(errorMessages)
                 .build();
     }
-
 }

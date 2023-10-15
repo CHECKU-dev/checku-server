@@ -11,7 +11,6 @@ import java.util.List;
 
 import static dev.checku.checkuserver.domain.subject.entity.QSubject.subject;
 
-
 @Repository
 @RequiredArgsConstructor
 public class SubjectRepositoryImpl implements SubjectRepositoryCustom {
@@ -19,12 +18,12 @@ public class SubjectRepositoryImpl implements SubjectRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<Subject> findSubjectByKeyword(String searchQuery, Pageable pageable) {
+    public List<Subject> findByKeyword(String searchQuery, Pageable pageable) {
 
         List<Subject> results = queryFactory
                 .selectFrom(subject)
                 .where(
-                        searchByLike(searchQuery)
+                        subjectNameLike(searchQuery)
                 )
                 .orderBy(subject.subjectNumber.asc())
                 .offset(pageable.getOffset())
@@ -35,9 +34,7 @@ public class SubjectRepositoryImpl implements SubjectRepositoryCustom {
 
     }
 
-    private BooleanExpression searchByLike(String searchQuery) {
+    private BooleanExpression subjectNameLike(String searchQuery) {
         return subject.subjectName.like("%" + searchQuery + "%");
     }
-
-
 }

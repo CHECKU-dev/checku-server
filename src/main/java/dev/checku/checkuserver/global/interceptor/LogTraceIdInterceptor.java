@@ -30,5 +30,4 @@ public class LogTraceIdInterceptor implements HandlerInterceptor {
     private String generateTraceId() {
         return UUID.randomUUID().toString().substring(24);
     }
-
 }

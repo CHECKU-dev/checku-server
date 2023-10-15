@@ -11,6 +11,7 @@ import java.util.concurrent.Executor;
 @Configuration
 @EnableAsync
 public class AsyncConfig  extends AsyncConfigurerSupport {
+
     @Value("${thread.poolSize:3}")
     private int poolSize;
 

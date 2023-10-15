@@ -7,6 +7,5 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    Optional<User> findByFcmToken(String fcmToken);
-
+    Optional<User> findByPushToken(String pushToken);
 }

@@ -1,6 +1,7 @@
 package dev.checku.checkuserver.domain.subject.entity;
 
 import dev.checku.checkuserver.domain.subject.enums.SubjectType;
+import dev.checku.checkuserver.domain.common.SubjectNumber;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,8 +18,8 @@ public class Subject {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long subjectId;
 
-    @Column(nullable = false, unique = true)
-    private String subjectNumber;
+    @Embedded
+    private SubjectNumber subjectNumber;
 
     @Column(nullable = false)
     private String subjectName;
@@ -28,13 +29,13 @@ public class Subject {
     private SubjectType subjectType;
 
     @Builder
-    public Subject(String subjectNumber,String subjectName, SubjectType subjectType) {
+    public Subject(SubjectNumber subjectNumber,String subjectName, SubjectType subjectType) {
         this.subjectNumber = subjectNumber;
         this.subjectName = subjectName;
         this.subjectType = subjectType;
     }
 
-    public static Subject createSubject(String subjectNumber,String subjectName, SubjectType subjectType) {
+    public static Subject createSubject(SubjectNumber subjectNumber,String subjectName, SubjectType subjectType) {
         return Subject.builder()
                 .subjectNumber(subjectNumber)
                 .subjectName(subjectName)
@@ -43,7 +44,7 @@ public class Subject {
     }
 
 
-    public static Subject classifyMajorOrLiberalArts(String subjectNumber, String subjectName, String subjectType) {
+    public static Subject classifyMajorOrLiberalArts(SubjectNumber subjectNumber, String subjectName, String subjectType) {
         Subject subject;
         if (isMajor(subjectType)) {
             subject = Subject.createSubject(subjectNumber, subjectName, SubjectType.MAJOR);
@@ -57,5 +58,4 @@ public class Subject {
     private static boolean isMajor(String subjectType) {
         return "전선".equals(subjectType) || "전필".equals(subjectType);
     }
-
 }

@@ -14,5 +14,4 @@ public class FeignClientExceptionErrorDecoder implements ErrorDecoder {
         String message = response.reason();
         return new FeignClientException(response.status(), message, response.headers());
     }
-
 }

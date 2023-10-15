@@ -1,14 +1,14 @@
 package dev.checku.checkuserver.global.config;
 
 import dev.checku.checkuserver.global.error.FeignClientExceptionErrorDecoder;
-import feign.FeignException;
 import feign.Logger;
-import feign.Retryer;
 import feign.codec.ErrorDecoder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.cloud.openfeign.FeignClientsConfiguration;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 @Configuration
 @EnableFeignClients(basePackages = "dev.checku.checkuserver")
@@ -25,5 +25,4 @@ public class FeignConfig {
     public FeignClientExceptionErrorDecoder commonFeignErrorDecoder() {
         return new FeignClientExceptionErrorDecoder();
     }
-
 }

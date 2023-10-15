@@ -206,6 +206,4 @@ public enum Department {
     교양("");
 
     private final String value;
-
-
 }

@@ -7,8 +7,7 @@ import lombok.Getter;
 @Getter
 public class SubjectNotFoundException extends BusinessException {
 
-    public SubjectNotFoundException(ErrorCode errorCode) {
-        super(errorCode);
+    public SubjectNotFoundException() {
+        super(ErrorCode.SUBJECT_NOT_FOUND);
     }
-
 }

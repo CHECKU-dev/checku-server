@@ -17,5 +17,4 @@ public class SubjectUtils {
         // 0 / 0 -> 고려해봐야됨
         return currentNumber < limitNumber;
     }
-
 }

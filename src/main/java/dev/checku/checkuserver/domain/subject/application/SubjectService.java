@@ -1,32 +1,34 @@
 package dev.checku.checkuserver.domain.subject.application;
 
-import dev.checku.checkuserver.domain.notification.exception.SubjectNotFoundException;
+import dev.checku.checkuserver.domain.bookmark.application.BookmarkService;
+import dev.checku.checkuserver.domain.bookmark.entity.Bookmark;
+import dev.checku.checkuserver.domain.common.SubjectNumber;
 import dev.checku.checkuserver.domain.notification.exception.SubjectHasVacancyException;
-import dev.checku.checkuserver.domain.subject.dto.GetMySubjectDto;
-import dev.checku.checkuserver.domain.subject.dto.GetSubjectsDto;
+import dev.checku.checkuserver.domain.notification.exception.SubjectNotFoundException;
+import dev.checku.checkuserver.domain.portal.application.PortalFeignClient;
+import dev.checku.checkuserver.domain.portal.application.PortalSessionService;
+import dev.checku.checkuserver.domain.portal.dto.PortalResponse;
+import dev.checku.checkuserver.domain.subject.dto.GetAllSubjectsRequest;
+import dev.checku.checkuserver.domain.subject.dto.GetAllSubjectsResponse;
+import dev.checku.checkuserver.domain.subject.dto.SearchSubjectRequest;
+import dev.checku.checkuserver.domain.subject.dto.SearchSubjectResponse;
+import dev.checku.checkuserver.domain.subject.entity.Subject;
 import dev.checku.checkuserver.domain.subject.enums.Department;
 import dev.checku.checkuserver.domain.subject.enums.Grade;
-import dev.checku.checkuserver.domain.portal.application.PortalSessionService;
 import dev.checku.checkuserver.domain.subject.enums.Type;
 import dev.checku.checkuserver.domain.subject.exception.SubjectRetryException;
 import dev.checku.checkuserver.domain.subject.repository.SubjectRepository;
-import dev.checku.checkuserver.domain.subject.dto.GetSearchSubjectDto;
-import dev.checku.checkuserver.domain.subject.entity.MySubject;
-import dev.checku.checkuserver.domain.subject.entity.Subject;
 import dev.checku.checkuserver.domain.user.application.UserService;
 import dev.checku.checkuserver.domain.user.entity.User;
 import dev.checku.checkuserver.global.error.exception.EntityNotFoundException;
 import dev.checku.checkuserver.global.error.exception.ErrorCode;
-import dev.checku.checkuserver.domain.portal.application.PortalFeignClient;
-import dev.checku.checkuserver.domain.portal.dto.PortalRes;
-import dev.checku.checkuserver.global.util.PortalUtils;
+import dev.checku.checkuserver.global.util.PortalRequestFactory;
 import dev.checku.checkuserver.global.util.SubjectUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
-import org.springframework.http.ResponseEntity;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
@@ -43,100 +45,96 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class SubjectService {
 
-    private final UserService userService;
-    private final MySubjectService mySubjectService;
-    private final PortalFeignClient portalFeignClient;
-    private final PortalSessionService portalSessionService;
-    private final SubjectRepository subjectRepository;
     @Value("${thread.poolSize:3}")
     private int poolSize;
 
+    private final UserService userService;
+    private final BookmarkService bookmarkService;
+    private final PortalFeignClient portalFeignClient;
+    private final PortalSessionService portalSessionService;
+    private final SubjectRepository subjectRepository;
+    private final PortalRequestFactory portalRequestFactory;
 
     @Retryable(value = SubjectRetryException.class, maxAttempts = 3, backoff = @Backoff(delay = 0))
-    public List<GetSubjectsDto.Response> getSubjectsByDepartment(GetSubjectsDto.Request dto) {
-        User user = userService.getUserById(dto.getUserId());
-        List<String> subjectList = getMySubjectsFromMySubject(user);
+    public List<GetAllSubjectsResponse> getSubjectsByDepartment(GetAllSubjectsRequest request) {
+        User user = userService.getBy(request.getUserId());
+        List<SubjectNumber> subjectList = getMySubjectsFromMySubject(user);
 
-        Department department = Department.valueOf(dto.getDepartment());
-        Grade grade = Grade.setGrade(dto.getGrade());
-        Type type = Type.setType(dto.getType());
-        Boolean inVacancy = dto.getVacancy();
+        Department department = Department.valueOf(request.getDepartment());
+        Grade grade = Grade.setNumber(request.getGrade());
+        Type type = Type.setType(request.getType());
+        Boolean inVacancy = request.getVacancy();
 
-        PortalRes response = getAllSubjectsFromPortalByDepartmentAndType(department, type); // 전필, 전선은 이미 필터링
+        PortalResponse response = getAllSubjectsFromPortalByDepartmentAndType(department, type); // 전필, 전선은 이미 필터링
 
         // OTHER은 따로 분류하지 않음 -> 따라서 애플리케이션에서 따로 구분해야함
-        return response.getSubjects()
+        return response.getSubjectDetails()
                 .stream()
                 .filter(subject -> grade.matchGrade(subject.getGrade()))
                 .filter(subject -> type.matchType(subject.getSubjectType()))
                 .filter(subject -> isVacancy(inVacancy, subject)) // vacancy 필터링
-                .map(subject -> GetSubjectsDto.Response.from(subject, subjectList)).collect(Collectors.toList());
+                .map(subject -> GetAllSubjectsResponse.from(subject, subjectList)).collect(Collectors.toList());
     }
 
-//    @Recover
-//    public List<GetSubjectsDto.Response> recover(SubjectRetryException e, GetSubjectsDto.Request dto) {
-//        return null;
-//    }
-
-    private List<String> getMySubjectsFromMySubject(User user) {
-        return mySubjectService.getAllSubjectsByUser(user)
-                .stream().map(MySubject::getSubjectNumber)
+    private List<SubjectNumber> getMySubjectsFromMySubject(User user) {
+        return bookmarkService.getAllSubjectsByUser(user)
+                .stream().map(Bookmark::getSubjectNumber)
                 .collect(Collectors.toList());
     }
 
 
     @Retryable(value = SubjectRetryException.class, maxAttempts = 3, backoff = @Backoff(delay = 0))
-    public void checkValidSubject(String subjectNumber) {
-        PortalRes response = getAllSubjectsFromPortalBySubjectNumber(subjectNumber);
+    public void validateSubjectHasVacancy(SubjectNumber subjectNumber) {
+        PortalResponse response = getAllSubjectsFromPortalBySubjectNumber(subjectNumber);
         try {
-            PortalRes.SubjectDto subjectDto = response.getSubjects().get(0);
+            PortalResponse.SubjectDetail subjectDetail = response.getSubjectDetails().get(0);
             // 빈 자리 존재하는 과목인 경우 알림 제공 안됨
-            if (SubjectUtils.hasVacancy(subjectDto.getNumberOfPeople())) {
-                throw new SubjectHasVacancyException(ErrorCode.SUBJECT_HAS_VACANCY);
+            if (SubjectUtils.hasVacancy(subjectDetail.getNumberOfPeople())) {
+                throw new SubjectHasVacancyException();
             }
         } catch (IndexOutOfBoundsException e) {
-            throw new SubjectNotFoundException(ErrorCode.SUBJECT_NOT_FOUND);
+            throw new SubjectNotFoundException();
         }
     }
 
 
     @Transactional
     public void insertSubjects() {
-        PortalRes subjectListDto = getAllSubjectsFromPortal();
-        List<PortalRes.SubjectDto> subjects = subjectListDto.getSubjects();
+        PortalResponse subjectListDto = getAllSubjectsFromPortal();
+        List<PortalResponse.SubjectDetail> subjects = subjectListDto.getSubjectDetails();
         List<Subject> subjectList = new ArrayList<>();
 
-        for (PortalRes.SubjectDto subjectDto : subjects) {
-            if (subjectDto.getSubjectNumber() != null) {
-                Subject subject = Subject.classifyMajorOrLiberalArts(subjectDto.getSubjectNumber(), subjectDto.getName(), subjectDto.getSubjectType());
+        for (PortalResponse.SubjectDetail subjectDetail : subjects) {
+            if (subjectDetail.getSubjectNumber() != null) {
+                Subject subject = Subject.classifyMajorOrLiberalArts(new SubjectNumber(subjectDetail.getSubjectNumber()), subjectDetail.getSubjectName(), subjectDetail.getSubjectType());
                 subjectList.add(subject);
             }
         }
         subjectRepository.saveAll(subjectList);
     }
 
-    public Subject getSubjectBySubjectNumber(String subjectNumber) {
+    public Subject getBy(SubjectNumber subjectNumber) {
         return subjectRepository.findBySubjectNumber(subjectNumber)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.SUBJECT_NOT_FOUND));
     }
 
     @Retryable(value = SubjectRetryException.class, maxAttempts = 3, backoff = @Backoff(delay = 0))
-    public Slice<GetSearchSubjectDto.Response> getSubjectsByKeyword(GetSearchSubjectDto.Request dto, Pageable pageable) {
-        User user = userService.getUserById(dto.getUserId());
+    public Slice<SearchSubjectResponse> getSubjectsByKeyword(SearchSubjectRequest request, Pageable pageable) {
+        User user = userService.getBy(request.getUserId());
 
-        List<String> subjectList = getMySubjectsFromMySubject(user);
-        List<Subject> subject = subjectRepository.findSubjectByKeyword(dto.getSearchQuery(), pageable);
+        List<SubjectNumber> subjectNumbers = getMySubjectsFromMySubject(user);
+        List<Subject> subject = subjectRepository.findByKeyword(request.getSearchQuery(), pageable);
 
         ForkJoinPool pool = new ForkJoinPool(poolSize);
-        List<GetSearchSubjectDto.Response> results = new ArrayList<>();
+        List<SearchSubjectResponse> results = new ArrayList<>();
 
         try {
             pool.submit(() -> {
-                List<GetSearchSubjectDto.Response> responses = subject.parallelStream()
+                List<SearchSubjectResponse> responses = subject.parallelStream()
                         .map(mySubject -> {
-                            PortalRes response = getAllSubjectsFromPortalBySubjectNumber(mySubject.getSubjectNumber());
-                            if (response.getSubjects().isEmpty()) return null;
-                            else return GetSearchSubjectDto.Response.from(response.getSubjects().get(0), subjectList);
+                            PortalResponse response = getAllSubjectsFromPortalBySubjectNumber(mySubject.getSubjectNumber());
+                            if (response.getSubjectDetails().isEmpty()) return null;
+                            else return SearchSubjectResponse.from(response.getSubjectDetails().get(0), subjectNumbers);
                         })
                         .collect(Collectors.toList());
                 results.addAll(responses);
@@ -144,7 +142,7 @@ public class SubjectService {
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
         } finally {
-            pool.shutdown(); // Make sure to shutdown the custom thread pool
+            pool.shutdown();
         }
 
         boolean hasNext = false;
@@ -157,46 +155,39 @@ public class SubjectService {
         return new SliceImpl<>(results, pageable, hasNext);
     }
 
-    private PortalRes getAllSubjectsFromPortal() {
-
-        ResponseEntity<PortalRes> response = portalFeignClient.getSubjects(
-                portalSessionService.getPortalSession().getSession(),
-                PortalUtils.header,
-                PortalUtils.createBody("", "", "")
+    private PortalResponse getAllSubjectsFromPortal() {
+        return portalFeignClient.getSubjects(
+                portalRequestFactory.createHeader(),
+                portalRequestFactory.createBody("", "", "")
         );
-
-        return response.getBody();
     }
 
-    private PortalRes getAllSubjectsFromPortalBySubjectNumber(String subjectNumber) {
-        ResponseEntity<PortalRes> response = portalFeignClient.getSubjects(
-                portalSessionService.getPortalSession().getSession(),
-                PortalUtils.header,
-                PortalUtils.createBody("", "", subjectNumber)
+    private PortalResponse getAllSubjectsFromPortalBySubjectNumber(SubjectNumber subjectNumber) {
+        PortalResponse response = portalFeignClient.getSubjects(
+                portalRequestFactory.createHeader(),
+                portalRequestFactory.createBody("", "", subjectNumber.getValue())
         );
 
-
-        if (response.getBody().getSubjects().isEmpty()) {
+        if (response.getSubjectDetails().isEmpty()) {
             updatePortalSessionAndRetry();
         }
 
 
-        return response.getBody();
+        return response;
     }
 
-    public PortalRes getAllSubjectsFromPortalByDepartmentAndType(Department department, Type type) {
+    public PortalResponse getAllSubjectsFromPortalByDepartmentAndType(Department department, Type type) {
 
-        ResponseEntity<PortalRes> response = portalFeignClient.getSubjects(
-                portalSessionService.getPortalSession().getSession(),
-                PortalUtils.header,
-                PortalUtils.createBody(type.getValue(), department.getValue(), "")
+        PortalResponse response = portalFeignClient.getSubjects(
+                portalRequestFactory.createHeader(),
+                portalRequestFactory.createBody(type.getValue(), department.getValue(), "")
         );
 
-        if (response.getBody().getSubjects() == null) {
+        if (response.getSubjectDetails() == null) {
             updatePortalSessionAndRetry();
         }
 
-        return response.getBody();
+        return response;
     }
 
 
@@ -206,9 +197,7 @@ public class SubjectService {
         throw new SubjectRetryException();
     }
 
-    private static boolean isVacancy(boolean isVacancy, PortalRes.SubjectDto subject) {
+    private static boolean isVacancy(boolean isVacancy, PortalResponse.SubjectDetail subject) {
         return !isVacancy || SubjectUtils.hasVacancy(subject.getNumberOfPeople());
     }
-
-
 }

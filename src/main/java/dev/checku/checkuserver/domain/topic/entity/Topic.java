@@ -1,5 +1,7 @@
 package dev.checku.checkuserver.domain.topic.entity;
 
+import dev.checku.checkuserver.domain.common.SubjectNumber;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,28 +9,25 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "topic")
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Topic {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long topicId;
+    private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String subjectNumber;
+    @Embedded
+    private SubjectNumber subjectNumber;
 
     @Builder
-    public Topic(String subjectNumber) {
+    public Topic(SubjectNumber subjectNumber) {
         this.subjectNumber = subjectNumber;
     }
 
-    public static Topic createTopic(String subjectNumber) {
-
+    public static Topic create(SubjectNumber subjectNumber) {
         return Topic.builder()
                 .subjectNumber(subjectNumber)
                 .build();
     }
-
 }

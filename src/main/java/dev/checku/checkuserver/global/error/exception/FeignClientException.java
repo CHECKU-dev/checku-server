@@ -18,5 +18,4 @@ public class FeignClientException extends RuntimeException {
         this.errorMessage = errorMessage;
         this.headers = headers;
     }
-
 }

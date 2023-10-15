@@ -1,16 +1,17 @@
 package dev.checku.checkuserver.domain.portal.application;
 
 import dev.checku.checkuserver.domain.portal.domain.PortalSession;
-import dev.checku.checkuserver.domain.portal.dto.PortalRes;
+import dev.checku.checkuserver.domain.portal.dto.PortalResponse;
 import dev.checku.checkuserver.domain.portal.repository.SessionRedisRepository;
 import dev.checku.checkuserver.global.error.exception.EntityNotFoundException;
 import dev.checku.checkuserver.global.error.exception.ErrorCode;
-import dev.checku.checkuserver.global.util.PortalUtils;
+import dev.checku.checkuserver.global.util.PortalRequestFactory;
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.concurrent.TimeUnit;
 
 
@@ -19,40 +20,44 @@ import java.util.concurrent.TimeUnit;
 @Transactional(readOnly = true)
 public class PortalSessionService {
 
-    private final String SESSION = "CHECKU_SESSION_ID";
+    private static final String CHECKU_SESSION_ID = "CHECKU_SESSION_ID";
+    private static final int WAIT_TIME = 1;
+    private static final int LEASE_TIME = 3;
+
     private final SessionRedisRepository sessionRedisRepository;
     private final PortalLoginService portalLoginService;
+    private final PortalRequestFactory portalRequestFactory;
     private final PortalFeignClient portalFeignClient;
     private final RedissonClient redissonClient;
 
     public void init() {
-        String jSession = portalLoginService.login();
-        savePortalSession(new PortalSession(SESSION, jSession));
+        String sessionId = portalLoginService.login();
+        save(new PortalSession(CHECKU_SESSION_ID, sessionId));
     }
 
     public PortalSession getPortalSession() {
-        return sessionRedisRepository.findById(SESSION)
+        return sessionRedisRepository.findById(CHECKU_SESSION_ID)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.SESSION_NOT_FOUND));
     }
 
 
-    public void savePortalSession(PortalSession session) {
+    public void save(PortalSession session) {
         sessionRedisRepository.save(session);
     }
 
     public void updatePortalSession() {
         RLock lock = redissonClient.getLock("key");
+
         try {
-            if (!lock.tryLock(1, 3, TimeUnit.SECONDS))
+            if (!lock.tryLock(WAIT_TIME, LEASE_TIME, TimeUnit.SECONDS))
                 return;
 
-            if (testFromPortal()) {
+            if (isCurrentSessionIdValid()) {
                 return;
             }
 
             String jSession = portalLoginService.login();
-            savePortalSession(new PortalSession(SESSION, jSession));
-
+            save(new PortalSession(CHECKU_SESSION_ID, jSession));
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } finally {
@@ -60,12 +65,11 @@ public class PortalSessionService {
         }
     }
 
-    private boolean testFromPortal() {
-        PortalRes result = portalFeignClient.test(
-                getPortalSession().getSession(),
-                PortalUtils.header, PortalUtils.createBody("", "", "0001")
-        ).getBody();
-        return result.getSubjects() != null;
+    private boolean isCurrentSessionIdValid() {
+        PortalResponse response = portalFeignClient.getSubjects(
+                portalRequestFactory.createHeader(),
+                portalRequestFactory.createBody("", "", "0001")
+        );
+        return response.isSuccess();
     }
-
 }

@@ -17,17 +17,17 @@ public enum Grade {
     ALL(9, "전체"),
     UNKNOWN(null, "");
 
-    private final Integer grade;
+    private final Integer number;
     private final String description;
 
     public static Grade of(Integer grade) {
         return Arrays.stream(values())
-                .filter(subjectGrade -> subjectGrade.grade.equals(grade))
+                .filter(subjectGrade -> subjectGrade.number.equals(grade))
                 .findAny()
                 .orElse(UNKNOWN);
     }
 
-    public static Grade setGrade(String grade) {
+    public static Grade setNumber(String grade) {
         if (StringUtils.hasText(grade)) {
             return Grade.valueOf(grade.toUpperCase());
         }
@@ -36,6 +36,6 @@ public enum Grade {
 
     public boolean matchGrade(Integer grade) {
         if (this == Grade.ALL) return true;
-        return this.getGrade().equals(grade);
+        return this.getNumber().equals(grade);
     }
 }
