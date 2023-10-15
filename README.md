@@ -5,14 +5,11 @@
 
 <img width="833" alt="image" src="https://user-images.githubusercontent.com/46523628/187130227-425bf503-f1bf-4e42-84a8-3b5b1c4872eb.png">
 
-# Test
-
-# Origin Test
-
 ## Package
 ```
 .
 ├── domain
+|   ├── bookmark
 │   ├── common
 │   ├── notification
 │   ├── portal
@@ -63,7 +60,7 @@
 
 ## ERD
 
-<img width="729" alt="image" src="https://user-images.githubusercontent.com/83503188/218758830-e2101990-cc7f-4f07-9f13-6cbe8af54534.png">
+<img width="525" alt="image" src="https://github.com/CHECKU-dev/checku-server/assets/46523628/a42fa6e8-928f-4b92-be49-a29107359ea7">
 
 ## Member
 <table align="center" >
