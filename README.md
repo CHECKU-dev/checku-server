@@ -56,7 +56,8 @@
 
 ## Structure
 
-![Untitled (1)](https://user-images.githubusercontent.com/83503188/218639426-b0aa1b00-627d-4d3f-b34a-6e564f62f1e4.png)
+![image](https://github.com/CHECKU-dev/checku-server/assets/46523628/51edf3ee-f3bd-4fa0-bf23-f410fb278194)
+
 
 ## ERD
 
