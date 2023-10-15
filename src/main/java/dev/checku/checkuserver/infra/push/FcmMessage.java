@@ -1,4 +1,4 @@
-package dev.checku.checkuserver.infra.notification.push;
+package dev.checku.checkuserver.infra.push;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

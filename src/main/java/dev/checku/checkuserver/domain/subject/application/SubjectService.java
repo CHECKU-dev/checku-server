@@ -5,7 +5,7 @@ import dev.checku.checkuserver.domain.bookmark.entity.Bookmark;
 import dev.checku.checkuserver.domain.common.SubjectNumber;
 import dev.checku.checkuserver.domain.notification.exception.SubjectHasVacancyException;
 import dev.checku.checkuserver.domain.notification.exception.SubjectNotFoundException;
-import dev.checku.checkuserver.domain.portal.application.PortalFeignClient;
+import dev.checku.checkuserver.domain.portal.infra.PortalFeignClient;
 import dev.checku.checkuserver.domain.portal.application.PortalSessionService;
 import dev.checku.checkuserver.domain.portal.dto.PortalResponse;
 import dev.checku.checkuserver.domain.subject.dto.GetAllSubjectsRequest;

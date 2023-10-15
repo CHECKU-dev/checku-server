@@ -1,6 +1,7 @@
 package dev.checku.checkuserver.domain.portal.application;
 
 import dev.checku.checkuserver.domain.portal.dto.PortalResponse;
+import dev.checku.checkuserver.domain.portal.infra.PortalFeignClient;
 import dev.checku.checkuserver.domain.subject.exception.SubjectRetryException;
 import dev.checku.checkuserver.domain.common.SubjectNumber;
 import dev.checku.checkuserver.global.util.PortalRequestFactory;

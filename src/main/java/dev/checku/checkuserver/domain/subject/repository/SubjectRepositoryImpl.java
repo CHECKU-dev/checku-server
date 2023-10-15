@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static dev.checku.checkuserver.domain.subject.entity.QSubject.subject;
-r
+
 @Repository
 @RequiredArgsConstructor
 public class SubjectRepositoryImpl implements SubjectRepositoryCustom {
@@ -20,18 +20,13 @@ public class SubjectRepositoryImpl implements SubjectRepositoryCustom {
     @Override
     public List<Subject> findByKeyword(String searchQuery, Pageable pageable) {
 
-        List<Subject> results = queryFactory
+        return queryFactory
                 .selectFrom(subject)
-                .where(
-                        subjectNameLike(searchQuery)
-                )
-                .orderBy(subject.subjectNumber.asc())
+                .where(subjectNameLike(searchQuery))
+                .orderBy(subject.subjectNumber.value.asc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1)
                 .fetch();
-
-        return results;
-
     }
 
     private BooleanExpression subjectNameLike(String searchQuery) {

@@ -1,5 +1,6 @@
 package dev.checku.checkuserver.domain.portal.application;
 
+import dev.checku.checkuserver.domain.portal.infra.PortalFeignClient;
 import dev.checku.checkuserver.global.util.PortalRequestFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

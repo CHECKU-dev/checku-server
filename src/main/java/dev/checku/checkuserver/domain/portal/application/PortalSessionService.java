@@ -2,6 +2,7 @@ package dev.checku.checkuserver.domain.portal.application;
 
 import dev.checku.checkuserver.domain.portal.domain.PortalSession;
 import dev.checku.checkuserver.domain.portal.dto.PortalResponse;
+import dev.checku.checkuserver.domain.portal.infra.PortalFeignClient;
 import dev.checku.checkuserver.domain.portal.repository.SessionRedisRepository;
 import dev.checku.checkuserver.global.error.exception.EntityNotFoundException;
 import dev.checku.checkuserver.global.error.exception.ErrorCode;

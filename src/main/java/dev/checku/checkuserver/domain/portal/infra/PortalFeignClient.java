@@ -1,4 +1,4 @@
-package dev.checku.checkuserver.domain.portal.application;
+package dev.checku.checkuserver.domain.portal.infra;
 
 import dev.checku.checkuserver.domain.portal.dto.PortalResponse;
 import org.springframework.cloud.openfeign.FeignClient;

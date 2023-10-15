@@ -6,7 +6,7 @@ import dev.checku.checkuserver.domain.subject.application.SubjectService;
 import dev.checku.checkuserver.domain.subject.entity.Subject;
 import dev.checku.checkuserver.domain.topic.application.TopicService;
 import dev.checku.checkuserver.domain.common.SubjectNumber;
-import dev.checku.checkuserver.infra.notification.push.FcmService;
+import dev.checku.checkuserver.infra.push.FcmService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;

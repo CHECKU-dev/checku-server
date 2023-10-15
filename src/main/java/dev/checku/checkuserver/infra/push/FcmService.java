@@ -1,4 +1,4 @@
-package dev.checku.checkuserver.infra.notification.push;
+package dev.checku.checkuserver.infra.push;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
@@ -9,7 +9,7 @@ import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
 import dev.checku.checkuserver.domain.common.SubjectNumber;
 import dev.checku.checkuserver.global.error.exception.ErrorCode;
-import dev.checku.checkuserver.infra.notification.exception.NotificationFailedException;
+import dev.checku.checkuserver.infra.push.exception.NotificationFailedException;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.core.io.ClassPathResource;

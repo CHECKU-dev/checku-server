@@ -1,4 +1,4 @@
-package dev.checku.checkuserver.infra.notification.exception;
+package dev.checku.checkuserver.infra.push.exception;
 
 
 import dev.checku.checkuserver.global.error.exception.BusinessException;
