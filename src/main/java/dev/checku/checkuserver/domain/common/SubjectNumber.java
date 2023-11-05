@@ -9,13 +9,11 @@ import java.util.Objects;
 
 @Getter
 @EqualsAndHashCode
-@Embeddable
 public class SubjectNumber {
 
     private static final int MIN_NUMBER = 0;
     private static final int MAX_NUMBER = 9999;
 
-    @Column(name = "subject_number")
     private  String value;
 
     public SubjectNumber(String value) {

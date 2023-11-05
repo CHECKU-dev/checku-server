@@ -16,16 +16,16 @@ public class BookmarkApi {
     private final BookmarkService bookmarkService;
 
     @PostMapping
-    public ResponseEntity<RegisterBookmarkResponse> register(
-            @Valid @RequestBody RegisterBookmarkRequest request
+    public ResponseEntity<CreateBookmarkResponse> create(
+            @Valid @RequestBody CreateBookmarkRequest request
     ) {
         Long id = bookmarkService.register(request);
-        return ResponseEntity.ok(new RegisterBookmarkResponse(id));
+        return ResponseEntity.ok(new CreateBookmarkResponse(id));
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> removeBookmark(
-            @Valid @RequestBody RemoveBookmarkRequest request
+    public ResponseEntity<Void> delete(
+            @Valid @RequestBody DeleteBookmarkRequest request
     ) {
         bookmarkService.remove(request);
         return ResponseEntity.ok().build();

@@ -1,19 +1,19 @@
 package dev.checku.checkuserver.domain.bookmark.adapter.in.web;
 
-import dev.checku.checkuserver.domain.common.SubjectNumber;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class RemoveBookmarkRequest {
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
-    @Getter
+@Getter
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class CreateBookmarkRequest {
+
+    @NotNull
     private Long userId;
 
+    @NotBlank
     private String subjectNumber;
-
-    public SubjectNumber getSubjectNumber() {
-        return new SubjectNumber(subjectNumber);
-    }
 }

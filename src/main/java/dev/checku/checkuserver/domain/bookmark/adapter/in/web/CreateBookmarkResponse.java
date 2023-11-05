@@ -1,10 +1,10 @@
 package dev.checku.checkuserver.domain.bookmark.adapter.in.web;
 
-public class RegisterBookmarkResponse {
+public class CreateBookmarkResponse {
 
     private Long bookmarkId;
 
-    public RegisterBookmarkResponse(Long bookmarkId) {
+    public CreateBookmarkResponse(Long bookmarkId) {
         this.bookmarkId = bookmarkId;
     }
 }

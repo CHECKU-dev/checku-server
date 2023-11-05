@@ -1,10 +1,10 @@
 package dev.checku.checkuserver.domain.bookmark.application.service;
 
 import dev.checku.checkuserver.domain.bookmark.adapter.in.web.GetBookmarkResponse;
-import dev.checku.checkuserver.domain.bookmark.adapter.in.web.RegisterBookmarkRequest;
-import dev.checku.checkuserver.domain.bookmark.adapter.in.web.RemoveBookmarkRequest;
+import dev.checku.checkuserver.domain.bookmark.adapter.in.web.CreateBookmarkRequest;
+import dev.checku.checkuserver.domain.bookmark.adapter.in.web.DeleteBookmarkRequest;
 import dev.checku.checkuserver.domain.bookmark.adapter.out.persistence.BookmarkJpaEntity;
-import dev.checku.checkuserver.domain.bookmark.adapter.out.persistence.BookmarkJpaRepository;
+import dev.checku.checkuserver.domain.bookmark.adapter.out.persistence.BookmarkSpringDataRepository;
 import dev.checku.checkuserver.domain.common.SubjectNumber;
 import dev.checku.checkuserver.domain.portal.application.service.PortalSubjectService;
 import dev.checku.checkuserver.domain.user.adapter.out.persistence.UserJpaEntity;
@@ -26,11 +26,11 @@ import java.util.List;
 public class BookmarkService {
 
     private final GetUserService getUserService;
-    private final BookmarkJpaRepository bookmarkJpaRepository;
+    private final BookmarkSpringDataRepository bookmarkSpringDataRepository;
     private final PortalSubjectService portalSubjectService;
 
     @Transactional
-    public Long register(RegisterBookmarkRequest request) {
+    public Long register(CreateBookmarkRequest request) {
 //        UserJpaEntity userJpaEntity = getUserService.getById(request.getUserId());
 //        SubjectNumber subjectNumber = new SubjectNumber(request.getSubjectNumber());
 //        validateAlreadyRegister(userJpaEntity, subjectNumber);
@@ -42,13 +42,13 @@ public class BookmarkService {
     }
 
     private void validateAlreadyRegister(UserJpaEntity userJpaEntity, SubjectNumber subjectNumber) {
-        if (bookmarkJpaRepository.existsByUserJpaEntityAndSubjectNumber(userJpaEntity, subjectNumber)) {
+        if (bookmarkSpringDataRepository.existsByUserJpaEntityAndSubjectNumber(userJpaEntity, subjectNumber)) {
             throw new BusinessException(ErrorCode.BOOKMARK_ALREADY_REGISTER);
         }
     }
 
     @Transactional
-    public void remove(RemoveBookmarkRequest request) {
+    public void remove(DeleteBookmarkRequest request) {
 //        UserJpaEntity userJpaEntity = getUserService.getBy(request.getUserId());
 //        Bookmark bookmark = getByUserAndSubjectNumber(userJpaEntity, request.getSubjectNumber());
 //
@@ -70,11 +70,11 @@ public class BookmarkService {
     }
 
     public BookmarkJpaEntity getByUserAndSubjectNumber(UserJpaEntity userJpaEntity, SubjectNumber subjectNumber) {
-        return bookmarkJpaRepository.findByUserJpaEntityAndSubjectNumber(userJpaEntity, subjectNumber)
+        return bookmarkSpringDataRepository.findByUserJpaEntityAndSubjectNumber(userJpaEntity, subjectNumber)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.BOOKMARK_NOT_FOUND));
     }
 
     public List<BookmarkJpaEntity> getAllSubjectsByUser(UserJpaEntity userJpaEntity) {
-        return bookmarkJpaRepository.findAllByUserJpaEntity(userJpaEntity);
+        return bookmarkSpringDataRepository.findAllByUserJpaEntity(userJpaEntity);
     }
 }
