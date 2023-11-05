@@ -1,6 +1,6 @@
 package dev.checku.checkuserver.global.util;
 
-import dev.checku.checkuserver.domain.portal.dto.PortalResponse;
+import dev.checku.checkuserver.domain.portal.adapter.in.web.PortalResponse;
 import lombok.experimental.UtilityClass;
 
 import java.util.regex.Matcher;

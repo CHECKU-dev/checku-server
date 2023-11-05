@@ -1,6 +1,6 @@
 package dev.checku.checkuserver.global.util;
 
-import dev.checku.checkuserver.domain.portal.application.PortalSessionService;
+import dev.checku.checkuserver.domain.portal.application.service.PortalSessionService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;

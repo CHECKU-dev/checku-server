@@ -1,6 +1,6 @@
 package dev.checku.checkuserver.global.advisor;
 
-import dev.checku.checkuserver.domain.portal.application.PortalLoginService;
+import dev.checku.checkuserver.domain.portal.application.service.PortalLoginService;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;

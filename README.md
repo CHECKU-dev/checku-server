@@ -11,10 +11,10 @@
 ├── domain
 |   ├── bookmark
 │   ├── common
-│   ├── notification
+│   ├── notificationJpaEntity
 │   ├── portal
-│   ├── schedule
-│   ├── subject
+│   ├── scheduleJpaEntity
+│   ├── subjectJpaEntity
 │   ├── topicJpaEntity
 │   └── userJpaEntity
 ├── global
@@ -27,7 +27,7 @@
 │   ├── interceptor
 │   └── validator
 └── infra
-    └── notification
+    └── notificationJpaEntity
 ```
 
 <br>
