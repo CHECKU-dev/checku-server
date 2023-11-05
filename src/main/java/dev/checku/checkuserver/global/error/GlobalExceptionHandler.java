@@ -106,7 +106,6 @@ public class GlobalExceptionHandler {
     }
 
     private void logError(Exception exception) {
-
         StringWriter stringWriter = new StringWriter();
         PrintWriter printWriter = new PrintWriter(stringWriter);
 

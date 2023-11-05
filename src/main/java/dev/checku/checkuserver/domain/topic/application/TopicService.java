@@ -1,7 +1,7 @@
 package dev.checku.checkuserver.domain.topic.application;
 
-import dev.checku.checkuserver.domain.topic.entity.Topic;
-import dev.checku.checkuserver.domain.topic.repository.TopicRepository;
+import dev.checku.checkuserver.domain.topic.adapter.out.persistence.TopicJpaEntity;
+import dev.checku.checkuserver.domain.topic.adapter.out.persistence.TopicJpaRepository;
 import dev.checku.checkuserver.domain.common.SubjectNumber;
 import dev.checku.checkuserver.global.error.exception.EntityNotFoundException;
 import dev.checku.checkuserver.global.error.exception.ErrorCode;
@@ -14,22 +14,22 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class TopicService {
 
-    private final TopicRepository topicRepository;
+    private final TopicJpaRepository topicJpaRepository;
 
     @Transactional
-    public void save(Topic topic) {
-        topicRepository.save(topic);
+    public void save(TopicJpaEntity topicJpaEntity) {
+        topicJpaRepository.save(topicJpaEntity);
     }
 
     @Transactional
     public void deleteBy(SubjectNumber subjectNumber) {
-        Topic topic = topicRepository.findBySubjectNumber(subjectNumber)
+        TopicJpaEntity topicJpaEntity = topicJpaRepository.findBySubjectNumber(subjectNumber)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.TOPIC_NOT_FOUND));
 
-        topicRepository.delete(topic);
+        topicJpaRepository.delete(topicJpaEntity);
     }
 
     public boolean existsBy(SubjectNumber subjectNumber) {
-        return topicRepository.existsBySubjectNumber(subjectNumber);
+        return topicJpaRepository.existsBySubjectNumber(subjectNumber);
     }
 }

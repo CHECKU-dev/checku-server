@@ -20,6 +20,6 @@ public class PortalSessionApi {
     @InternalApi
     @PatchMapping
     public void updateSessionId() {
-        portalSessionService.updatePortalSession();
+//        portalSessionService.updatePortalSession();
     }
 }

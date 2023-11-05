@@ -4,12 +4,16 @@ server:
     context-path: /
 
 portal:
-  id: ENC(Z6HpAscjxxVoGxEdwr1P3w==)
-  pwd: ENC(Lzc6O4kHIQDx5IfHFjhYsJlhXKuxPaJJ)
-  year: ENC(utnocw5+PhD7OaXVgGjhYA==) # 연도
-  shtm: ENC(A+tf8XBFmW2pQn7SOpjgOQ==) # 학기 구분
+#  id: ENC(Z6HpAscjxxVoGxEdwr1P3w==)
+#  pwd: ENC(Lzc6O4kHIQDx5IfHFjhYsJlhXKuxPaJJ)
+#  year: ENC(utnocw5+PhD7OaXVgGjhYA==) # 연도
+#  shtm: ENC(A+tf8XBFmW2pQn7SOpjgOQ==) # 학기 구분
+  id: 1
+  pwd: 1
+  year: 1
+  shtm: 1
 
-jasypt:
-  encryptor:
-    bean: jasyptStringEncryptor
-    password: ${JASYPT_PASSWORD}
+#jasypt:
+#  encryptor:
+#    bean: jasyptStringEncryptor
+#    password: ${JASYPT_PASSWORD}

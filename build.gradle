@@ -62,7 +62,7 @@ dependencies {
     implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
 
     // redisson
-    implementation 'org.redisson:redisson-spring-boot-starter:3.16.3'
+//    implementation 'org.redisson:redisson-spring-boot-starter:3.16.3'
 
     implementation 'org.springframework:spring-aspects'
     implementation 'org.springframework.retry:spring-retry'
@@ -72,7 +72,7 @@ dependencies {
 
     // test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
+    testImplementation 'io.rest-assured:rest-assured:3.3.0'
 
 }
 

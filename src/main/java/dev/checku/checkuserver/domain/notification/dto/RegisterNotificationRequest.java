@@ -2,7 +2,7 @@ package dev.checku.checkuserver.domain.notification.dto;
 
 import dev.checku.checkuserver.domain.notification.entity.Notification;
 import dev.checku.checkuserver.domain.common.SubjectNumber;
-import dev.checku.checkuserver.domain.user.entity.User;
+import dev.checku.checkuserver.domain.user.adapter.out.persistence.UserJpaEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -41,12 +41,12 @@ public class RegisterNotificationRequest {
         return new SubjectNumber(subjectNumber);
     }
 
-    public Notification toEntity(User user) {
+    public Notification toEntity(UserJpaEntity userJpaEntity) {
         return Notification.builder()
                 .subjectNumber(new SubjectNumber(subjectNumber))
                 .subjectName(subjectName)
                 .professor(professor)
-                .user(user)
+//                .user(userJpaEntity)
                 .build();
     }
 }

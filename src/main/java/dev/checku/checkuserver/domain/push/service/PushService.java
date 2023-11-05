@@ -29,7 +29,7 @@ public class PushService {
     public void publish(String subjectNumber) {
         List<Notification> notificationList = notificationRepository.findAllBySubjectNumber(new SubjectNumber(subjectNumber));
         List<String> pushTokens = notificationList.stream()
-                .map(notification -> notification.getUser().getPushToken())
+                .map(notification -> notification.getUserJpaEntity().getPushToken())
                 .collect(Collectors.toList());
 
         Subject subject = subjectService.getBy(new SubjectNumber(subjectNumber));

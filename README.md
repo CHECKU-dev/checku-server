@@ -3,7 +3,7 @@
 
 [체쿠(ChecKU) - 건국대학교 수강신청 인원 확인](https://bit.ly/3JJUuvD)
 
-<img width="833" alt="image" src="https://user-images.githubusercontent.com/46523628/187130227-425bf503-f1bf-4e42-84a8-3b5b1c4872eb.png">
+<img width="833" alt="image" src="https://userJpaEntity-images.githubusercontent.com/46523628/187130227-425bf503-f1bf-4e42-84a8-3b5b1c4872eb.png">
 
 ## Package
 ```
@@ -15,8 +15,8 @@
 │   ├── portal
 │   ├── schedule
 │   ├── subject
-│   ├── topic
-│   └── user
+│   ├── topicJpaEntity
+│   └── userJpaEntity
 ├── global
 │   ├── advice
 │   ├── advisor

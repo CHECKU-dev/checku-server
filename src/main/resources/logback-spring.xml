@@ -14,7 +14,7 @@
     <!--    Profiles    -->
     <springProfile name="dev">
         <property name="FILE_PATH"
-                  value="${user.home}/logs/dev"/>
+                  value="${userJpaEntity.home}/logs/dev"/>
 
         <include resource="appenders/async-file-appender-info.xml"/>
         <include resource="appenders/async-file-appender-error.xml"/>

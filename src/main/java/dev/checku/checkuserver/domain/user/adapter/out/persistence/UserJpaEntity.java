@@ -1,6 +1,6 @@
-package dev.checku.checkuserver.domain.user.entity;
+package dev.checku.checkuserver.domain.user.adapter.out.persistence;
 
-import dev.checku.checkuserver.domain.common.BaseTimeEntity;
+import dev.checku.checkuserver.domain.common.adapter.out.persistence.BaseTimeJpaEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User extends BaseTimeEntity {
+public class UserJpaEntity extends BaseTimeJpaEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,7 +19,7 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     private String pushToken;
 
-    public User(String pushToken) {
+    public UserJpaEntity(String pushToken) {
         this.pushToken = pushToken;
     }
 }

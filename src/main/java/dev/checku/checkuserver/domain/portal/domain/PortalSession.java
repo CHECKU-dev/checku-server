@@ -3,12 +3,13 @@ package dev.checku.checkuserver.domain.portal.domain;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.redis.core.RedisHash;
 
+import javax.persistence.Entity;
 import javax.persistence.Id;
 
 @Getter
-@RedisHash("portal:session")
+//@RedisHash("portal:session")
+@Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PortalSession {
 

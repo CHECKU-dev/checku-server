@@ -30,7 +30,7 @@ public class PortalSubjectService {
     }
 
     private void updatePortalSessionAndThrow() {
-        portalSessionService.updatePortalSession();
+//        portalSessionService.updatePortalSession();
         throw new SubjectRetryException();
     }
 }

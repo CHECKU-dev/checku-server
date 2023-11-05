@@ -1,8 +1,5 @@
 package dev.checku.checkuserver.infra.push;
 
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
@@ -11,8 +8,6 @@ import dev.checku.checkuserver.domain.common.SubjectNumber;
 import dev.checku.checkuserver.global.error.exception.ErrorCode;
 import dev.checku.checkuserver.infra.push.exception.NotificationFailedException;
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -59,17 +54,17 @@ public class FcmService {
 
     @PostConstruct
     public void firebaseSetting() throws IOException {
-        String firebaseConfigPath = "firebase/firebase_service_key.json";
-
-        GoogleCredentials googleCredentials = GoogleCredentials
-                .fromStream(new ClassPathResource(firebaseConfigPath).getInputStream())
-                .createScoped(List.of("https://www.googleapis.com/auth/cloud-platform"));
-
-        FirebaseOptions secondaryAppConfig = FirebaseOptions.builder()
-                .setCredentials(googleCredentials)
-                .build();
-        FirebaseApp app = FirebaseApp.initializeApp(secondaryAppConfig);
-        this.firebaseMessaging = FirebaseMessaging.getInstance(app);
+//        String firebaseConfigPath = "firebase/firebase_service_key.json";
+//
+//        GoogleCredentials googleCredentials = GoogleCredentials
+//                .fromStream(new ClassPathResource(firebaseConfigPath).getInputStream())
+//                .createScoped(List.of("https://www.googleapis.com/auth/cloud-platform"));
+//
+//        FirebaseOptions secondaryAppConfig = FirebaseOptions.builder()
+//                .setCredentials(googleCredentials)
+//                .build();
+//        FirebaseApp app = FirebaseApp.initializeApp(secondaryAppConfig);
+//        this.firebaseMessaging = FirebaseMessaging.getInstance(app);
     }
 
     public void sendMessageTo(String targetToken, String title, String body) {

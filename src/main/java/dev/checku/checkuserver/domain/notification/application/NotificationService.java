@@ -1,5 +1,6 @@
 package dev.checku.checkuserver.domain.notification.application;
 
+import dev.checku.checkuserver.domain.common.SubjectNumber;
 import dev.checku.checkuserver.domain.notification.dto.CancelNotificationRequest;
 import dev.checku.checkuserver.domain.notification.dto.GetNotificationResponse;
 import dev.checku.checkuserver.domain.notification.dto.RegisterNotificationRequest;
@@ -8,10 +9,8 @@ import dev.checku.checkuserver.domain.notification.exception.AlreadyRegisteredNo
 import dev.checku.checkuserver.domain.notification.repository.NotificationRepository;
 import dev.checku.checkuserver.domain.subject.application.SubjectService;
 import dev.checku.checkuserver.domain.topic.application.TopicService;
-import dev.checku.checkuserver.domain.topic.entity.Topic;
-import dev.checku.checkuserver.domain.common.SubjectNumber;
-import dev.checku.checkuserver.domain.user.application.UserService;
-import dev.checku.checkuserver.domain.user.entity.User;
+import dev.checku.checkuserver.domain.user.adapter.out.persistence.UserJpaEntity;
+import dev.checku.checkuserver.domain.user.application.port.out.LoadUserPort;
 import dev.checku.checkuserver.global.error.exception.EntityNotFoundException;
 import dev.checku.checkuserver.global.error.exception.ErrorCode;
 import dev.checku.checkuserver.infra.push.FcmService;
@@ -28,7 +27,7 @@ import java.util.stream.Collectors;
 public class NotificationService {
 
     private final SubjectService subjectService;
-    private final UserService userService;
+    private final LoadUserPort loadUserPort;
     private final NotificationRepository notificationRepository;
     private final FcmService fcmService;
     private final TopicService topicService;
@@ -36,55 +35,55 @@ public class NotificationService {
     @Transactional
     public boolean register(RegisterNotificationRequest request) {
         subjectService.validateSubjectHasVacancy(request.getSubjectNumber());
-
-        User user = userService.getBy(request.getUserId());
-        Notification newNotification = request.toEntity(user);
-
-        validateDuplicateRegistration(user, newNotification.getSubjectNumber());
-
-        Notification savedNotification = notificationRepository.save(newNotification);
-
-        createTopicIfNotExists(newNotification);
-        fcmService.subscribeToTopic(user.getPushToken(), savedNotification.getSubjectNumber().getValue());
+//
+//        UserJpaEntity userJpaEntity = userService.getBy(request.getUserId());
+//        Notification newNotification = request.toEntity(userJpaEntity);
+//
+//        validateDuplicateRegistration(userJpaEntity, newNotification.getSubjectNumber());
+//
+//        Notification savedNotification = notificationRepository.save(newNotification);
+//
+//        createTopicIfNotExists(newNotification);
+//        fcmService.subscribeToTopic(userJpaEntity.getPushToken(), savedNotification.getSubjectNumber().getValue());
 
         return true;
     }
 
-    private void validateDuplicateRegistration(User user, SubjectNumber subjectNumber) {
-        if (notificationRepository.existsByUserAndSubjectNumber(user, subjectNumber)) {
+    private void validateDuplicateRegistration(UserJpaEntity userJpaEntity, SubjectNumber subjectNumber) {
+        if (notificationRepository.existsByUserJpaEntityAndSubjectNumber(userJpaEntity, subjectNumber)) {
             throw new AlreadyRegisteredNotificationException();
         }
     }
 
     private void createTopicIfNotExists(Notification notification) {
         if (!topicService.existsBy(notification.getSubjectNumber())) {
-            Topic topic = Topic.create((notification.getSubjectNumber()));
-            topicService.save(topic);
+//            TopicJpaEntity topicJpaEntity = TopicJpaEntity.create((notification.getSubjectNumber()));
+//            topicService.save(topicJpaEntity);
         }
     }
 
     @Transactional
     public void cancel(CancelNotificationRequest request) {
-        User user = userService.getBy(request.getUserId());
-
-        Notification notification = getNotificationBy(user, request.getSubjectNumber());
-        notificationRepository.delete(notification);
-
-        fcmService.unsubscribeToTopic(user.getPushToken(), notification.getSubjectNumber());
-
-        deleteTopicIfLastNotification(notification);
+//        UserJpaEntity userJpaEntity = userService.getBy(request.getUserId());
+//
+//        Notification notification = getNotificationBy(userJpaEntity, request.getSubjectNumber());
+//        notificationRepository.delete(notification);
+//
+//        fcmService.unsubscribeToTopic(userJpaEntity.getPushToken(), notification.getSubjectNumber());
+//
+//        deleteTopicIfLastNotification(notification);
     }
 
     public List<GetNotificationResponse> getAllBy(Long userId) {
-        List<Notification> notificationList = notificationRepository.findAllByUserId(userId);
+        List<Notification> notificationList = notificationRepository.findAllByUserJpaEntityId(userId);
 
         return notificationList.stream()
                 .map(GetNotificationResponse::from)
                 .collect(Collectors.toList());
     }
 
-    private Notification getNotificationBy(User user, SubjectNumber subjectNumber) {
-        return notificationRepository.findByUserAndSubjectNumber(user, subjectNumber)
+    private Notification getNotificationBy(UserJpaEntity userJpaEntity, SubjectNumber subjectNumber) {
+        return notificationRepository.findByUserJpaEntityAndSubjectNumber(userJpaEntity, subjectNumber)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOTIFICATION_NOT_FOUND));
     }
 

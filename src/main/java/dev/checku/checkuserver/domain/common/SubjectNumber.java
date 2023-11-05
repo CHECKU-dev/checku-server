@@ -1,30 +1,30 @@
 package dev.checku.checkuserver.domain.common;
 
-import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.util.Objects;
 
-@Embeddable
 @Getter
 @EqualsAndHashCode
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Embeddable
 public class SubjectNumber {
 
     private static final int MIN_NUMBER = 0;
     private static final int MAX_NUMBER = 9999;
 
-    @Column(name = "subject_number", nullable = false, unique = true)
-    private String value;
+    @Column(name = "subject_number")
+    private  String value;
 
     public SubjectNumber(String value) {
         validateNotNull(value);
         validateRange(value);
         this.value = value;
+    }
+
+    public SubjectNumber() {
     }
 
     private void validateNotNull(String value) {

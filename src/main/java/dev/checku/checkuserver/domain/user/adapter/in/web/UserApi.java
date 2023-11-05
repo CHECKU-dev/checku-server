@@ -1,8 +1,7 @@
-package dev.checku.checkuserver.domain.user.api;
+package dev.checku.checkuserver.domain.user.adapter.in.web;
 
-import dev.checku.checkuserver.domain.user.application.UserService;
-import dev.checku.checkuserver.domain.user.dto.LoginRequest;
-import dev.checku.checkuserver.domain.user.dto.LoginResponse;
+import dev.checku.checkuserver.domain.user.application.port.in.LoginUseCase;
+import dev.checku.checkuserver.domain.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,14 +16,14 @@ import javax.validation.Valid;
 @RequestMapping("/api/users")
 public class UserApi {
 
-    private final UserService userService;
+    private final LoginUseCase loginUseCase;
 
     @PostMapping
-    public ResponseEntity<LoginResponse> userLogin(
+    public ResponseEntity<LoginResponse> login(
             @RequestBody @Valid LoginRequest request
     ) {
-        LoginResponse response = userService.login(request);
+        User user = loginUseCase.login(request.getPushToken());
+        LoginResponse response = new LoginResponse(user);
         return ResponseEntity.ok(response);
     }
-
 }

@@ -1,4 +1,4 @@
-package dev.checku.checkuserver.domain.common;
+package dev.checku.checkuserver.domain.common.adapter.out.persistence;
 
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public abstract class BaseTimeEntity {
+public abstract class BaseTimeJpaEntity {
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
