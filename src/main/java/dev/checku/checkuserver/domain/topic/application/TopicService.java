@@ -2,7 +2,7 @@ package dev.checku.checkuserver.domain.topic.application;
 
 import dev.checku.checkuserver.domain.topic.adapter.out.persistence.TopicJpaEntity;
 import dev.checku.checkuserver.domain.topic.adapter.out.persistence.TopicJpaRepository;
-import dev.checku.checkuserver.domain.common.SubjectNumber;
+import dev.checku.checkuserver.domain.common.domain.SubjectNumber;
 import dev.checku.checkuserver.global.error.exception.EntityNotFoundException;
 import dev.checku.checkuserver.global.error.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;

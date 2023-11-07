@@ -1,9 +1,9 @@
 package dev.checku.checkuserver.domain.notification.application.service;
 
-import dev.checku.checkuserver.domain.common.SubjectNumber;
+import dev.checku.checkuserver.domain.common.domain.SubjectNumber;
 import dev.checku.checkuserver.domain.notification.adapter.in.web.CancelNotificationRequest;
 import dev.checku.checkuserver.domain.notification.adapter.in.web.GetNotificationResponse;
-import dev.checku.checkuserver.domain.notification.adapter.in.web.RegisterNotificationRequest;
+import dev.checku.checkuserver.domain.notification.adapter.in.web.CreateNotificationRequest;
 import dev.checku.checkuserver.domain.notification.adapter.out.persistence.NotificationJpaEntity;
 import dev.checku.checkuserver.domain.notification.exception.AlreadyRegisteredNotificationException;
 import dev.checku.checkuserver.domain.notification.adapter.out.persistence.NotificationSpringDataRepository;
@@ -33,7 +33,7 @@ public class NotificationService {
     private final TopicService topicService;
 
     @Transactional
-    public boolean register(RegisterNotificationRequest request) {
+    public boolean register(CreateNotificationRequest request) {
         subjectService.validateSubjectHasVacancy(request.getSubjectNumber());
 //
 //        UserJpaEntity userJpaEntity = userService.getBy(request.getUserId());

@@ -1,6 +1,6 @@
 package dev.checku.checkuserver.global.util;
 
-import dev.checku.checkuserver.domain.portal.adapter.in.web.PortalResponse;
+import dev.checku.checkuserver.domain.temp.PortalSubjectResponse;
 import lombok.experimental.UtilityClass;
 
 import java.util.regex.Matcher;
@@ -28,7 +28,7 @@ public class PortalResponseParser {
         return newTimeAndPlace.toString().replaceAll("\\([^()]+\\)", "").trim();
     }
 
-    public static String extractEmptySeat(PortalResponse.SubjectDetail subjectDetail) {
+    public static String extractEmptySeat(PortalSubjectResponse.SubjectDetail subjectDetail) {
         String[] people = subjectDetail.getNumberOfPeople().split("/");
         String current = people[0];
         String total = people[1];

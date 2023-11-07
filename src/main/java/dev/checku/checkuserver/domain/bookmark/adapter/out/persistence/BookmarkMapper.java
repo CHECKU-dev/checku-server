@@ -1,7 +1,7 @@
 package dev.checku.checkuserver.domain.bookmark.adapter.out.persistence;
 
 import dev.checku.checkuserver.domain.bookmark.domain.Bookmark;
-import dev.checku.checkuserver.domain.common.SubjectNumber;
+import dev.checku.checkuserver.domain.common.domain.SubjectNumber;
 import org.springframework.stereotype.Component;
 
 @Component

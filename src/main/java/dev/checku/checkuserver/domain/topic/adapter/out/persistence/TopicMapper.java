@@ -1,6 +1,6 @@
 package dev.checku.checkuserver.domain.topic.adapter.out.persistence;
 
-import dev.checku.checkuserver.domain.common.SubjectNumber;
+import dev.checku.checkuserver.domain.common.domain.SubjectNumber;
 import dev.checku.checkuserver.domain.topic.domain.Topic;
 import org.springframework.stereotype.Component;
 

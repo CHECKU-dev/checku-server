@@ -1,6 +1,5 @@
-package dev.checku.checkuserver.domain.portal.adapter.out;
+package dev.checku.checkuserver.domain.temp;
 
-import dev.checku.checkuserver.domain.portal.adapter.in.web.PortalResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +24,7 @@ public interface PortalFeignClient {
     );
 
     @PostMapping(value = "/CourTotalTimetableInq/find.do", produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    PortalResponse getSubjects(
+    PortalSubjectResponse getSubjects(
             @RequestHeader Map<String, String> header,
             MultiValueMap<String, String> body);
 }

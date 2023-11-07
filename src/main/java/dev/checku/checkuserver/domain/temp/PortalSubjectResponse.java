@@ -1,4 +1,4 @@
-package dev.checku.checkuserver.domain.portal.adapter.in.web;
+package dev.checku.checkuserver.domain.temp;
 
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -11,7 +11,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
-public class PortalResponse {
+public class PortalSubjectResponse {
 
     @JsonProperty(value = "DS_SUSTTIMETABLE")
     private List<SubjectDetail> subjectDetails;

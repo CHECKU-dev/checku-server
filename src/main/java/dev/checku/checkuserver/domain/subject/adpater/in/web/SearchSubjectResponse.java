@@ -1,8 +1,8 @@
 package dev.checku.checkuserver.domain.subject.adpater.in.web;
 
-import dev.checku.checkuserver.domain.portal.adapter.in.web.PortalResponse;
+import dev.checku.checkuserver.domain.temp.PortalSubjectResponse;
 import dev.checku.checkuserver.domain.subject.domain.Grade;
-import dev.checku.checkuserver.domain.common.SubjectNumber;
+import dev.checku.checkuserver.domain.common.domain.SubjectNumber;
 import dev.checku.checkuserver.global.util.PortalResponseParser;
 import lombok.Builder;
 
@@ -40,7 +40,7 @@ public class SearchSubjectResponse {
 
     }
 
-    public static SearchSubjectResponse from(PortalResponse.SubjectDetail subjectDetail, List<SubjectNumber> subjectNumbers) {
+    public static SearchSubjectResponse from(PortalSubjectResponse.SubjectDetail subjectDetail, List<SubjectNumber> subjectNumbers) {
         String originalTimeAndPlace = subjectDetail.getTimeAndPlace();
         String convertedTimeAndPlace = PortalResponseParser.convertPeriodsToHours(originalTimeAndPlace);
 

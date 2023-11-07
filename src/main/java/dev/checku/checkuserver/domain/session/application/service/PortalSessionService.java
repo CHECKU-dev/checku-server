@@ -1,4 +1,4 @@
-package dev.checku.checkuserver.domain.portal.application.service;
+package dev.checku.checkuserver.domain.session.application.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -1,6 +1,6 @@
 package dev.checku.checkuserver.domain.bookmark.adapter.in.web;
 
-import dev.checku.checkuserver.domain.portal.adapter.in.web.PortalResponse;
+import dev.checku.checkuserver.domain.temp.PortalSubjectResponse;
 import dev.checku.checkuserver.domain.subject.domain.Grade;
 import dev.checku.checkuserver.global.util.PortalResponseParser;
 import lombok.Builder;
@@ -36,7 +36,7 @@ public class GetBookmarkResponse {
     }
 
 
-    public static GetBookmarkResponse from(PortalResponse.SubjectDetail subjectDetail) {
+    public static GetBookmarkResponse from(PortalSubjectResponse.SubjectDetail subjectDetail) {
         String originalTimeAndPlace = subjectDetail.getTimeAndPlace();
         String convertedTimeAndPlace = PortalResponseParser.convertPeriodsToHours(originalTimeAndPlace);
 

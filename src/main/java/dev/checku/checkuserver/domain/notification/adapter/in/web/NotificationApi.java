@@ -1,6 +1,9 @@
 package dev.checku.checkuserver.domain.notification.adapter.in.web;
 
-import dev.checku.checkuserver.domain.notification.application.service.NotificationService;
+import dev.checku.checkuserver.domain.notification.application.port.in.CreateNotificationUseCase;
+import dev.checku.checkuserver.domain.notification.application.port.in.DeleteNotificationUseCase;
+import dev.checku.checkuserver.domain.notification.application.port.in.GetNotificationUseCase;
+import dev.checku.checkuserver.domain.notification.domain.Notification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,27 +16,29 @@ import java.util.List;
 @RequestMapping("/api/notifications")
 public class NotificationApi {
 
-    private final NotificationService notificationService;
+    private final CreateNotificationUseCase createNotificationUseCase;
+    private final DeleteNotificationUseCase deleteNotificationUseCase;
+    private final GetNotificationUseCase getNotificationUseCase;
 
     @PostMapping
-    public void register(
-            @Valid @RequestBody RegisterNotificationRequest request
+    public void create(
+            @Valid @RequestBody CreateNotificationRequest request
     ) {
-        notificationService.register(request);
+        createNotificationUseCase.create(request.getUserId(), request.getSubjectNumber());
     }
 
     @DeleteMapping
     public void cancelNotification(
             @Valid CancelNotificationRequest request
     ) {
-        notificationService.cancel(request);
+        deleteNotificationUseCase.delete(request.getUserId(), request.getSubjectNumber());
     }
 
     @GetMapping
     public ResponseEntity<List<GetNotificationResponse>> getNotifications(
             @RequestParam("userId") Long userId
     ) {
-        List<GetNotificationResponse> response = notificationService.getAllBy(userId);
-        return ResponseEntity.ok(response);
+        List<Notification> notifications = getNotificationUseCase.getAllByUserId(userId);
+        return ResponseEntity.ok(null); // TODO
     }
 }

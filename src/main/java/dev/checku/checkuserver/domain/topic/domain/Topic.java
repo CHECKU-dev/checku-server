@@ -1,6 +1,6 @@
 package dev.checku.checkuserver.domain.topic.domain;
 
-import dev.checku.checkuserver.domain.common.SubjectNumber;
+import dev.checku.checkuserver.domain.common.domain.SubjectNumber;
 import lombok.Builder;
 
 public class Topic {

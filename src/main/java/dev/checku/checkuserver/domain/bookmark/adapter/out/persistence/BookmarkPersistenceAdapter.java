@@ -24,15 +24,15 @@ public class BookmarkPersistenceAdapter implements CreateBookmarkPort, GetBookma
     }
 
     @Override
-    public void delete(Long id) {
-        bookmarkSpringDataRepository.deleteById(id);
-    }
-
-    @Override
     public List<Bookmark> getAllByUserId(Long userId) {
         List<BookmarkJpaEntity> bookmarkJpaEntities = bookmarkSpringDataRepository.findAllById(List.of(userId));
         return bookmarkJpaEntities.stream()
                 .map(bookmarkMapper::mapToDomainEntity)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void delete(Long userId, String subjectNumber) {
+        bookmarkSpringDataRepository.deleteByUserIdAndSubjectNumber(userId, subjectNumber);
     }
 }

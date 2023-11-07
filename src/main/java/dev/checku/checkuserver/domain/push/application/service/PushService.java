@@ -5,7 +5,7 @@ import dev.checku.checkuserver.domain.notification.adapter.out.persistence.Notif
 import dev.checku.checkuserver.domain.subject.application.service.SubjectService;
 import dev.checku.checkuserver.domain.subject.adpater.out.persistence.SubjectJpaEntity;
 import dev.checku.checkuserver.domain.topic.application.TopicService;
-import dev.checku.checkuserver.domain.common.SubjectNumber;
+import dev.checku.checkuserver.domain.common.domain.SubjectNumber;
 import dev.checku.checkuserver.infra.push.FcmService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;

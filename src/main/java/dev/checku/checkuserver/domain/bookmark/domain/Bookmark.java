@@ -1,6 +1,6 @@
 package dev.checku.checkuserver.domain.bookmark.domain;
 
-import dev.checku.checkuserver.domain.common.SubjectNumber;
+import dev.checku.checkuserver.domain.common.domain.SubjectNumber;
 import dev.checku.checkuserver.domain.user.domain.User;
 import lombok.Builder;
 import lombok.Getter;

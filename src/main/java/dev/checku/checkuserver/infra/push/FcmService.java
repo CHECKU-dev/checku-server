@@ -4,7 +4,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
-import dev.checku.checkuserver.domain.common.SubjectNumber;
+import dev.checku.checkuserver.domain.common.domain.SubjectNumber;
 import dev.checku.checkuserver.global.error.exception.ErrorCode;
 import dev.checku.checkuserver.infra.push.exception.NotificationFailedException;
 import lombok.RequiredArgsConstructor;

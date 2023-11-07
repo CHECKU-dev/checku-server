@@ -1,8 +1,8 @@
 package dev.checku.checkuserver.domain.subject.adpater.in.web;
 
-import dev.checku.checkuserver.domain.portal.adapter.in.web.PortalResponse;
+import dev.checku.checkuserver.domain.temp.PortalSubjectResponse;
 import dev.checku.checkuserver.domain.subject.domain.Grade;
-import dev.checku.checkuserver.domain.common.SubjectNumber;
+import dev.checku.checkuserver.domain.common.domain.SubjectNumber;
 import dev.checku.checkuserver.global.util.PortalResponseParser;
 import lombok.Builder;
 
@@ -39,7 +39,7 @@ public class GetAllSubjectsResponse {
         this.bookmarked = bookmarked;
     }
 
-    public static GetAllSubjectsResponse from(PortalResponse.SubjectDetail subjectDetail, List<SubjectNumber> bookmarks) {
+    public static GetAllSubjectsResponse from(PortalSubjectResponse.SubjectDetail subjectDetail, List<SubjectNumber> bookmarks) {
         String originalTimeAndPlace = subjectDetail.getTimeAndPlace();
         String convertedTimeAndPlace = PortalResponseParser.convertPeriodsToHours(originalTimeAndPlace);
 

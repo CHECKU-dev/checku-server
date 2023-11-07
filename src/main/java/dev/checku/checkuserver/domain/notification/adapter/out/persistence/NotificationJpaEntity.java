@@ -1,14 +1,14 @@
 package dev.checku.checkuserver.domain.notification.adapter.out.persistence;
 
 import dev.checku.checkuserver.domain.common.adapter.out.persistence.BaseTimeJpaEntity;
-import dev.checku.checkuserver.domain.common.SubjectNumber;
-import dev.checku.checkuserver.domain.user.adapter.out.persistence.UserJpaEntity;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Entity
 @Getter
@@ -19,24 +19,12 @@ public class NotificationJpaEntity extends BaseTimeJpaEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Embedded
-    private SubjectNumber subjectNumber;
+    private Long userId;
 
-    @Column(nullable = false)
-    private String subjectName;
+    private String subjectNumber;
 
-    @Column(nullable = false)
-    private String professor;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private UserJpaEntity userJpaEntity;
-
-    @Builder
-    public NotificationJpaEntity(SubjectNumber subjectNumber, String subjectName, String professor, UserJpaEntity userJpaEntity) {
+    public NotificationJpaEntity(Long userId, String subjectNumber) {
+        this.userId = userId;
         this.subjectNumber = subjectNumber;
-        this.subjectName = subjectName;
-        this.professor = professor;
-        this.userJpaEntity = userJpaEntity;
     }
 }

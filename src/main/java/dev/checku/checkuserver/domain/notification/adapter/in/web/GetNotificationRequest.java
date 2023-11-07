@@ -1,7 +1,6 @@
 package dev.checku.checkuserver.domain.notification.adapter.in.web;
 
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,8 +12,4 @@ public class GetNotificationRequest {
 
     @NotNull
     private Long userId;
-
-    public GetNotificationRequest(Long userId) {
-        this.userId = userId;
-    }
 }

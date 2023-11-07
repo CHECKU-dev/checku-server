@@ -1,10 +1,8 @@
-package dev.checku.checkuserver.domain.common;
+package dev.checku.checkuserver.domain.common.domain;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import java.util.Objects;
 
 @Getter

@@ -1,7 +1,7 @@
 package dev.checku.checkuserver.domain.subject.adpater.out.persistence;
 
 import dev.checku.checkuserver.domain.subject.domain.SubjectType;
-import dev.checku.checkuserver.domain.common.SubjectNumber;
+import dev.checku.checkuserver.domain.common.domain.SubjectNumber;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

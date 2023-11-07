@@ -1,13 +1,12 @@
 package dev.checku.checkuserver.domain.subject.application.service;
 
-import dev.checku.checkuserver.domain.bookmark.application.service.BookmarkService;
 import dev.checku.checkuserver.domain.bookmark.adapter.out.persistence.BookmarkJpaEntity;
-import dev.checku.checkuserver.domain.common.SubjectNumber;
+import dev.checku.checkuserver.domain.common.domain.SubjectNumber;
 import dev.checku.checkuserver.domain.notification.exception.SubjectHasVacancyException;
 import dev.checku.checkuserver.domain.notification.exception.SubjectNotFoundException;
-import dev.checku.checkuserver.domain.portal.application.service.PortalSessionService;
-import dev.checku.checkuserver.domain.portal.adapter.in.web.PortalResponse;
-import dev.checku.checkuserver.domain.portal.adapter.out.PortalFeignClient;
+import dev.checku.checkuserver.domain.session.application.service.PortalSessionService;
+import dev.checku.checkuserver.domain.temp.PortalSubjectResponse;
+import dev.checku.checkuserver.domain.temp.PortalFeignClient;
 import dev.checku.checkuserver.domain.subject.adpater.in.web.GetAllSubjectsRequest;
 import dev.checku.checkuserver.domain.subject.adpater.in.web.GetAllSubjectsResponse;
 import dev.checku.checkuserver.domain.subject.adpater.in.web.SearchSubjectRequest;
@@ -81,9 +80,9 @@ public class SubjectService {
 
     @Retryable(value = SubjectRetryException.class, maxAttempts = 3, backoff = @Backoff(delay = 0))
     public void validateSubjectHasVacancy(SubjectNumber subjectNumber) {
-        PortalResponse response = getAllSubjectsFromPortalBySubjectNumber(subjectNumber);
+        PortalSubjectResponse response = getAllSubjectsFromPortalBySubjectNumber(subjectNumber);
         try {
-            PortalResponse.SubjectDetail subjectDetail = response.getSubjectDetails().get(0);
+            PortalSubjectResponse.SubjectDetail subjectDetail = response.getSubjectDetails().get(0);
             // 빈 자리 존재하는 과목인 경우 알림 제공 안됨
             if (SubjectUtils.hasVacancy(subjectDetail.getNumberOfPeople())) {
                 throw new SubjectHasVacancyException();
@@ -96,11 +95,11 @@ public class SubjectService {
 
     @Transactional
     public void insertSubjects() {
-        PortalResponse subjectListDto = getAllSubjectsFromPortal();
-        List<PortalResponse.SubjectDetail> subjects = subjectListDto.getSubjectDetails();
+        PortalSubjectResponse subjectListDto = getAllSubjectsFromPortal();
+        List<PortalSubjectResponse.SubjectDetail> subjects = subjectListDto.getSubjectDetails();
         List<SubjectJpaEntity> subjectJpaEntityList = new ArrayList<>();
 
-        for (PortalResponse.SubjectDetail subjectDetail : subjects) {
+        for (PortalSubjectResponse.SubjectDetail subjectDetail : subjects) {
             if (subjectDetail.getSubjectNumber() != null) {
                 SubjectJpaEntity subjectJpaEntity = SubjectJpaEntity.classifyMajorOrLiberalArts(new SubjectNumber(subjectDetail.getSubjectNumber()), subjectDetail.getSubjectName(), subjectDetail.getSubjectType());
                 subjectJpaEntityList.add(subjectJpaEntity);
@@ -152,15 +151,15 @@ public class SubjectService {
         return null;
     }
 
-    private PortalResponse getAllSubjectsFromPortal() {
+    private PortalSubjectResponse getAllSubjectsFromPortal() {
         return portalFeignClient.getSubjects(
                 portalRequestFactory.createHeader(),
                 portalRequestFactory.createBody("", "", "")
         );
     }
 
-    private PortalResponse getAllSubjectsFromPortalBySubjectNumber(SubjectNumber subjectNumber) {
-        PortalResponse response = portalFeignClient.getSubjects(
+    private PortalSubjectResponse getAllSubjectsFromPortalBySubjectNumber(SubjectNumber subjectNumber) {
+        PortalSubjectResponse response = portalFeignClient.getSubjects(
                 portalRequestFactory.createHeader(),
                 portalRequestFactory.createBody("", "", subjectNumber.getValue())
         );
@@ -173,9 +172,9 @@ public class SubjectService {
         return response;
     }
 
-    public PortalResponse getAllSubjectsFromPortalByDepartmentAndType(Department department, Type type) {
+    public PortalSubjectResponse getAllSubjectsFromPortalByDepartmentAndType(Department department, Type type) {
 
-        PortalResponse response = portalFeignClient.getSubjects(
+        PortalSubjectResponse response = portalFeignClient.getSubjects(
                 portalRequestFactory.createHeader(),
                 portalRequestFactory.createBody(type.getValue(), department.getValue(), "")
         );
@@ -194,7 +193,7 @@ public class SubjectService {
         throw new SubjectRetryException();
     }
 
-    private static boolean isVacancy(boolean isVacancy, PortalResponse.SubjectDetail subject) {
+    private static boolean isVacancy(boolean isVacancy, PortalSubjectResponse.SubjectDetail subject) {
         return !isVacancy || SubjectUtils.hasVacancy(subject.getNumberOfPeople());
     }
 }
