@@ -1,6 +1,6 @@
 package dev.checku.checkuserver.domain.temp;
 
-import dev.checku.checkuserver.global.util.PortalRequestFactory;
+import dev.checku.checkuserver.domain.portal.application.port.out.GetPortalSubjectDetailPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -14,10 +14,10 @@ public class PortalLoginService {
 
 
     private final PortalRequestFactory portalRequestFactory;
-    private final PortalFeignClient portalFeignClient;
+    private final GetPortalSubjectDetailPort getPortalSubjectDetailPort;
 
     public String login() {
-        ResponseEntity<String> response = portalFeignClient.login(
+        ResponseEntity<String> response = getPortalSubjectDetailPort.login(
                 portalRequestFactory.createHeader(),
                 portalRequestFactory.body
         );

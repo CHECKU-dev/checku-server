@@ -6,7 +6,7 @@ import org.springframework.util.StringUtils;
 
 @Getter
 @RequiredArgsConstructor
-public enum Type {
+public enum SubjectCategory {
 
     // 전공
     ALL(""), ESSENTIAL("B04044"), OPTIONAL("B04045"), OTHER(""),
@@ -15,16 +15,16 @@ public enum Type {
 
     private final String value;
 
-    public static Type setType(String type) {
+    public static SubjectCategory setType(String type) {
         if (!StringUtils.hasText(type)) {
-            return Type.ALL;
+            return SubjectCategory.ALL;
         }
-        return Type.valueOf(type);
+        return SubjectCategory.valueOf(type);
     }
 
     public boolean matchType(String subjectType) {
-        if (this == Type.ALL) return true; // 전체는 필터링 X
-        else if (this == Type.ESSENTIAL || this == Type.OPTIONAL) return true; // 이미 정렬
+        if (this == SubjectCategory.ALL) return true; // 전체는 필터링 X
+        else if (this == SubjectCategory.ESSENTIAL || this == SubjectCategory.OPTIONAL) return true; // 이미 정렬
 
         return !subjectType.equals("전필") && !subjectType.equals("전선");
     }

@@ -18,17 +18,7 @@ public class PortalSubjectResponse {
 
     @Getter
     @Setter
-    @JsonIncludeProperties(value = {
-            "OPEN_SHYR",
-            "KOR_NM",
-            "TYPL_KOR_NM",
-            "TLSN",
-            "REMK",
-            "ROOM_NM",
-            "POBT_DIV_NM",
-            "DMND_SUST",
-            "SBJT_ID"
-    })
+    @JsonIncludeProperties(value = {"OPEN_SHYR", "KOR_NM", "TYPL_KOR_NM", "TLSN", "REMK", "ROOM_NM", "POBT_DIV_NM", "DMND_SUST", "SBJT_ID"})
     public static class SubjectDetail {
 
         // 학년

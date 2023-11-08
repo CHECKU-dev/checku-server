@@ -5,21 +5,21 @@ import dev.checku.checkuserver.domain.common.domain.SubjectNumber;
 import dev.checku.checkuserver.domain.notification.exception.SubjectHasVacancyException;
 import dev.checku.checkuserver.domain.notification.exception.SubjectNotFoundException;
 import dev.checku.checkuserver.domain.session.application.service.PortalSessionService;
-import dev.checku.checkuserver.domain.temp.PortalSubjectResponse;
-import dev.checku.checkuserver.domain.temp.PortalFeignClient;
 import dev.checku.checkuserver.domain.subject.adpater.in.web.GetAllSubjectsRequest;
 import dev.checku.checkuserver.domain.subject.adpater.in.web.GetAllSubjectsResponse;
 import dev.checku.checkuserver.domain.subject.adpater.in.web.SearchSubjectRequest;
 import dev.checku.checkuserver.domain.subject.adpater.in.web.SearchSubjectResponse;
 import dev.checku.checkuserver.domain.subject.adpater.out.persistence.SubjectJpaEntity;
-import dev.checku.checkuserver.domain.subject.domain.Department;
-import dev.checku.checkuserver.domain.subject.domain.Type;
-import dev.checku.checkuserver.domain.subject.exception.SubjectRetryException;
 import dev.checku.checkuserver.domain.subject.adpater.out.persistence.SubjectSpringDataRepository;
+import dev.checku.checkuserver.domain.subject.domain.Department;
+import dev.checku.checkuserver.domain.subject.domain.Grade;
+import dev.checku.checkuserver.domain.subject.domain.SubjectCategory;
+import dev.checku.checkuserver.domain.subject.exception.SubjectRetryException;
+import dev.checku.checkuserver.domain.portal.application.port.out.GetPortalSubjectDetailPort;
+import dev.checku.checkuserver.domain.temp.PortalSubjectResponse;
 import dev.checku.checkuserver.domain.user.adapter.out.persistence.UserJpaEntity;
 import dev.checku.checkuserver.global.error.exception.EntityNotFoundException;
 import dev.checku.checkuserver.global.error.exception.ErrorCode;
-import dev.checku.checkuserver.global.util.PortalRequestFactory;
 import dev.checku.checkuserver.global.util.SubjectUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,31 +44,30 @@ public class SubjectService {
 
 //    private final UserService userService;
     private final BookmarkService bookmarkService;
-    private final PortalFeignClient portalFeignClient;
+    private final GetPortalSubjectDetailPort getPortalSubjectDetailPort;
     private final PortalSessionService portalSessionService;
     private final SubjectSpringDataRepository subjectRepository;
     private final PortalRequestFactory portalRequestFactory;
 
     @Retryable(value = SubjectRetryException.class, maxAttempts = 3, backoff = @Backoff(delay = 0))
     public List<GetAllSubjectsResponse> getSubjectsByDepartment(GetAllSubjectsRequest request) {
-//        UserJpaEntity userJpaEntity = userService.getBy(request.getUserId());
-//        List<SubjectNumber> subjectList = getMySubjectsFromMySubject(userJpaEntity);
-//
-//        Department department = Department.valueOf(request.getDepartment());
-//        Grade grade = Grade.setNumber(request.getGrade());
-//        Type type = Type.setType(request.getType());
-//        Boolean inVacancy = request.getVacancy();
-//
-//        PortalResponse response = getAllSubjectsFromPortalByDepartmentAndType(department, type); // 전필, 전선은 이미 필터링
-//
-//        // OTHER은 따로 분류하지 않음 -> 따라서 애플리케이션에서 따로 구분해야함
-//        return response.getSubjectDetails()
-//                .stream()
-//                .filter(subject -> grade.matchGrade(subject.getGrade()))
-//                .filter(subject -> type.matchType(subject.getSubjectType()))
-//                .filter(subject -> isVacancy(inVacancy, subject)) // vacancy 필터링
-//                .map(subject -> GetAllSubjectsResponse.from(subject, subjectList)).collect(Collectors.toList());
-        return null;
+        UserJpaEntity userJpaEntity = userService.getBy(request.getUserId());
+        List<SubjectNumber> subjectList = getMySubjectsFromMySubject(userJpaEntity);
+
+        Department department = Department.valueOf(request.getDepartment());
+        Grade grade = Grade.setNumber(request.getGrade());
+        SubjectCategory subjectCategory = SubjectCategory.setType(request.getType());
+        Boolean inVacancy = request.getVacancy();
+
+        PortalResponse response = getAllSubjectsFromPortalByDepartmentAndType(department, subjectCategory); // 전필, 전선은 이미 필터링
+
+        // OTHER은 따로 분류하지 않음 -> 따라서 애플리케이션에서 따로 구분해야함
+        return response.getSubjectDetails()
+                .stream()
+                .filter(subject -> grade.matchGrade(subject.getGrade()))
+                .filter(subject -> subjectCategory.matchType(subject.getSubjectType()))
+                .filter(subject -> isVacancy(inVacancy, subject)) // vacancy 필터링
+                .map(subject -> GetAllSubjectsResponse.from(subject, subjectList)).collect(Collectors.toList());
     }
 
     private List<SubjectNumber> getMySubjectsFromMySubject(UserJpaEntity userJpaEntity) {
@@ -152,14 +151,14 @@ public class SubjectService {
     }
 
     private PortalSubjectResponse getAllSubjectsFromPortal() {
-        return portalFeignClient.getSubjects(
+        return getPortalSubjectDetailPort.getSubjects(
                 portalRequestFactory.createHeader(),
                 portalRequestFactory.createBody("", "", "")
         );
     }
 
     private PortalSubjectResponse getAllSubjectsFromPortalBySubjectNumber(SubjectNumber subjectNumber) {
-        PortalSubjectResponse response = portalFeignClient.getSubjects(
+        PortalSubjectResponse response = getPortalSubjectDetailPort.getSubjects(
                 portalRequestFactory.createHeader(),
                 portalRequestFactory.createBody("", "", subjectNumber.getValue())
         );
@@ -172,11 +171,10 @@ public class SubjectService {
         return response;
     }
 
-    public PortalSubjectResponse getAllSubjectsFromPortalByDepartmentAndType(Department department, Type type) {
-
-        PortalSubjectResponse response = portalFeignClient.getSubjects(
+    public PortalSubjectResponse getAllSubjectsFromPortalByDepartmentAndType(Department department, SubjectCategory subjectCategory) {
+        PortalSubjectResponse response = getPortalSubjectDetailPort.getSubjects(
                 portalRequestFactory.createHeader(),
-                portalRequestFactory.createBody(type.getValue(), department.getValue(), "")
+                portalRequestFactory.createBody(subjectCategory.getValue(), department.getValue(), "")
         );
 
         if (response.getSubjectDetails() == null) {

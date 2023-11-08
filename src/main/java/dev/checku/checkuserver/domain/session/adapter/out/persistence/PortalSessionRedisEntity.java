@@ -1,4 +1,4 @@
-package dev.checku.checkuserver.domain.session.adapter.persistence.out;
+package dev.checku.checkuserver.domain.session.adapter.out.persistence;
 
 import lombok.AccessLevel;
 import lombok.Getter;

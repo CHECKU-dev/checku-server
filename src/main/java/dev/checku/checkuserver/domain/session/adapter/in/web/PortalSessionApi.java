@@ -1,6 +1,6 @@
 package dev.checku.checkuserver.domain.session.adapter.in.web;
 
-import dev.checku.checkuserver.domain.session.application.port.in.UpdateSessionUseCase;
+import dev.checku.checkuserver.domain.session.application.port.in.UpdatePortalSessionUseCase;
 import dev.checku.checkuserver.domain.session.application.service.PortalSessionService;
 import dev.checku.checkuserver.global.advice.InternalApi;
 import lombok.RequiredArgsConstructor;
@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class PortalSessionApi {
 
     private final PortalSessionService portalSessionService;
-    private final UpdateSessionUseCase updateSessionUseCase;
+    private final UpdatePortalSessionUseCase updatePortalSessionUseCase;
 
     @PatchMapping("/api/portal/session")
     public void updateSessionId() {
-        updateSessionUseCase.update();
+        updatePortalSessionUseCase.update();
     }
 }
